@@ -1,14 +1,14 @@
 // 国内DNS服务器
 const domesticNameservers = [
-  "https://223.5.5.5/dns-query", // 阿里DoH
+  "https://223.5.5.5/dns-query"， // 阿里DoH
   "https://doh.pub/dns-query" // 腾讯DoH
 ];
 // 国外DNS服务器（）
 const foreignNameservers = [
-  "https://208.67.222.222/dns-query", // OpenDNS
-  "https://77.88.8.8/dns-query", //YandexDNS
-  "https://1.1.1.1/dns-query", // CloudflareDNS
-  "https://8.8.4.4/dns-query", // GoogleDNS  
+  "https://208.67.222.222/dns-query"， // OpenDNS
+  "https://77.88.8.8/dns-query"， //YandexDNS
+  "https://1.1.1.1/dns-query"， // CloudflareDNS
+  "https://8.8.4.4/dns-query"， // GoogleDNS  
 
 ];
 // DNS配置

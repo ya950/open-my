@@ -259,6 +259,9 @@ function main(config) {
   // 获取所有链式代理组名称
   const chainProxyNames = ssProxies.map(ssProxy => `链式-${ssProxy}`);
   
+  // 确保链式代理组不为空，如果为空则使用其他节点作为备选
+  const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : allProxies.slice(0, 5);
+  
   // 覆盖原配置中的代理组
   config["proxy-groups"] = [
     {
@@ -289,7 +292,7 @@ function main(config) {
       "type": "url-test",
       "interval": 300, // 5分钟
       "tolerance": 200,
-      "proxies": chainProxyNames,
+      "proxies": autoSelectProxies, // 使用确保不为空的代理列表
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },
     {
@@ -474,7 +477,7 @@ function main(config) {
       "name": "Spotify",
       "type": "select",
       "proxies": [
-        "链式代理", // 使用链式代理组
+        "链式代理", // 使用链式代理组组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "故障转移", // 添加顶层故障转移

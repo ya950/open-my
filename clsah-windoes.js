@@ -288,64 +288,64 @@ function main(config) {
   }
   
   // 创建谷歌服务的代理列表
-  const googleServiceList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const googleServiceList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     googleServiceList.push(countryGroups[i]);
   }
   
   // 创建Cloudflare的代理列表
-  const cloudflareList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const cloudflareList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     cloudflareList.push(countryGroups[i]);
   }
   
   // 创建YouTube的代理列表
-  const youtubeList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const youtubeList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     youtubeList.push(countryGroups[i]);
   }
   
   // 创建Netflix的代理列表
-  const netflixList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const netflixList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     netflixList.push(countryGroups[i]);
   }
   
   // 创建电报消息的代理列表
-  const telegramList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const telegramList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     telegramList.push(countryGroups[i]);
   }
   
   // 创建AI的代理列表
-  const aiList = ["链式代理", "最优链式", "延迟选优"];
+  const aiList = ["链式代理", "节点选择", "最优链式", "延迟选优"];
   for (let i = 0; i < countryGroups.length; i++) {
     aiList.push(countryGroups[i]);
   }
   
   // 创建TikTok的代理列表
-  const tiktokList = ["链式代理", "最优链式", "延迟选优"];
+  const tiktokList = ["链式代理", "节点选择", "最优链式", "延迟选优"];
   for (let i = 0; i < countryGroups.length; i++) {
     tiktokList.push(countryGroups[i]);
   }
   
   // 创建微软服务的代理列表
-  const microsoftList = ["全局直连", "链式代理", "最优链式", "延迟选优"];
+  const microsoftList = ["全局直连", "链式代理", "节点选择", "最优链式", "延迟选优"];
   for (let i = 0; i < countryGroups.length; i++) {
     microsoftList.push(countryGroups[i]);
   }
   
   // 创建苹果服务的代理列表
-  const appleList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const appleList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     appleList.push(countryGroups[i]);
   }
   
   // 创建哔哩哔哩港澳台的代理列表
-  const bilibiliList = ["链式代理", "最优链式", "延迟选优", "全局直连", "台湾手动", "台湾自动", "香港手动", "香港自动"];
+  const bilibiliList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连", "台湾手动", "台湾自动", "香港手动", "香港自动"];
   
   // 创建Spotify的代理列表
-  const spotifyList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
+  const spotifyList = ["链式代理", "节点选择", "最优链式", "延迟选优", "全局直连"];
   for (let i = 0; i < countryGroups.length; i++) {
     spotifyList.push(countryGroups[i]);
   }
@@ -620,46 +620,46 @@ function main(config) {
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    })，
+    Object。assign({}， groupBaseOption, {
       "name": "韩国自动",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
+      "tolerance": 100， // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     }),
-    Object.assign({}, groupBaseOption, {
+    Object。assign({}， groupBaseOption， {
       "name": "韩国故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600， // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
+      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    })，
+    Object。assign({}， groupBaseOption， {
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/bug.svg"
     }),
-    Object.assign({}, groupBaseOption, {
+    Object。assign({}， groupBaseOption， {
       "name": "全局直连",
       "type": "select",
       "proxies": ["DIRECT", "节点选择", "延迟选优"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Direct.png"
     }),
-    Object.assign({}, groupBaseOption, {
+    Object。assign({}， groupBaseOption, {
       "name": "全局拦截",
       "type": "select",
-      "proxies": ["REJECT", "DIRECT"],
+      "proxies": ["REJECT"， "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
-    }),
-    Object.assign({}, groupBaseOption, {
+    })，
+    Object。assign({}， groupBaseOption， {
       "name": "漏网之鱼",
       "type": "select",
       "proxies": finalList,
@@ -669,7 +669,7 @@ function main(config) {
   
   // 添加链式代理组（已隐藏）
   for (let i = 0; i < chainProxyGroups.length; i++) {
-    config["proxy-groups"].push(chainProxyGroups[i]);
+    config["proxy-groups"]。push(chainProxyGroups[i]);
   }
 
   // 覆盖原配置中的规则
@@ -680,7 +680,7 @@ function main(config) {
   if(config["proxies"]) {
     for (let i = 0; i < config["proxies"].length; i++) {
       // 为每个节点设置 udp = true
-      config["proxies"][i].udp = true;
+      config["proxies"][i]。udp = true;
     }
   }
   

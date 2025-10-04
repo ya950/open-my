@@ -692,9 +692,9 @@ function main(config) {
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     }，
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "韩国-故障转移",
-      "type": "fallback"，
+      "type": "fallback",
       "interval": 600， // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
@@ -719,15 +719,15 @@ function main(config) {
     {
       ...groupBaseOption,
       "name": "全局拦截",
-      "type": "select"，
-      "proxies": ["REJECT"， "DIRECT"],
-      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
-    }，
-    {
-      ...groupBaseOption,
-      "name": "漏网之鱼",
       "type": "select",
-      "proxies": ["节点选择", "链式代理", "延迟选优","全局直连"],
+      "proxies": ["REJECT", "DIRECT"],
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
+    },
+    {
+      ...groupBaseOption，
+      "name": "漏网之鱼"，
+      "type": "select"，
+      "proxies": ["节点选择"， "链式代理", "延迟选优","全局直连"]，
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
     }，
     // 添加链式代理组（已隐藏）

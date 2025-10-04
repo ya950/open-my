@@ -327,7 +327,7 @@ function main(config) {
       "name": "链式选优", // 改为链式选优
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
+      "tolerance": 30, // 从50改为100，提高容忍度
       "lazy": false,
       "proxies": autoSelectProxies, // 使用确保不为空的代理列表
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -350,7 +350,7 @@ function main(config) {
       "name": "延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
+      "tolerance": 30, // 从50改为100，提高容忍度
       "lazy": false,
       "proxies": countryLatencyGroups,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL

@@ -1,17 +1,18 @@
-// 国内DNS服务器
-var domesticNameservers = [
+// 国内DNS服务器-1
+const domesticNameservers = [
   "https://223.5.5.5/dns-query", // 阿里DoH
   "https://doh.pub/dns-query" // 腾讯DoH
 ];
 // 国外DNS服务器
-var foreignNameservers = [
+const foreignNameservers = [
   "https://208.67.222.222/dns-query", // OpenDNS
   "https://77.88.8.8/dns-query", //YandexDNS
   "https://1.1.1.1/dns-query", // CloudflareDNS
   "https://8.8.4.4/dns-query", // GoogleDNS  
+
 ];
 // DNS配置
-var dnsConfig = {
+const dnsConfig = {
   "enable": true,
   "listen": "0.0.0.0:1053",
   "ipv6": false,
@@ -22,141 +23,163 @@ var dnsConfig = {
   "enhanced-mode": "fake-ip",
   "fake-ip-range": "198.18.0.1/16",
   "fake-ip-filter": [
+    // 本地主机/设备
     "+.lan",
     "+.local",
+    // // Windows网络出现小地球图标
     "+.msftconnecttest.com",
     "+.msftncsi.com",
+    // QQ快速登录检测失败
     "localhost.ptlogin2.qq.com",
     "localhost.sec.qq.com",
+      // 追加以下条目
     "+.in-addr.arpa", 
     "+.ip6.arpa",
     "time.*.com",
     "time.*.gov",
     "pool.ntp.org",
+    // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["223.5.5.5","1.2.4.8"],
-  "nameserver": foreignNameservers.slice(),
-  "proxy-server-nameserver": domesticNameservers.slice(),
-  "direct-nameserver": domesticNameservers.slice(),
+  "default-nameserver": ["223.5.5.5","1.2.4.8"],//可修改成自己ISP的DNS
+  "nameserver": [...foreignNameservers],
+  "proxy-server-nameserver":[...domesticNameservers],
+  "direct-nameserver":[...domesticNameservers],
   "nameserver-policy": {
   "geosite:private,cn": domesticNameservers
   }
 };
-
 // 规则集通用配置
-var ruleProviderCommon = {
+const ruleProviderCommon = {
   "type": "http",
   "format": "yaml",
   "interval": 86400
 };
-
 // 规则集配置
-var ruleProviders = {
-  "reject": Object.assign({}, ruleProviderCommon, {
+const ruleProviders = {
+  "reject": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
     "path": "./ruleset/loyalsoldier/reject.yaml"
-  }),
-  "icloud": Object.assign({}, ruleProviderCommon, {
+  },
+  "icloud": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
     "path": "./ruleset/loyalsoldier/icloud.yaml"
-  }),
-  "apple": Object.assign({}, ruleProviderCommon, {
+  },
+  "apple": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
     "path": "./ruleset/loyalsoldier/apple.yaml"
-  }),
-  "google": Object.assign({}, ruleProviderCommon, {
+  },
+  "google": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
     "path": "./ruleset/loyalsoldier/google.yaml"
-  }),
-  "proxy": Object.assign({}, ruleProviderCommon, {
+  },
+  "proxy": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
     "path": "./ruleset/loyalsoldier/proxy.yaml"
-  }),
-  "direct": Object.assign({}, ruleProviderCommon, {
+  },
+  "direct": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
     "path": "./ruleset/loyalsoldier/direct.yaml"
-  }),
-  "private": Object.assign({}, ruleProviderCommon, {
+  },
+  "private": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
     "path": "./ruleset/loyalsoldier/private.yaml"
-  }),
-  "gfw": Object.assign({}, ruleProviderCommon, {
+  },
+  "gfw": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
     "path": "./ruleset/loyalsoldier/gfw.yaml"
-  }),
-  "tld-not-cn": Object.assign({}, ruleProviderCommon, {
+  },
+  "tld-not-cn": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
     "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
-  }),
-  "telegramcidr": Object.assign({}, ruleProviderCommon, {
+  },
+  "telegramcidr": {
+    ...ruleProviderCommon,
     "behavior": "ipcidr",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
     "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
-  }),
-  "cncidr": Object.assign({}, ruleProviderCommon, {
+  },
+  "cncidr": {
+    ...ruleProviderCommon,
     "behavior": "ipcidr",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
     "path": "./ruleset/loyalsoldier/cncidr.yaml"
-  }),
-  "lancidr": Object.assign({}, ruleProviderCommon, {
+  },
+  "lancidr": {
+    ...ruleProviderCommon,
     "behavior": "ipcidr",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
     "path": "./ruleset/loyalsoldier/lancidr.yaml"
-  }),
-  "applications": Object.assign({}, ruleProviderCommon, {
+  },
+  "applications": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
     "path": "./ruleset/loyalsoldier/applications.yaml"
-  }),
-  "cloudflare": Object.assign({}, ruleProviderCommon, {
+  },
+  "cloudflare": {
+    ...ruleProviderCommon,
     "behavior": "domain",
     "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cloudflare.txt",
     "path": "./ruleset/loyalsoldier/cloudflare.yaml"
-  }),
-  "YouTube": Object.assign({}, ruleProviderCommon, {
+  },
+  "YouTube": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt",
     "path": "./ruleset/xiaolin-007/YouTube.yaml"
-  }),
-  "Netflix": Object.assign({}, ruleProviderCommon, {
+  },
+  "Netflix": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt",
     "path": "./ruleset/xiaolin-007/Netflix.yaml"
-  }),
-  "Spotify": Object.assign({}, ruleProviderCommon, {
+  },
+  "Spotify": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt",
     "path": "./ruleset/xiaolin-007/Spotify.yaml"
-  }),
-  "BilibiliHMT": Object.assign({}, ruleProviderCommon, {
+  },
+  "BilibiliHMT": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/BilibiliHMT.txt",
     "path": "./ruleset/xiaolin-007/BilibiliHMT.yaml"    
-  }),
-  "AI": Object.assign({}, ruleProviderCommon, {
+  },
+  "AI": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt",
     "path": "./ruleset/xiaolin-007/AI.yaml"    
-  }),
-  "TikTok": Object.assign({}, ruleProviderCommon, {
+  },
+  "TikTok": {
+    ...ruleProviderCommon,
     "behavior": "classical",
     "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt",
     "path": "./ruleset/xiaolin-007/TikTok.yaml"    
-  }),
+  },
 };
-
 // 规则
-var rules = [
+const rules = [
   // 自定义规则
   "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
   "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
@@ -190,9 +213,8 @@ var rules = [
   "GEOIP,CN,全局直连,no-resolve",
   "MATCH,漏网之鱼"
 ];
-
 // 代理组通用配置
-var groupBaseOption = {
+const groupBaseOption = {
   "interval": 300, // 默认5分钟
   "timeout": 3000,
   "url": "https://www.google.com/generate_204",
@@ -203,18 +225,9 @@ var groupBaseOption = {
 
 // 程序入口
 function main(config) {
-  // 检查代理数量
-  var proxyCount = 0;
-  var proxyProviderCount = 0;
-  
-  if (config && config.proxies && Array.isArray(config.proxies)) {
-    proxyCount = config.proxies.length;
-  }
-  
-  if (config && config["proxy-providers"] && typeof config["proxy-providers"] === "object") {
-    proxyProviderCount = Object.keys(config["proxy-providers"]).length;
-  }
-  
+  const proxyCount = config?.proxies?.length ?? 0;
+  const proxyProviderCount =
+    typeof config?.["proxy-providers"] === "object" ? Object.keys(config["proxy-providers"]).length : 0;
   if (proxyCount === 0 && proxyProviderCount === 0) {
     throw new Error("配置文件中未找到任何代理");
   }
@@ -222,14 +235,14 @@ function main(config) {
   // 覆盖原配置中DNS配置
   config["dns"] = dnsConfig;
 
-  // 添加连接池配置 - 使用适中的值
+  // 添加连接池配置 - 移动端优化
   config["connection-pool"] = {
     "enable": true,
-    "max-host-connections": 12, // 适中的值
-    "max-connections": 768, // 适中的值
-    "min-idle-connections": 6, // 适中的值
-    "max-idle-connections": 24, // 适中的值
-    "idle-timeout": 75 // 适中的值
+    "max-host-connections": 8, // 从16减少到8
+    "max-connections": 512, // 从1024减少到512
+    "min-idle-connections": 4, // 从8减少到4
+    "max-idle-connections": 16, // 从32减少到16
+    "idle-timeout": 60 // 从90减少到60秒
   };
   
   // 添加TCP配置优化
@@ -242,454 +255,484 @@ function main(config) {
   config["geodata-mode"] = true; // 使用内存中的地理数据，减少磁盘IO
   config["geodata-loader"] = "memconservative"; // 保守的内存加载模式
   
+  config["experimental"] = {
+    "ignore-resolve-fail": true, // 忽略解析失败，减少重试
+    "sniff-tls-sni": true // 启用SNI嗅探，提高连接效率
+  };
+
   // 获取所有节点名称
-  var allProxies = [];
-  if (config && config.proxies && Array.isArray(config.proxies)) {
-    for (var i = 0; i < config.proxies.length; i++) {
-      allProxies.push(config.proxies[i].name);
-    }
-  }
+  const allProxies = config?.proxies?.map(p => p.name) || [];
   
   // 分离SS节点和其他节点
-  var ssProxies = [];
-  var nonSSProxies = [];
-  
-  if (config && config.proxies && Array.isArray(config.proxies)) {
-    for (var i = 0; i < config.proxies.length; i++) {
-      if (config.proxies[i].type === "ss") {
-        ssProxies.push(config.proxies[i].name);
-      } else {
-        nonSSProxies.push(config.proxies[i].name);
-      }
-    }
-  }
+  const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
+  const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
   
   // 创建链式代理组 - 每个SS节点都创建一个链式代理组
-  var chainProxyGroups = [];
-  for (var i = 0; i < ssProxies.length; i++) {
-    var ssProxy = ssProxies[i];
-    // 使用L代替"链式-"前缀
-    var chainGroupName = "L" + ssProxy;
-    chainProxyGroups.push(Object.assign({}, groupBaseOption, {
+  const chainProxyGroups = [];
+  ssProxies.forEach(ssProxy => {
+    const chainGroupName = `链式-${ssProxy}`;
+    chainProxyGroups.push({
+      ...groupBaseOption,
       "name": chainGroupName,
       "type": "relay", // 使用relay类型实现链式代理
       "proxies": ["前置代理", ssProxy], // 前置代理 -> SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png",
-      "hidden": true, // 隐藏这些单独的链式代理组
-      "timeout": 5000, // 增加超时时间，因为链式代理需要更长的连接时间
-      "url": "https://www.gstatic.com/generate_204" // 使用更稳定的测试URL
-    }));
-  }
+      "hidden": true // 隐藏这些单独的链式代理组
+    });
+  });
   
   // 获取所有链式代理组名称
-  var chainProxyNames = [];
-  for (var i = 0; i < ssProxies.length; i++) {
-    chainProxyNames.push("L" + ssProxies[i]);
-  }
+  const chainProxyNames = ssProxies.map(ssProxy => `链式-${ssProxy}`);
   
   // 确保链式代理组不为空，如果为空则使用其他节点作为备选
-  var autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames.slice() : nonSSProxies.slice(0, 5);
-  
-  // 定义所有国家分组名称
-  var countryGroups = [
-    "日本手动", "日本自动", "日本故转",
-    "美国手动", "美国自动", "美国故转",
-    "台湾手动", "台湾自动", "台湾故转",
-    "香港手动", "香港自动", "香港故转",
-    "新加坡手动", "新加坡自动", "新加坡故转",
-    "韩国手动", "韩国自动", "韩国故转"
-  ];
-  
-  // 创建前置代理的代理列表
-  var preProxyList = ["日本手动", "美国手动", "台湾手动", "香港手动", "新加坡手动", "韩国手动", "延迟选优"];
-  for (var i = 0; i < nonSSProxies.length; i++) {
-    preProxyList.push(nonSSProxies[i]);
-  }
-  
-  // 创建节点选择的代理列表
-  var nodeSelectList = ["链式代理", "日本手动", "美国手动", "台湾手动", "香港手动", "新加坡手动", "韩国手动", "延迟选优"];
-  for (var i = 0; i < nonSSProxies.length; i++) {
-    nodeSelectList.push(nonSSProxies[i]);
-  }
-  
-  // 创建谷歌服务的代理列表
-  var googleServiceList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    googleServiceList.push(countryGroups[i]);
-  }
-  
-  // 创建Cloudflare的代理列表
-  var cloudflareList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    cloudflareList.push(countryGroups[i]);
-  }
-  
-  // 创建YouTube的代理列表
-  var youtubeList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    youtubeList.push(countryGroups[i]);
-  }
-  
-  // 创建Netflix的代理列表
-  var netflixList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    netflixList.push(countryGroups[i]);
-  }
-  
-  // 创建电报消息的代理列表
-  var telegramList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    telegramList.push(countryGroups[i]);
-  }
-  
-  // 创建AI的代理列表
-  var aiList = ["链式代理", "最优链式", "延迟选优"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    aiList.push(countryGroups[i]);
-  }
-  
-  // 创建TikTok的代理列表
-  var tiktokList = ["链式代理", "最优链式", "延迟选优"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    tiktokList.push(countryGroups[i]);
-  }
-  
-  // 创建微软服务的代理列表
-  var microsoftList = ["全局直连", "链式代理", "最优链式", "延迟选优"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    microsoftList.push(countryGroups[i]);
-  }
-  
-  // 创建苹果服务的代理列表
-  var appleList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    appleList.push(countryGroups[i]);
-  }
-  
-  // 创建哔哩哔哩港澳台的代理列表
-  var bilibiliList = ["链式代理", "最优链式", "延迟选优", "全局直连", "台湾手动", "台湾自动", "香港手动", "香港自动"];
-  
-  // 创建Spotify的代理列表
-  var spotifyList = ["链式代理", "最优链式", "延迟选优", "全局直连"];
-  for (var i = 0; i < countryGroups.length; i++) {
-    spotifyList.push(countryGroups[i]);
-  }
-  
-  // 创建链式代理的代理列表
-  var chainProxyList = ["最优链式"];
-  for (var i = 0; i < chainProxyNames.length; i++) {
-    chainProxyList.push(chainProxyNames[i]);
-  }
-  
-  // 创建漏网之鱼的代理列表
-  var finalList = ["节点选择", "链式代理", "最优链式", "延迟选优", "全局直连"];
+  const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : otherProxies.slice(0, 5);
   
   // 覆盖原配置中的代理组
   config["proxy-groups"] = [
-    Object.assign({}, groupBaseOption, {
+    {
+      ...groupBaseOption,
       "name": "前置代理",
       "type": "select",
-      "proxies": preProxyList,
+      "proxies": [
+        "日本", "美国", "台湾", "香港", "新加坡", "韩国", 
+        "延迟选优",
+        ...otherProxies // 只包含非SS节点
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "链式代理",
       "type": "select",
-      "proxies": chainProxyList,
+      "proxies": [
+        "链式选优", // 改为链式选优
+        ...chainProxyNames
+        // 不包含"节点选择"以避免循环引用
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "最优链式",
+    },
+    {
+      ...groupBaseOption,
+      "name": "链式选优", // 改为链式选优
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "proxies": autoSelectProxies, // 使用确保不为空的代理列表
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
-      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
-      "timeout": 5000 // 增加超时时间
-    }),
-    Object.assign({}, groupBaseOption, {
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
+    },
+    {
+      ...groupBaseOption,
       "name": "节点选择",
       "type": "select",
-      "proxies": nodeSelectList,
+      "proxies": [
+        "链式代理", // 包含链式代理，但链式代理不包含节点选择，避免循环
+        "日本", "美国", "台湾", "香港", "新加坡", "韩国", 
+        "延迟选优",
+        ...otherProxies // 只包含非SS节点
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": nonSSProxies, // 只包含非SS节点
+      "proxies": ["日本-延迟选优", "美国-延迟选优", "台湾-延迟选优", "香港-延迟选优", "新加坡-延迟选优", "韩国-延迟选优"],
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "谷歌服务",
       "type": "select",
-      "proxies": googleServiceList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "Cloudflare",
       "type": "select",
-      "proxies": cloudflareList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "YouTube",
       "type": "select",
-      "proxies": youtubeList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
+        "香港", "香港-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "Netflix",
       "type": "select",
-      "proxies": netflixList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
+        "香港", "香港-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "电报消息",
       "type": "select",
-      "proxies": telegramList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "日本", "日本-延迟选优", "美国", "美国-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "AI",
       "type": "select",
-      "proxies": aiList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优"
+      ],
       "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "TikTok",
       "type": "select",
-      "proxies": tiktokList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
+        "香港", "香港-延迟选优"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "微软服务",
       "type": "select",
-      "proxies": microsoftList,
+      "proxies": [
+        "全局直连",
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "香港", "香港-延迟选优", "台湾", "台湾-延迟选优"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "苹果服务",
       "type": "select",
-      "proxies": appleList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "哔哩哔哩港澳台",
       "type": "select",
-      "proxies": bilibiliList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "台湾", "台湾-延迟选优", "香港", "香港-延迟选优", "全局直连"
+      ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
-    }),
-    Object.assign({}, groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "Spotify",
       "type": "select",
-      "proxies": spotifyList,
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
+        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
+        "台湾", "台湾-延迟选优", "全局直连"
+      ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
-    }),
-    // 新增国家分组
-    Object.assign({}, groupBaseOption, {
-      "name": "日本手动",
+    },
+    // 新增国家分组 - 只包含非SS节点
+    {
+      ...groupBaseOption,
+      "name": "日本",
       "type": "select",
-      "proxies": ["日本自动", "日本故转"],
+      "proxies": ["日本-延迟选优", "日本-故障转移"],
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "日本自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "日本-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "日本故转",
+    },
+    {
+      ...groupBaseOption,
+      "name": "日本-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "美国手动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "美国",
       "type": "select",
-      "proxies": ["美国自动", "美国故转"],
+      "proxies": ["美国-延迟选优", "美国-故障转移"],
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "美国自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "美国-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "美国故转",
+    },
+    {
+      ...groupBaseOption,
+      "name": "美国-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "台湾手动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "台湾",
       "type": "select",
-      "proxies": ["台湾自动", "台湾故转"],
+      "proxies": ["台湾-延迟选优", "台湾-故障转移"],
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "台湾自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "台湾-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "台湾故转",
+    },
+    {
+      ...groupBaseOption,
+      "name": "台湾-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "香港手动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "香港",
       "type": "select",
-      "proxies": ["香港自动", "香港故转"],
+      "proxies": ["香港-延迟选优", "香港-故障转移"],
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "香港自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "香港-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "香港故转",
+    },
+    {
+      ...groupBaseOption,
+      "name": "香港-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "新加坡手动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "新加坡",
       "type": "select",
-      "proxies": ["新加坡自动", "新加坡故转"],
+      "proxies": ["新加坡-延迟选优", "新加坡-故障转移"],
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "新加坡自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "新加坡-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "新加坡故转",
+    },
+    {
+      ...groupBaseOption,
+      "name": "新加坡-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
-    }),
-    Object.assign({}, groupBaseOption, {
-      "name": "韩国手动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "韩国",
       "type": "select",
-      "proxies": ["韩国自动", "韩国故转"],
+      "proxies": ["韩国-延迟选优", "韩国-故障转移"],
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "exclude-filter": "(?i)ss://", // 排除SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    })，
-    Object。assign({}， groupBaseOption, {
-      "name": "韩国自动",
+    },
+    {
+      ...groupBaseOption,
+      "name": "韩国-延迟选优",
       "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100， // 从50改为100，提高容忍度
+      "interval": 600， // 从300改为600，减少测试频率
+      "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "exclude-filter": "(?i)ss://"， // 排除SS节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }),
-    Object。assign({}， groupBaseOption， {
-      "name": "韩国故转",
-      "type": "fallback",
+    }，
+    {
+      ...groupBaseOption，
+      "name": "韩国-故障转移",
+      "type": "fallback"，
       "interval": 600， // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "exclude-filter": "(?i)ss://"， // 排除SS节点
       "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    })，
-    Object。assign({}， groupBaseOption， {
+    }，
+    {
+      ...groupBaseOption，
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/bug.svg"
-    }),
-    Object。assign({}， groupBaseOption， {
+    },
+    {
+      ...groupBaseOption,
       "name": "全局直连",
       "type": "select",
       "proxies": ["DIRECT", "节点选择", "延迟选优"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Direct.png"
-    }),
-    Object。assign({}， groupBaseOption, {
+    },
+    {
+      ...groupBaseOption,
       "name": "全局拦截",
-      "type": "select",
+      "type": "select"，
       "proxies": ["REJECT"， "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
-    })，
-    Object。assign({}， groupBaseOption， {
+    }，
+    {
+      ...groupBaseOption,
       "name": "漏网之鱼",
       "type": "select",
-      "proxies": finalList,
+      "proxies": ["节点选择", "链式代理", "延迟选优","全局直连"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
-    })
+    }，
+    // 添加链式代理组（已隐藏）
+    ...chainProxyGroups
   ];
-  
-  // 添加链式代理组（已隐藏）
-  for (var i = 0; i < chainProxyGroups.length; i++) {
-    config["proxy-groups"]。push(chainProxyGroups[i]);
-  }
 
   // 覆盖原配置中的规则
   config["rule-providers"] = ruleProviders;
@@ -697,12 +740,12 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    for (var i = 0; i < config["proxies"].length; i++) {
+    config["proxies"]。forEach(proxy => {
       // 为每个节点设置 udp = true
-      config["proxies"][i]。udp = true;
-    }
+      proxy。udp = true
+    })
   }
   
   // 返回修改后的配置
   return config;
-}
+      }

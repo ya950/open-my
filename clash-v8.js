@@ -1,4 +1,4 @@
-// 国内DNS服务器-1
+// 国内DNS服务器
 const domesticNameservers = [
   "https://223.5.5.5/dns-query", // 阿里DoH
   "https://doh.pub/dns-query" // 腾讯DoH

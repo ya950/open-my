@@ -267,14 +267,6 @@ function main(config) {
   const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
   const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
   
-  // 按国家/地区分类非SS节点
-  const japanProxies = otherProxies.filter(p => /(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka/.test(p));
-  const usProxies = otherProxies.filter(p => /(?i)美国|us|US|美利坚|United States/.test(p));
-  const taiwanProxies = otherProxies.filter(p => /(?i)台湾|tw|TW|台北|Taipei|台中|Taichung/.test(p));
-  const hkProxies = otherProxies.filter(p => /(?i)香港|hk|HK|Hong Kong|深港|沪港/.test(p));
-  const singaporeProxies = otherProxies.filter(p => /(?i)新加坡|sg|SG|狮城|Singapore/.test(p));
-  const koreaProxies = otherProxies.filter(p => /(?i)韩国|kr|KR|首尔|Seoul|Korea/.test(p));
-  
   // 创建链式代理组 - 每个SS节点都创建一个链式代理组
   const chainProxyGroups = [];
   ssProxies.forEach(ssProxy => {
@@ -293,7 +285,18 @@ function main(config) {
   const chainProxyNames = ssProxies.map(ssProxy => `链式-${ssProxy}`);
   
   // 确保链式代理组不为空，如果为空则使用其他节点作为备选
-  const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : otherProxies.slice(0, 5);
+  const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : allProxies.slice(0, 5);
+  
+  // 获取所有国家分组名称
+  const countryGroups = [
+    "日本", "美国", "台湾", "香港", "新加坡", "韩国"
+  ];
+  
+  // 获取所有国家延迟选优分组名称
+  const countryLatencyGroups = countryGroups.map(country => `${country}-延迟选优`);
+  
+  // 获取所有国家故障转移分组名称
+  const countryFailoverGroups = countryGroups.map(country => `${country}-故障转移`);
   
   // 覆盖原配置中的代理组
   config["proxy-groups"] = [
@@ -302,9 +305,9 @@ function main(config) {
       "name": "前置代理",
       "type": "select",
       "proxies": [
-        "日本", "美国", "台湾", "香港", "新加坡", "韩国", 
+        ...countryGroups,
         "延迟选优",
-        ...otherProxies // 只包含非SS节点
+        ...otherProxies
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -313,7 +316,7 @@ function main(config) {
       "name": "链式代理",
       "type": "select",
       "proxies": [
-        "链式选优", // 改为链式选优
+        "自动选择", // 新增自动选择选项
         ...chainProxyNames
         // 不包含"节点选择"以避免循环引用
       ],
@@ -321,7 +324,7 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "链式选优", // 改为链式选优
+      "name": "自动选择",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
@@ -336,9 +339,9 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 包含链式代理，但链式代理不包含节点选择，避免循环
-        "日本", "美国", "台湾", "香港", "新加坡", "韩国", 
+        ...countryGroups,
         "延迟选优",
-        ...otherProxies // 只包含非SS节点
+        ...allProxies
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -349,7 +352,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": ["日本-延迟选优", "美国-延迟选优", "台湾-延迟选优", "香港-延迟选优", "新加坡-延迟选优", "韩国-延迟选优"],
+      "proxies": countryLatencyGroups,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },
@@ -361,9 +364,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google.png"
     },
@@ -375,9 +382,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -389,9 +400,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
-        "香港", "香港-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
     },
@@ -403,9 +418,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
-        "香港", "香港-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
     },
@@ -417,9 +436,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "日本", "日本-延迟选优", "美国", "美国-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优", "全局直连"
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
     },
@@ -431,9 +454,12 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移" // 添加故障转移
       ],
       "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
     },
@@ -445,9 +471,12 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "台湾", "台湾-延迟选优", 
-        "香港", "香港-延迟选优"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移" // 添加故障转移
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
     },
@@ -460,8 +489,10 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "香港", "香港-延迟选优", "台湾", "台湾-延迟选优"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移" // 添加故障转移
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
     },
@@ -473,9 +504,13 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
     },
@@ -487,7 +522,9 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "台湾", "台湾-延迟选优", "香港", "香港-延迟选优", "全局直连"
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
     },
@@ -499,18 +536,24 @@ function main(config) {
         "链式代理", // 使用链式代理组
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "日本", "日本-延迟选优", 
-        "新加坡", "新加坡-延迟选优", "香港", "香港-延迟选优", 
-        "台湾", "台湾-延迟选优", "全局直连"
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
+        "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },
-    // 新增国家分组 - 只包含非SS节点
+    // 国家分组
     {
       ...groupBaseOption,
       "name": "日本",
       "type": "select",
-      "proxies": ["日本-延迟选优", "日本-故障转移", ...japanProxies],
+      "proxies": ["日本-延迟选优", "日本-故障转移"],
+      "include-all": true,
+      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
     {
@@ -520,7 +563,8 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": japanProxies,
+      "include-all": true,
+      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
@@ -529,7 +573,8 @@ function main(config) {
       "name": "日本-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "proxies": japanProxies,
+      "include-all": true,
+      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
@@ -537,7 +582,9 @@ function main(config) {
       ...groupBaseOption,
       "name": "美国",
       "type": "select",
-      "proxies": ["美国-延迟选优", "美国-故障转移", ...usProxies],
+      "proxies": ["美国-延迟选优", "美国-故障转移"],
+      "include-all": true,
+      "filter": "(?i)美国|us|US|美利坚|United States",
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
     {
@@ -547,7 +594,8 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": usProxies,
+      "include-all": true,
+      "filter": "(?i)美国|us|US|美利坚|United States",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
@@ -556,7 +604,8 @@ function main(config) {
       "name": "美国-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "proxies": usProxies,
+      "include-all": true,
+      "filter": "(?i)美国|us|US|美利坚|United States",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
@@ -564,7 +613,9 @@ function main(config) {
       ...groupBaseOption,
       "name": "台湾",
       "type": "select",
-      "proxies": ["台湾-延迟选优", "台湾-故障转移", ...taiwanProxies],
+      "proxies": ["台湾-延迟选优", "台湾-故障转移"],
+      "include-all": true,
+      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
     {
@@ -574,7 +625,8 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": taiwanProxies,
+      "include-all": true,
+      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
@@ -583,7 +635,8 @@ function main(config) {
       "name": "台湾-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "proxies": taiwanProxies,
+      "include-all": true,
+      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
@@ -591,7 +644,9 @@ function main(config) {
       ...groupBaseOption,
       "name": "香港",
       "type": "select",
-      "proxies": ["香港-延迟选优", "香港-故障转移", ...hkProxies],
+      "proxies": ["香港-延迟选优", "香港-故障转移"],
+      "include-all": true,
+      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
     {
@@ -601,7 +656,8 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": hkProxies,
+      "include-all": true,
+      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
@@ -610,7 +666,8 @@ function main(config) {
       "name": "香港-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "proxies": hkProxies,
+      "include-all": true,
+      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
@@ -618,7 +675,9 @@ function main(config) {
       ...groupBaseOption,
       "name": "新加坡",
       "type": "select",
-      "proxies": ["新加坡-延迟选优", "新加坡-故障转移", ...singaporeProxies],
+      "proxies": ["新加坡-延迟选优", "新加坡-故障转移"],
+      "include-all": true,
+      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
     {
@@ -628,7 +687,8 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": singaporeProxies,
+      "include-all": true,
+      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
@@ -637,7 +697,8 @@ function main(config) {
       "name": "新加坡-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "proxies": singaporeProxies,
+      "include-all": true,
+      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
@@ -645,31 +706,35 @@ function main(config) {
       ...groupBaseOption,
       "name": "韩国",
       "type": "select",
-      "proxies": ["韩国-延迟选优", "韩国-故障转移", ...koreaProxies],
+      "proxies": ["韩国-延迟选优", "韩国-故障转移"],
+      "include-all": true,
+      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     },
     {
-      ...groupBaseOption，
-      "name": "韩国-延迟选优"，
+      ...groupBaseOption,
+      "name": "韩国-延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100， // 从50改为100，提高容忍度
+      "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "proxies": koreaProxies,
+      "include-all": true,
+      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     },
     {
       ...groupBaseOption,
-      "name": "韩国-故障转移"，
+      "name": "韩国-故障转移",
       "type": "fallback",
-      "interval": 600， // 从600改为600，保持不变
-      "proxies": koreaProxies,
-      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
+      "interval": 600, // 从600改为600，保持不变
+      "include-all": true,
+      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }，
+    },
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
@@ -690,12 +755,12 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption，
-      "name": "漏网之鱼"，
-      "type": "select"，
-      "proxies": ["节点选择"， "链式代理", "延迟选优","全局直连"]，
+      ...groupBaseOption,
+      "name": "漏网之鱼",
+      "type": "select",
+      "proxies": ["节点选择", "链式代理", "延迟选优","全局直连"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
-    }，
+    },
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups
   ];
@@ -706,12 +771,12 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"]。forEach(proxy => {
+    config["proxies"].forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy。udp = true
+      proxy.udp = true
     })
   }
   
   // 返回修改后的配置
   return config;
-      }
+}

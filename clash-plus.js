@@ -9,7 +9,6 @@ const foreignNameservers = [
   "https://77.88.8.8/dns-query", //YandexDNS
   "https://1.1.1.1/dns-query", // CloudflareDNS
   "https://8.8.4.4/dns-query", // GoogleDNS  
-
 ];
 // DNS配置
 const dnsConfig = {
@@ -23,25 +22,20 @@ const dnsConfig = {
   "enhanced-mode": "fake-ip",
   "fake-ip-range": "198.18.0.1/16",
   "fake-ip-filter": [
-    // 本地主机/设备
     "+.lan",
     "+.local",
-    // // Windows网络出现小地球图标
     "+.msftconnecttest.com",
     "+.msftncsi.com",
-    // QQ快速登录检测失败
     "localhost.ptlogin2.qq.com",
     "localhost.sec.qq.com",
-      // 追加以下条目
     "+.in-addr.arpa", 
     "+.ip6.arpa",
     "time.*.com",
     "time.*.gov",
     "pool.ntp.org",
-    // 微信快速登录检测失败
     "localhost.work.weixin.qq.com"
   ],
-  "default-nameserver": ["223.5.5.5","1.2.4.8"],//可修改成自己ISP的DNS
+  "default-nameserver": ["223.5.5.5","1.2.4.8"],
   "nameserver": [...foreignNameservers],
   "proxy-server-nameserver":[...domesticNameservers],
   "direct-nameserver":[...domesticNameservers],
@@ -677,28 +671,28 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "韩国自动"， // 修改为"韩国自动"
+      "name": "韩国自动", // 修改为"韩国自动"
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true，
+      "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }，
+    },
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "韩国故转", // 修改为"韩国故转"
-      "type": "fallback"，
-      "interval": 600， // 从600改为600，保持不变
+      "type": "fallback",
+      "interval": 600, // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }，
+    },
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
@@ -719,12 +713,12 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption，
-      "name": "漏网之鱼"，
-      "type": "select"，
-      "proxies": ["节点选择"， "链式代理", "最优链式"， "延迟选优","全局直连"]，
+      ...groupBaseOption,
+      "name": "漏网之鱼",
+      "type": "select",
+      "proxies": ["节点选择", "链式代理", "最优链式", "延迟选优","全局直连"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
-    }，
+    },
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups
   ];
@@ -735,12 +729,12 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"]。forEach(proxy => {
+    config["proxies"].forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy。udp = true
+      proxy.udp = true
     })
   }
   
   // 返回修改后的配置
   return config;
-      }
+}

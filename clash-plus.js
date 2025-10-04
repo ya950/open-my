@@ -286,6 +286,12 @@ function main(config) {
   // 确保链式代理组不为空，如果为空则使用其他节点作为备选
   const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : allProxies.slice(0, 5);
   
+  // 创建延迟缓存配置
+  config["delay-cache"] = {
+    "enable": true,
+    "cache-time": 300 // 缓存5分钟
+  };
+  
   // 覆盖原配置中的代理组
   config["proxy-groups"] = [
     {
@@ -335,9 +341,9 @@ function main(config) {
     {
       ...groupBaseOption,
       "name": "节点选择",
-      "type": "select",
+      "type": "select", // 改为select类型，用于手动选择
       "proxies": [
-        "链式代理", // 包含链式代理，但链式代理不包含节点选择，避免循环
+        "全部选优", // 添加全部选优作为第一个选项
         "美国手动", "日本手动", "台湾手动", "香港手动", "狮城手动", "韩国手动", 
         ...allProxies
       ],
@@ -349,11 +355,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google.png"
     },
@@ -363,11 +369,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -377,11 +383,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "台湾手动", 
-        "香港手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
+        "香港手动", "香港自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
     },
@@ -391,11 +397,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "台湾手动", 
-        "香港手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
+        "香港手动", "香港自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
     },
@@ -405,11 +411,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "日本手动", "美国手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动", "全局直连"
+        "日本手动", "日本自动", "美国手动", "美国自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
     },
@@ -419,11 +425,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动"
       ],
       "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
     },
@@ -433,11 +439,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "台湾手动", 
-        "香港手动"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
+        "香港手动", "香港自动"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
     },
@@ -448,10 +454,10 @@ function main(config) {
       "proxies": [
         "全局直连",
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "香港手动", "台湾手动"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "香港手动", "香港自动", "台湾手动", "台湾自动"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
     },
@@ -461,11 +467,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
     },
@@ -475,9 +481,9 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "台湾手动", "香港手动", "全局直连"
+        "台湾手动", "台湾自动", "香港手动", "香港自动", "全局直连"
       ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
     },
@@ -487,25 +493,34 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全部选优", // 直接使用全部选优
+        "节点选择", // 添加节点选择
         "链式代理", // 使用链式代理组
-        "节点选择", 
-        "美国手动", "日本手动", 
-        "狮城手动", "香港手动", 
-        "台湾手动", "全局直连"
+        "美国手动", "美国自动", "日本手动", "日本自动", 
+        "狮城手动", "狮城自动", "香港手动", "香港自动", 
+        "台湾手动", "台湾自动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },
-    // 国家分组 - 优化：移除url-test类型，改为select类型并引用全部选优
+    // 国家分组 - 优化：使用url-test类型，但利用filter属性筛选特定国家的节点
     {
       ...groupBaseOption,
       "name": "美国手动",
       "type": "select",
-      "proxies": [
-        "全部选优", // 优化：引用主要测速组的结果
-        "美国故转"
-      ],
+      "proxies": ["美国自动", "美国故转"],
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
+      "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "美国自动",
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true, // 包含所有节点
+      "filter": "(?i)美国|us|US|美利坚|United States", // 只筛选美国节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
     {
@@ -522,12 +537,21 @@ function main(config) {
       ...groupBaseOption,
       "name": "日本手动",
       "type": "select",
-      "proxies": [
-        "全部选优", // 优化：引用主要测速组的结果
-        "日本故转"
-      ],
+      "proxies": ["日本自动", "日本故转"],
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "日本自动",
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true, // 包含所有节点
+      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", // 只筛选日本节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
     {
@@ -544,12 +568,21 @@ function main(config) {
       ...groupBaseOption,
       "name": "台湾手动",
       "type": "select",
-      "proxies": [
-        "全部选优", // 优化：引用主要测速组的结果
-        "台湾故转"
-      ],
+      "proxies": ["台湾自动", "台湾故转"],
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "台湾自动",
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true, // 包含所有节点
+      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", // 只筛选台湾节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
     {
@@ -566,12 +599,21 @@ function main(config) {
       ...groupBaseOption,
       "name": "香港手动",
       "type": "select",
-      "proxies": [
-        "全部选优", // 优化：引用主要测速组的结果
-        "香港故转"
-      ],
+      "proxies": ["香港自动", "香港故转"],
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "香港自动",
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true, // 包含所有节点
+      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港", // 只筛选香港节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
     {
@@ -588,12 +630,21 @@ function main(config) {
       ...groupBaseOption,
       "name": "狮城手动",
       "type": "select",
-      "proxies": [
-        "全部选优", // 优化：引用主要测速组的结果
-        "狮城故转"
-      ],
+      "proxies": ["狮城自动", "狮城故转"],
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "狮城自动",
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true, // 包含所有节点
+      "filter": "(?i)新加坡|sg|SG|狮城|Singapore", // 只筛选新加坡节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
     {
@@ -608,14 +659,23 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "韩国手动"，
+      "name": "韩国手动",
       "type": "select",
-      "proxies": [
-        "全部选优"， // 优化：引用主要测速组的结果
-        "韩国故转"
-      ]，
+      "proxies": ["韩国自动", "韩国故转"],
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "韩国自动"，
+      "type": "url-test",
+      "interval": 600, // 保持与全部选优相同的测速间隔
+      "tolerance": 100, // 保持与全部选优相同的容忍度
+      "lazy": true, // 启用懒加载
+      "include-all": true， // 包含所有节点
+      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea", // 只筛选韩国节点
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     }，
     {

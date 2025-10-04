@@ -287,6 +287,16 @@ function main(config) {
   // 确保链式代理组不为空，如果为空则使用其他节点作为备选
   const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : nonSSProxies.slice(0, 5);
   
+  // 定义所有国家分组名称
+  const countryGroups = [
+    "日本手动", "日本自动", "日本故转",
+    "美国手动", "美国自动", "美国故转",
+    "台湾手动", "台湾自动", "台湾故转",
+    "香港手动", "香港自动", "香港故转",
+    "新加坡手动", "新加坡自动", "新加坡故转",
+    "韩国手动", "韩国自动", "韩国故转"
+  ];
+  
   // 覆盖原配置中的代理组
   config["proxy-groups"] = [
     {
@@ -351,11 +361,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google.png"
     },
@@ -365,11 +374,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -379,11 +387,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
     },
@@ -393,11 +400,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
     },
@@ -407,11 +413,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "日本手动", "日本自动", "美国手动", "美国自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
     },
@@ -421,11 +426,9 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动"
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
     },
@@ -435,11 +438,9 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动"
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
     },
@@ -450,10 +451,9 @@ function main(config) {
       "proxies": [
         "全局直连",
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "香港手动", "香港自动", "台湾手动", "台湾自动"
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
     },
@@ -463,11 +463,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
     },
@@ -477,9 +476,9 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "台湾手动", "台湾自动", "香港手动", "香港自动", "全局直连"
+        "全局直连",
+        "台湾手动", "台湾自动", "香港手动", "香港自动"
       ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
     },
@@ -489,11 +488,10 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
-        "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "新加坡手动", "新加坡自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "全局直连",
+        // 添加所有国家分组
+        ...countryGroups
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },

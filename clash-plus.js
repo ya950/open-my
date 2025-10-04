@@ -229,14 +229,14 @@ function main(config) {
   // 覆盖原配置中DNS配置
   config["dns"] = dnsConfig;
 
-  // 添加连接池配置 - 移动端优化
+  // 添加连接池配置 - 恢复为原来的值
   config["connection-pool"] = {
     "enable": true,
-    "max-host-connections": 8, // 从16减少到8
-    "max-connections": 512, // 从1024减少到512
-    "min-idle-connections": 4, // 从8减少到4
-    "max-idle-connections": 16, // 从32减少到16
-    "idle-timeout": 60 // 从90减少到60秒
+    "max-host-connections": 16, // 从8恢复到16
+    "max-connections": 1024, // 从512恢复到1024
+    "min-idle-connections": 8, // 从4恢复到8
+    "max-idle-connections": 32, // 从16恢复到32
+    "idle-timeout": 90 // 从60恢复到90秒
   };
   
   // 添加TCP配置优化
@@ -249,10 +249,11 @@ function main(config) {
   config["geodata-mode"] = true; // 使用内存中的地理数据，减少磁盘IO
   config["geodata-loader"] = "memconservative"; // 保守的内存加载模式
   
-  config["experimental"] = {
-    "ignore-resolve-fail": true, // 忽略解析失败，减少重试
-    "sniff-tls-sni": true // 启用SNI嗅探，提高连接效率
-  };
+  // 移除实验性功能
+  // config["experimental"] = {
+  //   "ignore-resolve-fail": true, // 忽略解析失败，减少重试
+  //   "sniff-tls-sni": true // 启用SNI嗅探，提高连接效率
+  // };
 
   // 获取所有节点名称
   const allProxies = config?.proxies?.map(p => p.name) || [];

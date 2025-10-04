@@ -316,7 +316,7 @@ function main(config) {
       "name": "链式代理",
       "type": "select",
       "proxies": [
-        "自动选择", // 新增自动选择选项
+        "链式选优", // 改为链式选优
         ...chainProxyNames
         // 不包含"节点选择"以避免循环引用
       ],
@@ -324,7 +324,7 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "自动选择",
+      "name": "链式选优", // 改为链式选优
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度

@@ -214,11 +214,11 @@ const rules = [
 ];
 // 代理组通用配置
 const groupBaseOption = {
-  "interval": 300, // 默认5分钟
-  "timeout": 3000,
-  "url": "https://www.google.com/generate_204",
-  "lazy": true,
-  "max-failed-times": 3,
+  "interval": 600, // 优化：增加到10分钟，减少测速频率
+  "timeout": 5000, // 优化：增加超时时间
+  "url": "https://www.gstatic.com/generate_204", // 优化：使用更快的测速URL
+  "lazy": true, // 优化：启用懒加载
+  "max-failed-times": 5, // 优化：增加失败容忍度
   "hidden": false
 };
 
@@ -303,7 +303,7 @@ function main(config) {
       "name": "链式代理",
       "type": "select",
       "proxies": [
-        "最优链式", // 修改为最优链式
+        "最优链式",
         ...chainProxyNames
         // 不包含"节点选择"以避免循环引用
       ],
@@ -313,21 +313,21 @@ function main(config) {
       ...groupBaseOption,
       "name": "全部选优",
       "type": "url-test",
-      "interval": 300, // 更频繁的测试，5分钟一次
-      "tolerance": 50, // 更低的容忍度，更敏感的切换
-      "lazy": false, // 不使用懒加载，立即测试
+      "interval": 600, // 优化：增加到10分钟
+      "tolerance": 100, // 优化：增加容忍度
+      "lazy": true, // 优化：启用懒加载
       "proxies": allProxies, // 使用所有可用节点
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "https://www.gstatic.com/generate_204", // 优化：使用更快的URL
       "hidden": true, // 隐藏此组，不让用户手动选择
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },
     {
       ...groupBaseOption,
-      "name": "最优链式", // 修改为最优链式
+      "name": "最优链式",
       "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 50, // 从20改为50，提高容忍度
-      "lazy": false,
+      "interval": 600, // 保持不变
+      "tolerance": 100, // 保持不变
+      "lazy": true, // 优化：启用懒加载
       "proxies": autoSelectProxies, // 使用确保不为空的代理列表
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
@@ -348,12 +348,12 @@ function main(config) {
       "name": "谷歌服务",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google.png"
     },
@@ -362,12 +362,12 @@ function main(config) {
       "name": "Cloudflare",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
     },
@@ -376,12 +376,12 @@ function main(config) {
       "name": "YouTube",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "台湾手动", 
+        "香港手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
     },
@@ -390,12 +390,12 @@ function main(config) {
       "name": "Netflix",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "台湾手动", 
+        "香港手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png"
     },
@@ -404,12 +404,12 @@ function main(config) {
       "name": "电报消息",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "日本手动", "日本自动", "美国手动", "美国自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "日本手动", "美国手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
     },
@@ -418,12 +418,12 @@ function main(config) {
       "name": "AI",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动"
+        "美国手动", "日本手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动"
       ],
       "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
     },
@@ -432,12 +432,12 @@ function main(config) {
       "name": "TikTok",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "台湾手动", "台湾自动", 
-        "香港手动", "香港自动"
+        "美国手动", "日本手动", 
+        "狮城手动", "台湾手动", 
+        "香港手动"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png"
     },
@@ -447,11 +447,11 @@ function main(config) {
       "type": "select",
       "proxies": [
         "全局直连",
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "香港手动", "香港自动", "台湾手动", "台湾自动"
+        "美国手动", "日本手动", 
+        "香港手动", "台湾手动"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
     },
@@ -460,12 +460,12 @@ function main(config) {
       "name": "苹果服务",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
     },
@@ -474,10 +474,10 @@ function main(config) {
       "name": "哔哩哔哩港澳台",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "台湾手动", "台湾自动", "香港手动", "香港自动", "全局直连"
+        "台湾手动", "香港手动", "全局直连"
       ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
     },
@@ -486,42 +486,33 @@ function main(config) {
       "name": "Spotify",
       "type": "select",
       "proxies": [
-        "全部选优", // 直接使用全部选优，但用户看不到这个组
+        "全部选优", // 直接使用全部选优
         "链式代理", // 使用链式代理组
         "节点选择", 
-        "美国手动", "美国自动", "日本手动", "日本自动", 
-        "狮城手动", "狮城自动", "香港手动", "香港自动", 
-        "台湾手动", "台湾自动", "全局直连"
+        "美国手动", "日本手动", 
+        "狮城手动", "香港手动", 
+        "台湾手动", "全局直连"
       ],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },
-    // 新增国家分组
+    // 国家分组 - 优化：移除url-test类型，改为select类型并引用全部选优
     {
       ...groupBaseOption,
       "name": "美国手动",
       "type": "select",
-      "proxies": ["美国自动", "美国故转"],
+      "proxies": [
+        "全部选优", // 优化：引用主要测速组的结果
+        "美国故转"
+      ],
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
-      "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "美国自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)美国|us|US|美利坚|United States",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
     {
       ...groupBaseOption,
       "name": "美国故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600, // 保持不变
       "include-all": true,
       "filter": "(?i)美国|us|US|美利坚|United States",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -531,28 +522,19 @@ function main(config) {
       ...groupBaseOption,
       "name": "日本手动",
       "type": "select",
-      "proxies": ["日本自动", "日本故转"],
+      "proxies": [
+        "全部选优", // 优化：引用主要测速组的结果
+        "日本故转"
+      ],
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "日本自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
     {
       ...groupBaseOption,
       "name": "日本故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600, // 保持不变
       "include-all": true,
       "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -562,28 +544,19 @@ function main(config) {
       ...groupBaseOption,
       "name": "台湾手动",
       "type": "select",
-      "proxies": ["台湾自动", "台湾故转"],
+      "proxies": [
+        "全部选优", // 优化：引用主要测速组的结果
+        "台湾故转"
+      ],
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "台湾自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
     {
       ...groupBaseOption,
       "name": "台湾故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600, // 保持不变
       "include-all": true,
       "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -593,28 +566,19 @@ function main(config) {
       ...groupBaseOption,
       "name": "香港手动",
       "type": "select",
-      "proxies": ["香港自动", "香港故转"],
+      "proxies": [
+        "全部选优", // 优化：引用主要测速组的结果
+        "香港故转"
+      ],
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "香港自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
     {
       ...groupBaseOption,
       "name": "香港故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600, // 保持不变
       "include-all": true,
       "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -624,28 +588,19 @@ function main(config) {
       ...groupBaseOption,
       "name": "狮城手动",
       "type": "select",
-      "proxies": ["狮城自动", "狮城故转"],
+      "proxies": [
+        "全部选优", // 优化：引用主要测速组的结果
+        "狮城故转"
+      ],
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "狮城自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
     {
       ...groupBaseOption,
       "name": "狮城故转",
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600, // 保持不变
       "include-all": true,
       "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
@@ -653,37 +608,28 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "韩国手动",
+      "name": "韩国手动"，
       "type": "select",
-      "proxies": ["韩国自动", "韩国故转"],
+      "proxies": [
+        "全部选优"， // 优化：引用主要测速组的结果
+        "韩国故转"
+      ]，
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
       ...groupBaseOption,
-      "name": "韩国自动",
-      "type": "url-test",
-      "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "韩国故转",
+      "name": "韩国故转"，
       "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "interval": 600， // 保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
+      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
-      ...groupBaseOption,
+      ...groupBaseOption，
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
@@ -695,7 +641,7 @@ function main(config) {
       "type": "select",
       "proxies": ["DIRECT", "节点选择"],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Direct.png"
-    },
+    }，
     {
       ...groupBaseOption,
       "name": "全局拦截",
@@ -704,10 +650,10 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption,
-      "name": "漏网之鱼",
-      "type": "select",
-      "proxies": ["全部选优", "节点选择", "链式代理", "全局直连"],
+      ...groupBaseOption，
+      "name": "漏网之鱼"，
+      "type": "select"，
+      "proxies": ["全部选优"， "节点选择", "链式代理", "全局直连"]，
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
     },
     // 添加链式代理组（已隐藏）
@@ -720,9 +666,9 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"].forEach(proxy => {
+    config["proxies"]。forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy.udp = true
+      proxy。udp = true
     })
   }
   

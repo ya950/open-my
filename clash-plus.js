@@ -8,7 +8,7 @@ const foreignNameservers = [
   "https://208.67.222.222/dns-query", // OpenDNS
   "https://77.88.8.8/dns-query", //YandexDNS
   "https://1.1.1.1/dns-query", // CloudflareDNS
-  "https://8.8.4.4/dns-query", // GoogleDNS  
+  "https://8.8.4.4/dns-query" // GoogleDNS  
 ];
 // DNS配置
 const dnsConfig = {
@@ -295,8 +295,8 @@ function main(config) {
     "韩国手动", "韩国自动", "韩国故转"
   ];
   
-  // 覆盖原配置中的代理组
-  config["proxy-groups"] = [
+  // 创建代理组数组
+  const proxyGroups = [
     {
       ...groupBaseOption,
       "name": "前置代理",
@@ -675,19 +675,19 @@ function main(config) {
       "name": "韩国自动", // 修改为"韩国自动"
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 100， // 从50改为100，提高容忍度
+      "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
+      "include-all": true，
+      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea"，
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }，
+    },
     {
       ...groupBaseOption，
       "name": "韩国故转", // 修改为"韩国故转"
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true，
+      "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
@@ -698,7 +698,7 @@ function main(config) {
       "type": "select",
       "proxies": ["REJECT"， "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/bug.svg"
-    },
+    }，
     {
       ...groupBaseOption,
       "name": "全局直连",
@@ -712,19 +712,21 @@ function main(config) {
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
-    }，
+    },
     {
       ...groupBaseOption，
-      "name": "漏网之鱼",
-      "type": "select",
-      "proxies": ["节点选择", "链式代理", "最优链式", "延迟选优","全局直连"],
+      "name": "漏网之鱼"，
+      "type": "select"，
+      "proxies": ["节点选择"， "链式代理", "最优链式", "延迟选优"，"全局直连"]，
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
     }
-    // 添加链式代理组（已隐藏）
   ];
 
   // 添加链式代理组到proxy-groups数组
-  config["proxy-groups"]。push(...chainProxyGroups);
+  proxyGroups。push(...chainProxyGroups);
+
+  // 覆盖原配置中的代理组
+  config["proxy-groups"] = proxyGroups;
 
   // 覆盖原配置中的规则
   config["rule-providers"] = ruleProviders;
@@ -740,4 +742,4 @@ function main(config) {
   
   // 返回修改后的配置
   return config;
-    }
+}

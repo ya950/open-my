@@ -267,6 +267,14 @@ function main(config) {
   const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
   const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
   
+  // 按国家/地区分类非SS节点
+  const japanProxies = otherProxies.filter(p => /(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka/.test(p));
+  const usProxies = otherProxies.filter(p => /(?i)美国|us|US|美利坚|United States/.test(p));
+  const taiwanProxies = otherProxies.filter(p => /(?i)台湾|tw|TW|台北|Taipei|台中|Taichung/.test(p));
+  const hkProxies = otherProxies.filter(p => /(?i)香港|hk|HK|Hong Kong|深港|沪港/.test(p));
+  const singaporeProxies = otherProxies.filter(p => /(?i)新加坡|sg|SG|狮城|Singapore/.test(p));
+  const koreaProxies = otherProxies.filter(p => /(?i)韩国|kr|KR|首尔|Seoul|Korea/.test(p));
+  
   // 创建链式代理组 - 每个SS节点都创建一个链式代理组
   const chainProxyGroups = [];
   ssProxies.forEach(ssProxy => {
@@ -502,10 +510,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "日本",
       "type": "select",
-      "proxies": ["日本-延迟选优", "日本-故障转移"],
-      "include-all": true,
-      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["日本-延迟选优", "日本-故障转移", ...japanProxies],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
     {
@@ -515,9 +520,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": japanProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
@@ -526,9 +529,7 @@ function main(config) {
       "name": "日本-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": japanProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png"
     },
@@ -536,10 +537,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "美国",
       "type": "select",
-      "proxies": ["美国-延迟选优", "美国-故障转移"],
-      "include-all": true,
-      "filter": "(?i)美国|us|US|美利坚|United States",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["美国-延迟选优", "美国-故障转移", ...usProxies],
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
     {
@@ -549,9 +547,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)美国|us|US|美利坚|United States",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": usProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
@@ -560,9 +556,7 @@ function main(config) {
       "name": "美国-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)美国|us|US|美利坚|United States",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": usProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://images.icon-icons.com/238/PNG/96/Usa_26407.png"
     },
@@ -570,10 +564,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "台湾",
       "type": "select",
-      "proxies": ["台湾-延迟选优", "台湾-故障转移"],
-      "include-all": true,
-      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["台湾-延迟选优", "台湾-故障转移", ...taiwanProxies],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
     {
@@ -583,9 +574,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": taiwanProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
@@ -594,9 +583,7 @@ function main(config) {
       "name": "台湾-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": taiwanProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png"
     },
@@ -604,10 +591,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "香港",
       "type": "select",
-      "proxies": ["香港-延迟选优", "香港-故障转移"],
-      "include-all": true,
-      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["香港-延迟选优", "香港-故障转移", ...hkProxies],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
     {
@@ -617,9 +601,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": hkProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
@@ -628,9 +610,7 @@ function main(config) {
       "name": "香港-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)香港|hk|HK|Hong Kong|深港|沪港",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": hkProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png"
     },
@@ -638,10 +618,7 @@ function main(config) {
       ...groupBaseOption,
       "name": "新加坡",
       "type": "select",
-      "proxies": ["新加坡-延迟选优", "新加坡-故障转移"],
-      "include-all": true,
-      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["新加坡-延迟选优", "新加坡-故障转移", ...singaporeProxies],
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
     {
@@ -651,9 +628,7 @@ function main(config) {
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
-      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": singaporeProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
@@ -662,9 +637,7 @@ function main(config) {
       "name": "新加坡-故障转移",
       "type": "fallback",
       "interval": 600, // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)新加坡|sg|SG|狮城|Singapore",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": singaporeProxies,
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png"
     },
@@ -672,33 +645,26 @@ function main(config) {
       ...groupBaseOption,
       "name": "韩国",
       "type": "select",
-      "proxies": ["韩国-延迟选优", "韩国-故障转移"],
-      "include-all": true,
-      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "exclude-filter": "(?i)ss://", // 排除SS节点
+      "proxies": ["韩国-延迟选优", "韩国-故障转移", ...koreaProxies],
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
+    },
+    {
+      ...groupBaseOption，
+      "name": "韩国-延迟选优"，
+      "type": "url-test",
+      "interval": 600, // 从300改为600，减少测试频率
+      "tolerance": 100， // 从50改为100，提高容忍度
+      "lazy": false,
+      "proxies": koreaProxies,
+      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     },
     {
       ...groupBaseOption,
-      "name": "韩国-延迟选优",
-      "type": "url-test",
-      "interval": 600， // 从300改为600，减少测试频率
-      "tolerance": 100, // 从50改为100，提高容忍度
-      "lazy": false,
-      "include-all": true,
-      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "exclude-filter": "(?i)ss://"， // 排除SS节点
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    }，
-    {
-      ...groupBaseOption,
-      "name": "韩国-故障转移",
+      "name": "韩国-故障转移"，
       "type": "fallback",
       "interval": 600， // 从600改为600，保持不变
-      "include-all": true,
-      "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "exclude-filter": "(?i)ss://"， // 排除SS节点
+      "proxies": koreaProxies,
       "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
     }，

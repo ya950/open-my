@@ -270,19 +270,22 @@ function main(config) {
   // 创建链式代理组 - 每个SS节点都创建一个链式代理组
   const chainProxyGroups = [];
   ssProxies.forEach(ssProxy => {
-    const chainGroupName = `链式-${ssProxy}`;
+    // 使用L代替"链式-"前缀
+    const chainGroupName = `L${ssProxy}`;
     chainProxyGroups.push({
       ...groupBaseOption,
       "name": chainGroupName,
       "type": "relay", // 使用relay类型实现链式代理
       "proxies": ["前置代理", ssProxy], // 前置代理 -> SS节点
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png",
-      "hidden": true // 隐藏这些单独的链式代理组
+      "hidden": true, // 隐藏这些单独的链式代理组
+      "timeout": 5000, // 增加超时时间，因为链式代理需要更长的连接时间
+      "url": "https://www.gstatic.com/generate_204" // 使用更稳定的测试URL
     });
   });
   
   // 获取所有链式代理组名称
-  const chainProxyNames = ssProxies.map(ssProxy => `链式-${ssProxy}`);
+  const chainProxyNames = ssProxies.map(ssProxy => `L${ssProxy}`);
   
   // 确保链式代理组不为空，如果为空则使用其他节点作为备选
   const autoSelectProxies = chainProxyNames.length > 0 ? chainProxyNames : nonSSProxies.slice(0, 5);
@@ -330,7 +333,8 @@ function main(config) {
       "lazy": false,
       "proxies": autoSelectProxies, // 使用确保不为空的代理列表
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
-      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
+      "timeout": 5000 // 增加超时时间
     },
     {
       ...groupBaseOption,
@@ -361,6 +365,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -374,6 +379,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -387,6 +393,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -400,6 +407,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -413,6 +421,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -426,6 +435,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         // 添加所有国家分组
         ...countryGroups
@@ -438,6 +448,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         // 添加所有国家分组
         ...countryGroups
@@ -451,6 +462,7 @@ function main(config) {
       "proxies": [
         "全局直连",
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         // 添加所有国家分组
         ...countryGroups
@@ -463,6 +475,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -476,6 +489,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         "台湾手动", "台湾自动", "香港手动", "香港自动"
@@ -488,6 +502,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "最优链式", // 添加最优链式
         "延迟选优", // 添加顶层延迟选优
         "全局直连",
         // 添加所有国家分组
@@ -662,28 +677,28 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "韩国自动", // 修改为"韩国自动"
+      "name": "韩国自动"， // 修改为"韩国自动"
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
+      "include-all": true，
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
-      ...groupBaseOption,
+      ...groupBaseOption，
       "name": "韩国故转", // 修改为"韩国故转"
-      "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "type": "fallback"，
+      "interval": 600， // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
+      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
-      ...groupBaseOption,
+      ...groupBaseOption，
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
@@ -704,12 +719,12 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption,
-      "name": "漏网之鱼",
-      "type": "select",
-      "proxies": ["节点选择", "链式代理", "延迟选优","全局直连"],
+      ...groupBaseOption，
+      "name": "漏网之鱼"，
+      "type": "select"，
+      "proxies": ["节点选择"， "链式代理", "最优链式"， "延迟选优","全局直连"]，
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
-    },
+    }，
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups
   ];
@@ -720,12 +735,12 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"].forEach(proxy => {
+    config["proxies"]。forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy.udp = true
+      proxy。udp = true
     })
   }
   
   // 返回修改后的配置
   return config;
-}
+      }

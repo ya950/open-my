@@ -362,6 +362,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -380,6 +381,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -398,6 +400,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -416,6 +419,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -434,6 +438,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
@@ -452,6 +457,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -469,6 +475,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -487,6 +494,7 @@ function main(config) {
       "proxies": [
         "全局直连",
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -502,6 +510,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -520,6 +529,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
@@ -534,6 +544,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
@@ -713,28 +724,28 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "韩国-延迟选优",
+      "name": "韩国-延迟选优"，
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
       "tolerance": 100, // 从50改为100，提高容忍度
       "lazy": false,
-      "include-all": true,
+      "include-all": true，
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
-      ...groupBaseOption,
+      ...groupBaseOption，
       "name": "韩国-故障转移",
-      "type": "fallback",
-      "interval": 600, // 从600改为600，保持不变
+      "type": "fallback"，
+      "interval": 600， // 从600改为600，保持不变
       "include-all": true,
       "filter": "(?i)韩国|kr|KR|首尔|Seoul|Korea",
-      "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
+      "url": "https://www.gstatic.com/generate_204"， // 使用更快的URL
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png"
-    },
+    }，
     {
-      ...groupBaseOption,
+      ...groupBaseOption，
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
@@ -755,12 +766,12 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption,
-      "name": "漏网之鱼",
-      "type": "select",
-      "proxies": ["节点选择", "链式代理", "延迟选优","全局直连"],
+      ...groupBaseOption，
+      "name": "漏网之鱼"，
+      "type": "select"，
+      "proxies": ["节点选择"， "链式代理", "链式选优"， "延迟选优","全局直连"]， // 添加链式选优
       "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png"
-    },
+    }，
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups
   ];
@@ -771,12 +782,12 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"].forEach(proxy => {
+    config["proxies"]。forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy.udp = true
+      proxy。udp = true
     })
   }
   
   // 返回修改后的配置
   return config;
-}
+      }

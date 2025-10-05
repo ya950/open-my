@@ -9,8 +9,8 @@ const foreignNameservers = [
   "https://77.88.8.8/dns-query", //YandexDNS
   "https://1.1.1.1/dns-query", // CloudflareDNS
   "https://8.8.4.4/dns-query", // GoogleDNS  
-
 ];
+
 // DNS配置
 const dnsConfig = {
   "enable": true,
@@ -26,179 +26,271 @@ const dnsConfig = {
     // 本地主机/设备
     "+.lan",
     "+.local",
-    // // Windows网络出现小地球图标
+    // Windows网络出现小地球图标
     "+.msftconnecttest.com",
     "+.msftncsi.com",
     // QQ快速登录检测失败
     "localhost.ptlogin2.qq.com",
     "localhost.sec.qq.com",
-      // 追加以下条目
+    // 追加以下条目
     "+.in-addr.arpa", 
     "+.ip6.arpa",
     "time.*.com",
     "time.*.gov",
     "pool.ntp.org",
     // 微信快速登录检测失败
-    "localhost.work.weixin.qq.com"
+    "localhost.work.weixin.qq.com",
+    // Google服务相关
+    "+.google.com",
+    "+.googleapis.com",
+    "+.googleusercontent.com",
+    "+.ggpht.com",
+    "+.gstatic.com",
+    "+.android.com",
+    "+.googleapis.cn",
+    // Microsoft服务相关
+    "+.microsoft.com",
+    "+.office.com",
+    "+.office.net",
+    "+.live.com",
+    "+.hotmail.com",
+    "+.outlook.com",
+    "+.onedrive.com",
+    "+.sharepoint.com",
+    "+.skype.com",
+    "+.xbox.com",
+    // Apple服务相关
+    "+.apple.com",
+    "+.icloud.com",
+    "+.icloud-content.com",
+    "+.me.com",
+    "+.mzstatic.com"
   ],
   "default-nameserver": ["223.5.5.5","1.2.4.8"],//可修改成自己ISP的DNS
   "nameserver": [...foreignNameservers],
   "proxy-server-nameserver":[...domesticNameservers],
   "direct-nameserver":[...domesticNameservers],
   "nameserver-policy": {
-  "geosite:private,cn": domesticNameservers
+    "geosite:private,cn": domesticNameservers,
+    // Google服务使用国外DNS
+    "geosite:google": foreignNameservers,
+    "domain:google.com": foreignNameservers,
+    "domain:googleapis.com": foreignNameservers,
+    "domain:googleapis.cn": foreignNameservers,
+    "domain:googleusercontent.com": foreignNameservers,
+    "domain:ggpht.com": foreignNameservers,
+    "domain:gstatic.com": foreignNameservers,
+    "domain:android.com": foreignNameservers,
+    "domain:play.google.com": foreignNameservers,
+    "domain:dl.google.com": foreignNameservers,
+    "domain:android.clients.google.com": foreignNameservers,
+    // Microsoft服务使用国外DNS
+    "domain:microsoft.com": foreignNameservers,
+    "domain:office.com": foreignNameservers,
+    "domain:office.net": foreignNameservers,
+    "domain:live.com": foreignNameservers,
+    "domain:hotmail.com": foreignNameservers,
+    "domain:outlook.com": foreignNameservers,
+    "domain:onedrive.com": foreignNameservers,
+    "domain:sharepoint.com": foreignNameservers,
+    "domain:skype.com": foreignNameservers,
+    "domain:xbox.com": foreignNameservers,
+    // Apple服务使用国外DNS
+    "domain:apple.com": foreignNameservers,
+    "domain:icloud.com": foreignNameservers,
+    "domain:icloud-content.com": foreignNameservers,
+    "domain:me.com": foreignNameservers,
+    "domain:mzstatic.com": foreignNameservers
   }
 };
+
 // 规则集通用配置
 const ruleProviderCommon = {
   "type": "http",
   "format": "yaml",
   "interval": 86400
 };
+
 // 规则集配置
 const ruleProviders = {
   "reject": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
     "path": "./ruleset/loyalsoldier/reject.yaml"
   },
   "icloud": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
     "path": "./ruleset/loyalsoldier/icloud.yaml"
   },
   "apple": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
     "path": "./ruleset/loyalsoldier/apple.yaml"
   },
   "google": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
     "path": "./ruleset/loyalsoldier/google.yaml"
   },
   "proxy": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
     "path": "./ruleset/loyalsoldier/proxy.yaml"
   },
   "direct": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
     "path": "./ruleset/loyalsoldier/direct.yaml"
   },
   "private": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
     "path": "./ruleset/loyalsoldier/private.yaml"
   },
   "gfw": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
     "path": "./ruleset/loyalsoldier/gfw.yaml"
   },
   "tld-not-cn": {
     ...ruleProviderCommon,
     "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
     "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
   },
   "telegramcidr": {
     ...ruleProviderCommon,
     "behavior": "ipcidr",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
     "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
   },
   "cncidr": {
     ...ruleProviderCommon,
     "behavior": "ipcidr",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
     "path": "./ruleset/loyalsoldier/cncidr.yaml"
   },
   "lancidr": {
     ...ruleProviderCommon,
     "behavior": "ipcidr",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
     "path": "./ruleset/loyalsoldier/lancidr.yaml"
   },
   "applications": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
+    "url": "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
     "path": "./ruleset/loyalsoldier/applications.yaml"
   },
-  "cloudflare": {
-    ...ruleProviderCommon,
-    "behavior": "domain",
-    "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cloudflare.txt",
-    "path": "./ruleset/loyalsoldier/cloudflare.yaml"
-  },
-  "YouTube": {
+  // 添加Google Play专用规则集
+  "googleplay": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt",
-    "path": "./ruleset/xiaolin-007/YouTube.yaml"
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GooglePlay.list",
+    "path": "./ruleset/acl4ssr/googleplay.yaml"
   },
-  "Netflix": {
+  // 添加Microsoft服务专用规则集
+  "microsoft": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt",
-    "path": "./ruleset/xiaolin-007/Netflix.yaml"
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list",
+    "path": "./ruleset/acl4ssr/microsoft.yaml"
   },
-  "Spotify": {
+  // 添加Netflix专用规则集
+  "netflix": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt",
-    "path": "./ruleset/xiaolin-007/Spotify.yaml"
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Netflix.list",
+    "path": "./ruleset/acl4ssr/netflix.yaml"
   },
-  "BilibiliHMT": {
+  // 添加YouTube专用规则集
+  "youtube": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/BilibiliHMT.txt",
-    "path": "./ruleset/xiaolin-007/BilibiliHMT.yaml"    
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Media/YouTube.list",
+    "path": "./ruleset/acl4ssr/youtube.yaml"
   },
-  "AI": {
+  // 添加Bilibili专用规则集
+  "bilibili": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt",
-    "path": "./ruleset/xiaolin-007/AI.yaml"    
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Bilibili.list",
+    "path": "./ruleset/acl4ssr/bilibili.yaml"
   },
-  "TikTok": {
+  // 添加OpenAI专用规则集
+  "openai": {
     ...ruleProviderCommon,
     "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt",
-    "path": "./ruleset/xiaolin-007/TikTok.yaml"    
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list",
+    "path": "./ruleset/acl4ssr/openai.yaml"
   },
+  // 添加Spotify专用规则集
+  "spotify": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Media/Spotify.list",
+    "path": "./ruleset/acl4ssr/spotify.yaml"
+  },
+  // 添加TikTok专用规则集
+  "tiktok": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Media/TikTok.list",
+    "path": "./ruleset/acl4ssr/tiktok.yaml"
+  }
 };
+
 // 规则
 const rules = [
-  // 自定义规则
+  // 自定义规则 - 优先级最高
   "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
   "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
   "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
   "DOMAIN-SUFFIX,github.io,节点选择", // Github Pages
   "DOMAIN,v2rayse.com,节点选择", // V2rayse节点工具
-  // Loyalsoldier 规则集
+  // 添加微软相关自定义规则
+  "DOMAIN-SUFFIX,microsoft.com,微软服务", // Microsoft主域名
+  "DOMAIN-SUFFIX,office.com,微软服务", // Office 365
+  "DOMAIN-SUFFIX,office.net,微软服务", // Office 365
+  "DOMAIN-SUFFIX,live.com,微软服务", // Microsoft Live
+  "DOMAIN-SUFFIX,hotmail.com,微软服务", // Hotmail
+  "DOMAIN-SUFFIX,outlook.com,微软服务", // Outlook
+  "DOMAIN-SUFFIX,onedrive.com,微软服务", // OneDrive
+  "DOMAIN-SUFFIX,sharepoint.com,微软服务", // SharePoint
+  "DOMAIN-SUFFIX,skype.com,微软服务", // Skype
+  "DOMAIN-SUFFIX,xbox.com,微软服务", // Xbox
+  // 添加苹果相关自定义规则
+  "DOMAIN-SUFFIX,apple.com,苹果服务", // Apple主域名
+  "DOMAIN-SUFFIX,icloud.com,苹果服务", // iCloud
+  "DOMAIN-SUFFIX,icloud-content.com,苹果服务", // iCloud内容
+  "DOMAIN-SUFFIX,me.com,苹果服务", // Apple Me
+  "DOMAIN-SUFFIX,mzstatic.com,苹果服务", // App Store资源
+  
+  // 专用规则集 - 优先级次之
+  "RULE-SET,googleplay,谷歌服务", // Google Play专用规则
+  "RULE-SET,microsoft,微软服务", // Microsoft服务专用规则
+  "RULE-SET,netflix,Netflix", // Netflix专用规则
+  "RULE-SET,youtube,YouTube", // YouTube专用规则
+  "RULE-SET,bilibili,哔哩哔哩港澳台", // Bilibili专用规则
+  "RULE-SET,openai,AI", // OpenAI专用规则
+  "RULE-SET,spotify,Spotify", // Spotify专用规则
+  "RULE-SET,tiktok,TikTok", // TikTok专用规则
+  
+  // Loyalsoldier 规则集 - 优先级较低
   "RULE-SET,applications,全局直连",
   "RULE-SET,private,全局直连",
   "RULE-SET,reject,广告过滤",
-  "RULE-SET,icloud,微软服务",
+  "RULE-SET,icloud,苹果服务", // 修正：icloud规则集指向苹果服务
   "RULE-SET,apple,苹果服务",
-  "RULE-SET,cloudflare,Cloudflare",
-  "RULE-SET,YouTube,YouTube",
-  "RULE-SET,Netflix,Netflix",
-  "RULE-SET,Spotify,Spotify",
-  "RULE-SET,BilibiliHMT,哔哩哔哩港澳台",
-  "RULE-SET,AI,AI",
-  "RULE-SET,TikTok,TikTok",
   "RULE-SET,google,谷歌服务",
   "RULE-SET,proxy,节点选择",
   "RULE-SET,gfw,节点选择",
@@ -207,12 +299,14 @@ const rules = [
   "RULE-SET,lancidr,全局直连,no-resolve",
   "RULE-SET,cncidr,全局直连,no-resolve",
   "RULE-SET,telegramcidr,电报消息,no-resolve",
-  // 其他规则
+  
+  // 其他规则 - 优先级最低
   "GEOSITE,CN,全局直连",
   "GEOIP,LAN,全局直连,no-resolve",
   "GEOIP,CN,全局直连,no-resolve",
   "MATCH,漏网之鱼"
 ];
+
 // 代理组通用配置
 const groupBaseOption = {
   "interval": 300, // 默认5分钟
@@ -257,7 +351,15 @@ function main(config) {
   
   config["experimental"] = {
     "ignore-resolve-fail": true, // 忽略解析失败，减少重试
-    "sniff-tls-sni": true // 启用SNI嗅探，提高连接效率
+    "sniff-tls-sni": true, // 启用SNI嗅探，提高连接效率
+    "tcp-fast-open": true, // 启用TCP快速打开
+    "tcp-multiplexing": { // 启用TCP连接复用
+      "enable": true,
+      "max-connections": 4,
+      "min-connections": 1,
+      "idle-timeout": 60,
+      "enable-conn-reuse": true
+    }
   };
 
   // 获取所有节点名称
@@ -378,7 +480,25 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "Cloudflare",
+      "name": "微软服务",
+      "type": "select",
+      "proxies": [
+        "全局直连",
+        "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
+        ...chainProxyNames, // 添加所有链式代理节点
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移" // 添加故障转移
+      ],
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "苹果服务",
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
@@ -394,7 +514,7 @@ function main(config) {
         "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
         "全局直连"
       ],
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png"
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
     },
     {
       ...groupBaseOption,
@@ -438,7 +558,7 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "电报消息",
+      "name": "Spotify",
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
@@ -446,34 +566,15 @@ function main(config) {
         ...chainProxyNames, // 添加所有链式代理节点
         "节点选择", 
         "延迟选优", // 添加顶层延迟选优
-        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
         "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
         "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
         "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
         "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
         "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
         "全局直连"
       ],
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "AI",
-      "type": "select",
-      "proxies": [
-        "链式代理", // 使用链式代理组
-        "链式选优", // 添加链式选优
-        ...chainProxyNames, // 添加所有链式代理节点
-        "节点选择", 
-        "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
-        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
-        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
-        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
-        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
-        "韩国", "韩国-延迟选优", "韩国-故障转移" // 添加故障转移
-      ],
-      "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },
     {
       ...groupBaseOption,
@@ -496,25 +597,7 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "微软服务",
-      "type": "select",
-      "proxies": [
-        "全局直连",
-        "链式代理", // 使用链式代理组
-        "链式选优", // 添加链式选优
-        ...chainProxyNames, // 添加所有链式代理节点
-        "节点选择", 
-        "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
-        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
-        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
-        "台湾", "台湾-延迟选优", "台湾-故障转移" // 添加故障转移
-      ],
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "苹果服务",
+      "name": "AI",
       "type": "select",
       "proxies": [
         "链式代理", // 使用链式代理组
@@ -527,10 +610,29 @@ function main(config) {
         "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
         "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
         "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
+        "韩国", "韩国-延迟选优", "韩国-故障转移" // 添加故障转移
+      ],
+      "icon": "https://images.icon-icons.com/405/PNG/96/Ai_40670.png"
+    },
+    {
+      ...groupBaseOption,
+      "name": "电报消息",
+      "type": "select",
+      "proxies": [
+        "链式代理", // 使用链式代理组
+        "链式选优", // 添加链式选优
+        ...chainProxyNames, // 添加所有链式代理节点
+        "节点选择", 
+        "延迟选优", // 添加顶层延迟选优
+        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
+        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
+        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
+        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
+        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
         "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
         "全局直连"
       ],
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png"
+      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png"
     },
     {
       ...groupBaseOption,
@@ -547,26 +649,6 @@ function main(config) {
         "全局直连"
       ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/bilibili.svg"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Spotify",
-      "type": "select",
-      "proxies": [
-        "链式代理", // 使用链式代理组
-        "链式选优", // 添加链式选优
-        ...chainProxyNames, // 添加所有链式代理节点
-        "节点选择", 
-        "延迟选优", // 添加顶层延迟选优
-        "美国", "美国-延迟选优", "美国-故障转移", // 添加故障转移
-        "日本", "日本-延迟选优", "日本-故障转移", // 添加故障转移
-        "新加坡", "新加坡-延迟选优", "新加坡-故障转移", // 添加故障转移
-        "香港", "香港-延迟选优", "香港-故障转移", // 添加故障转移
-        "台湾", "台湾-延迟选优", "台湾-故障转移", // 添加故障转移
-        "韩国", "韩国-延迟选优", "韩国-故障转移", // 添加故障转移
-        "全局直连"
-      ],
-      "icon": "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png"
     },
     // 国家分组
     {

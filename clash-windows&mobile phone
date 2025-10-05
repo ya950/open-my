@@ -452,7 +452,7 @@ function main(config) {
         "自动选择",
         ...otherProxies
       ],
-      "icon": "https://img.icons8.com/?size=160&id=eSXhmlFhLvqI&format=png"
+      "icon": "https://img.icons8.com/?size=160&id=0wmdU4RVIEp7&format=png"
     },
     {
       ...groupBaseOption,
@@ -464,7 +464,7 @@ function main(config) {
         "落地优选",
         ...(chainProxyNames.length > 1 ? chainProxyNames.slice(1) : [])
       ],
-      "icon": "https://img.icons8.com/?size=160&id=EvhyZpKOoV4z&format=png"
+      "icon": "https://img.icons8.com/?size=160&id=76XpK7qojvu8&format=png"
     },
     {
       ...groupBaseOption,
@@ -475,7 +475,7 @@ function main(config) {
       "lazy": false,
       "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies, // 确保使用所有链式代理，如果没有链式代理则使用所有节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
-      "icon": "https://img.icons8.com/?size=160&id=xPX4qmtKvtBp&format=png"
+      "icon": "https://img.icons8.com/?size=100&id=cQ0ncpG1E67g&format=png"
     },
     {
   ...groupBaseOption,

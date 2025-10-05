@@ -327,9 +327,9 @@ function main(config) {
       "name": "链式选优", // 改为链式选优
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 30, // 从50改为100，提高容忍度
+      "tolerance": 30, // 从50改为30，提高精度
       "lazy": false,
-      "proxies": autoSelectProxies, // 使用确保不为空的代理列表
+      "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies, // 确保使用所有链式代理，如果没有链式代理则使用所有节点
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },
@@ -350,9 +350,9 @@ function main(config) {
       "name": "延迟选优",
       "type": "url-test",
       "interval": 600, // 从300改为600，减少测试频率
-      "tolerance": 30, // 从50改为100，提高容忍度
+      "tolerance": 30, // 从50改为30，提高精度
       "lazy": false,
-      "proxies": countryLatencyGroups,
+      "proxies": allProxies, // 使用所有节点，而不是仅使用国家延迟选优分组
       "url": "https://www.gstatic.com/generate_204", // 使用更快的URL
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },

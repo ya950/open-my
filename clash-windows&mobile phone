@@ -396,10 +396,12 @@ function main(config) {
   config["global-client-fingerprint"] = "chrome"; // 新增：统一TLS指纹，增强伪装性
 
   // 持久化和地理数据优化 (移动端/低配设备)
-  config["persistence"] = true; // 新增：启用持久化
-  config["store-selected"] = true; // 新增：保存用户选择的节点
-  config["profile-store-selected"] = true;
-  config["store-fake-ip"] = true;
+  // 【新增功能】持久化和缓存，提升用户体验
+  config["persistence"] = true; // 启用持久化（将配置写入本地文件）
+  config["store-selected"] = true; // 保存用户选择的节点
+  config["profile-store-selected"] = true; // 为每个 Profile 保存节点选择状态
+  config["store-fake-ip"] = true; // 保存 Fake-IP 映射
+  
   config["geodata-mode"] = true; // 新增：启用Geodata内存模式
   config["geodata-loader"] = "memconservative"; // 新增：保守内存加载模式
 

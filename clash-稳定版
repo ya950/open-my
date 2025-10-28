@@ -288,18 +288,6 @@ const ruleProviders = {
     "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/OneDrive.list",
     "path": "./ruleset/acl4ssr/OneDriveExtra.yaml"
   },
-  "Adobe": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Adobe/Adobe.list",
-    "path": "./ruleset/blackmatrix7/Adobe.yaml"
-  },
-  "AdobeExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Adobe.list",
-    "path": "./ruleset/acl4ssr/AdobeExtra.yaml"
-  },
   "PayPal": {
     ...ruleProviderCommon,
     "behavior": "classical",
@@ -323,18 +311,6 @@ const ruleProviders = {
     "behavior": "classical",
     "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Amazon.list",
     "path": "./ruleset/acl4ssr/AmazonExtra.yaml"
-  },
-  "Epic": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Epic/Epic.list",
-    "path": "./ruleset/blackmatrix7/Epic.yaml"
-  },
-  "EpicExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Epic.list",
-    "path": "./ruleset/acl4ssr/EpicExtra.yaml"
   },
   "Steam": {
     ...ruleProviderCommon,
@@ -867,22 +843,6 @@ function main(config) {
     },
     {
       ...groupBaseOption,
-      "name": "Adobe",
-      "type": "select",
-      "proxies": [
-        "全局直连",
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "延迟选优",
-        "故障转移",
-        ...countryNodeNames.slice(0, 4)
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Adobe.png"
-    },
-    {
-      ...groupBaseOption,
       "name": "PayPal",
       "type": "select",
       "proxies": [
@@ -912,22 +872,6 @@ function main(config) {
         "全局直连"
       ],
       "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Epic",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "延迟选优",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic.png"
     },
     {
       ...groupBaseOption,

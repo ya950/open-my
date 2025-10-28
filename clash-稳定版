@@ -214,57 +214,34 @@ const COUNTRIES = [
   { 
     name: "美国", 
     filter: "(?i)美国|us|US|美利坚|United States", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/us.svg" 
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/us.svg" 
   },
   { 
     name: "台湾", 
     filter: "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/tw.svg"
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/tw.svg" 
   },
   { 
     name: "新加坡", 
     filter: "(?i)新加坡|sg|SG|狮城|Singapore", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/sg.svg"
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/sg.svg" 
   },
   { 
     name: "日本", 
     filter: "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/jp.svg"
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/jp.svg" 
   },
   { 
     name: "香港", 
     filter: "(?i)香港|hk|HK|Hong Kong|深港|沪港", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/hk.svg"
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/hk.svg" 
   },
   { 
     name: "韩国", 
     filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", 
-    icon: "https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/kr.svg"
+    icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/kr.svg" 
   }
 ];
-
-// 代理组图标配置
-const GROUP_ICONS = {
-  "前置代理": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F511.svg",
-  "落地代理": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F30D.svg",
-  "落地选优": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/26A1.svg",
-  "节点选择": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F3AF.svg",
-  "延迟选优": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F680.svg",
-  "故障转移": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F504.svg",
-  "谷歌服务": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F50D.svg",
-  "YouTube": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/youtube.svg",
-  "Netflix": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/netflix.svg",
-  "电报消息": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/telegram.svg",
-  "AI": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F916.svg",
-  "TikTok": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/tiktok.svg",
-  "微软服务": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/microsoft.svg",
-  "苹果服务": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/apple.svg",
-  "Spotify": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v7.0.0/icons/spotify.svg",
-  "广告过滤": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F6AB.svg",
-  "全局直连": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F310.svg",
-  "全局拦截": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F6D1.svg",
-  "漏网之鱼": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F41F.svg"
-};
 
 // 程序入口
 function main(config) {
@@ -281,10 +258,9 @@ function main(config) {
   // 获取所有节点名称
   const allProxies = config?.proxies?.map(p => p.name) || [];
   
-  // 分离SS、SOCKS/SOCKS5和其他节点
+  // 分离SS节点和其他节点
   const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
-  const socksProxies = config?.proxies?.filter(p => p.type === "socks" || p.type === "socks5")?.map(p => p.name) || [];
-  const otherProxies = config?.proxies?.filter(p => p.type !== "ss" && p.type !== "socks" && p.type !== "socks5")?.map(p => p.name) || [];
+  const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
   
   // 创建链式代理组 - 每个SS节点都创建一个链式代理组
   const chainProxyGroups = [];
@@ -295,27 +271,13 @@ function main(config) {
       "name": chainGroupName,
       "type": "relay", // 使用relay类型实现链式代理
       "proxies": ["前置代理", ssProxy], // 前置代理 -> SS节点
-      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F517.svg",
-      "hidden": true // 隐藏这些单独的链式代理组
-    });
-  });
-  
-  // 创建链式代理组 - 每个SOCKS/SOCKS5节点都创建一个链式代理组
-  socksProxies.forEach(socksProxy => {
-    const chainGroupName = `落地-${socksProxy}`;
-    chainProxyGroups.push({
-      ...groupBaseOption,
-      "name": chainGroupName,
-      "type": "relay", // 使用relay类型实现链式代理
-      "proxies": ["前置代理", socksProxy], // 前置代理 -> SOCKS/SOCKS5节点
-      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F517.svg",
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
       "hidden": true // 隐藏这些单独的链式代理组
     });
   });
   
   // 获取所有链式代理组名称
-  const chainProxyNames = [...ssProxies.map(ssProxy => `落地-${ssProxy}`), 
-                          ...socksProxies.map(socksProxy => `落地-${socksProxy}`)];
+  const chainProxyNames = ssProxies.map(ssProxy => `落地-${ssProxy}`);
   
   // 生成国家/地区分组
   const countryGroups = COUNTRIES.map(country => ({
@@ -343,7 +305,7 @@ function main(config) {
         "延迟选优",
         ...otherProxies
       ],
-      "icon": GROUP_ICONS["前置代理"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F511.svg"
     },
     {
       ...groupBaseOption,
@@ -353,7 +315,7 @@ function main(config) {
         "落地选优",
         ...chainProxyNames
       ],
-      "icon": GROUP_ICONS["落地代理"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F30D.svg"
     },
     {
       ...groupBaseOption,
@@ -362,7 +324,7 @@ function main(config) {
       "interval": 300,
       "tolerance": 50,
       "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies,
-      "icon": GROUP_ICONS["落地选优"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/26A1.svg"
     },
     {
       ...groupBaseOption,
@@ -375,7 +337,7 @@ function main(config) {
         "故障转移",
         ...allProxies
       ],
-      "icon": GROUP_ICONS["节点选择"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F3AF.svg"
     },
     {
       ...groupBaseOption,
@@ -385,7 +347,7 @@ function main(config) {
       "tolerance": 200,
       "include-all": true,
       "filter": "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-      "icon": GROUP_ICONS["延迟选优"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F680.svg"
     },
     {
       ...groupBaseOption,
@@ -393,7 +355,7 @@ function main(config) {
       "type": "fallback",
       "include-all": true,
       "filter": "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-      "icon": GROUP_ICONS["故障转移"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F504.svg"
     },
     {
       ...groupBaseOption,
@@ -409,7 +371,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["谷歌服务"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png"
     },
     {
       ...groupBaseOption,
@@ -425,7 +387,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["YouTube"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
     },
     {
       ...groupBaseOption,
@@ -441,7 +403,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["Netflix"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png"
     },
     {
       ...groupBaseOption,
@@ -457,7 +419,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["电报消息"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png"
     },
     {
       ...groupBaseOption,
@@ -472,7 +434,7 @@ function main(config) {
         "故障转移",
         ...countryNodeNames
       ],
-      "icon": GROUP_ICONS["AI"]
+      "icon": "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F916.svg"
     },
     {
       ...groupBaseOption,
@@ -487,7 +449,7 @@ function main(config) {
         "故障转移",
         ...countryNodeNames
       ],
-      "icon": GROUP_ICONS["TikTok"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png"
     },
     {
       ...groupBaseOption,
@@ -503,7 +465,7 @@ function main(config) {
         "故障转移",
         ...countryNodeNames.slice(0, 4) // 只选择前4个国家节点
       ],
-      "icon": GROUP_ICONS["微软服务"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
     },
     {
       ...groupBaseOption,
@@ -519,7 +481,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["苹果服务"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
     },
     {
       ...groupBaseOption,
@@ -535,7 +497,7 @@ function main(config) {
         ...countryNodeNames,
         "全局直连"
       ],
-      "icon": GROUP_ICONS["Spotify"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png"
     },
     // 国家/地区分组
     ...countryGroups,
@@ -544,21 +506,21 @@ function main(config) {
       "name": "广告过滤",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
-      "icon": GROUP_ICONS["广告过滤"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Advertising.png"
     },
     {
       ...groupBaseOption,
       "name": "全局直连",
       "type": "select",
       "proxies": ["DIRECT", "节点选择", "延迟选优", "故障转移"],
-      "icon": GROUP_ICONS["全局直连"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png"
     },
     {
       ...groupBaseOption,
       "name": "全局拦截",
       "type": "select",
       "proxies": ["REJECT", "DIRECT"],
-      "icon": GROUP_ICONS["全局拦截"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Reject.png"
     },
     {
       ...groupBaseOption,
@@ -572,7 +534,7 @@ function main(config) {
         "故障转移",
         "全局直连"
       ],
-      "icon": GROUP_ICONS["漏网之鱼"]
+      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"
     },
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups

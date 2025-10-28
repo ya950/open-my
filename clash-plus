@@ -214,32 +214,32 @@ const COUNTRIES = [
   { 
     name: "美国", 
     filter: "(?i)美国|us|US|美利坚|United States", 
-    icon: "https://img.icons8.com/?size=96&id=15532&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/america.svg" 
   },
   { 
     name: "台湾", 
     filter: "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", 
-    icon: "https://img.icons8.com/?size=96&id=60245&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/taiwan.svg" 
   },
   { 
     name: "新加坡", 
     filter: "(?i)新加坡|sg|SG|狮城|Singapore", 
-    icon: "https://img.icons8.com/?size=96&id=3wMRNnddLDnK&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/singapore.svg" 
   },
   { 
     name: "日本", 
     filter: "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", 
-    icon: "https://img.icons8.com/?size=96&id=22435&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/japan.svg" 
   },
   { 
     name: "香港", 
     filter: "(?i)香港|hk|HK|Hong Kong|深港|沪港", 
-    icon: "https://img.icons8.com/?size=96&id=77707&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/hongkong.svg" 
   },
   { 
     name: "韩国", 
     filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", 
-    icon: "https://img.icons8.com/?size=96&id=33288&format=png" 
+    icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/korea.svg" 
   }
 ];
 
@@ -305,7 +305,7 @@ function main(config) {
         "延迟选优",
         ...otherProxies
       ],
-      "icon": "https://img.icons8.com/?size=160&id=uk0CWOCXnkeT&format=png"
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/adjust.svg"
     },
     {
       ...groupBaseOption,
@@ -315,7 +315,7 @@ function main(config) {
         "落地选优",
         ...chainProxyNames
       ],
-      "icon": "https://img.icons8.com/?size=160&id=UeBIgU1DL3Fz&format=png"
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/adjust.svg"
     },
     {
       ...groupBaseOption,
@@ -324,7 +324,7 @@ function main(config) {
       "interval": 300,
       "tolerance": 50,
       "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies,
-      "icon": "https://img.icons8.com/?size=160&id=wFHAIeAVRtV8&format=png"
+      "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg"
     },
     {
       ...groupBaseOption,
@@ -489,27 +489,27 @@ function main(config) {
       "type": "select",
       "proxies": [
         "落地代理",
-        "落地选优"，
-        ...chainProxyNames，
-        "节点选择"， 
-        "延迟选优"，
+        "落地选优",
+        ...chainProxyNames,
+        "节点选择", 
+        "延迟选优",
         "故障转移",
-        ...countryNodeNames，
+        ...countryNodeNames,
         "全局直连"
-      ]，
+      ],
       "icon": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/icon/spotify.svg"
-    }，
+    },
     // 国家/地区分组
-    ...countryGroups，
+    ...countryGroups,
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "广告过滤",
       "type": "select",
-      "proxies": ["REJECT"， "DIRECT"],
+      "proxies": ["REJECT", "DIRECT"],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/bug.svg"
-    }，
+    },
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "全局直连",
       "type": "select",
       "proxies": ["DIRECT", "节点选择", "延迟选优", "故障转移"],
@@ -523,19 +523,19 @@ function main(config) {
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/block.svg"
     },
     {
-      ...groupBaseOption，
+      ...groupBaseOption,
       "name": "漏网之鱼",
       "type": "select",
       "proxies": [
-        "节点选择"， 
+        "节点选择", 
         "落地代理", 
         "落地选优", 
         "延迟选优",
-        "故障转移"，
+        "故障转移",
         "全局直连"
-      ]，
+      ],
       "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/fish.svg"
-    }，
+    },
     // 添加链式代理组（已隐藏）
     ...chainProxyGroups
   ];
@@ -546,9 +546,9 @@ function main(config) {
   
   // 添加判断
   if(config["proxies"]) {
-    config["proxies"]。forEach(proxy => {
+    config["proxies"].forEach(proxy => {
       // 为每个节点设置 udp = true
-      proxy。udp = true
+      proxy.udp = true
     })
   }
   

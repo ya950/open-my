@@ -393,32 +393,32 @@ function main(config) {
     // 1. 核心策略模块 (定义一次，处处复用)
     {
       ...groupBaseOption,
-      "name": "⚡ 自动选择",
+      "name": "自动选择",
       "type": "url-test",
       "interval": 300,
       "tolerance": 50,
       "include-all": true,
       "filter": "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-      "icon": "https://cdn.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/Auto.png"
+      "icon": "https://s1.aigei.com/src/img/png/98/98e64229aedc48a0950f360f832f3269.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:x39SiWt0W0r_OCaVGN8l9j0kaJs="
     },
     {
       ...groupBaseOption,
-      "name": "🔄 负载均衡",
+      "name": "负载均衡",
       "type": "load-balance",
       "strategy": "consistent-hashing",
       "interval": 300,
       "include-all": true,
       "filter": "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-      "icon": "https://cdn.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/LoadBalance.png"
+      "icon": "https://s1.aigei.com/src/img/png/dc/dc05262cfe7440088d3a3f5323d8079a.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:t9h-TXk8gOSDGvuaN036WE0PbPw="
     },
     {
       ...groupBaseOption,
-      "name": "🛡️ 故障转移",
+      "name": "故障转移",
       "type": "fallback",
       "interval": 300,
       "include-all": true,
       "filter": "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-      "icon": "https://cdn.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/Fallback.png"
+      "icon": "https://s1.aigei.com/src/img/png/31/31b3bb8f04c74735acb7e51da00a23cc.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:ugSCko1X49-ypn8PIUvQCADFJ5w="
     },
 
     // 2. 保留用户原有的链式代理结构
@@ -428,7 +428,7 @@ function main(config) {
       "type": "select",
       "proxies": [
         ...countryNodeNames,
-        "⚡ 自动选择",
+        "自动选择",
         ...otherProxies
       ],
       "icon": "https://s1.aigei.com/src/img/png/ef/ef79a8fcd6774993b31a6f8a0c411778.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:8ybyPgSllo5x7ySCXEs3I--GEJ0="
@@ -446,7 +446,7 @@ function main(config) {
     {
       ...groupBaseOption,
       "name": "落地选优",
-      "type": "url-test",
+      "type": "fallback",
       "interval": 300,
       "tolerance": 50,
       "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies,
@@ -459,9 +459,9 @@ function main(config) {
       "name": "节点选择",
       "type": "select",
       "proxies": [
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         ...allProxies
       ],
@@ -478,9 +478,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -495,9 +495,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -512,9 +512,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -529,9 +529,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -546,9 +546,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -563,9 +563,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -581,9 +581,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames.slice(0, 4)
       ],
       "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
@@ -598,9 +598,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames
       ],
       "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
@@ -614,9 +614,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -631,9 +631,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -648,9 +648,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -665,9 +665,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -683,9 +683,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames.slice(0, 4)
       ],
       "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png"
@@ -699,9 +699,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -716,9 +716,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -733,9 +733,9 @@ function main(config) {
         "落地选优",
         ...chainProxyNames,
         "节点选择", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         ...countryNodeNames,
         "全局直连"
       ],
@@ -768,9 +768,9 @@ function main(config) {
         "节点选择", 
         "落地代理", 
         "落地选优", 
-        "⚡ 自动选择",
-        "🔄 负载均衡",
-        "🛡️ 故障转移",
+        "自动选择",
+        "负载均衡",
+        "故障转移",
         "全局直连"
       ],
       "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"

@@ -1,13 +1,15 @@
 // ==================== 规则源配置 ====================
 // 集中管理规则集源地址
 const ruleSources = {
-  "ACL4SSR": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite",
+  // 主规则源：Loyalsoldier (维护最活跃，覆盖最全面)
+  "Loyalsoldier": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release",
+  // 辅助规则源：blackmatrix7 (在特定流媒体解锁上可能更优)
   "blackmatrix7": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"
 };
 
 // 集中管理规则集基础路径
 const basePath = {
-  "acl4ssr": "./ruleset/acl4ssr",
+  "loyalsoldier": "./ruleset/loyalsoldier",
   "blackmatrix7": "./ruleset/blackmatrix7"
 };
 
@@ -66,222 +68,233 @@ const dnsConfig = {
   // 直连DNS：直连访问时使用的DNS
   "direct-nameserver": [...domesticNameservers],
   
-  // DNS策略：留空防止DNS泄露
-  "nameserver-policy": {}
+  // DNS策略：根据域名类型选择合适的DNS服务器
+  // 使用geosite:private,cn语法确保国内网站直连
+  "nameserver-policy": {
+    // 私有网络和中国域名使用国内DNS服务器
+    "geosite:private,cn": domesticNameservers
+  }
 };
 
 // ==================== 规则集通用配置 ====================
 const ruleProviderCommon = {
   "type": "http",              // 规则集类型：HTTP
-  "format": "text",            // 规则集格式：文本
+  "format": "text",            // Loyalsoldier 规则集是纯文本格式
   "interval": 86400            // 更新间隔：24小时
 };
 
-// ==================== 规则集生成函数 ====================
-// 创建规则集的函数，避免重复代码
-function createRuleSet(service, source, type = "list") {
-  return {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": `${ruleSources[source]}/${service}/${service}.${type}`,
-    "path": `${basePath[source]}/${service}.yaml`
-  };
-}
-
 // ==================== 规则集配置 ====================
 const ruleProviders = {
-  // 广告拦截规则
-  "reject": createRuleSet("Reject", "ACL4SSR"),
-  
-  // 苹果服务规则 - 合并为一个规则集
-  "apple": createRuleSet("Apple", "ACL4SSR"),
-  
-  // 代理规则
-  "proxy": createRuleSet("Proxy", "ACL4SSR"),
-  
-  // 直连规则
-  "direct": createRuleSet("Direct", "ACL4SSR"),
-  
-  // 私有网络规则
-  "private": createRuleSet("UnBan", "ACL4SSR"),
-  
-  // GFW列表规则
-  "gfw": createRuleSet("ProxyGFWlist", "ACL4SSR"),
-  
-  // 非中国域名规则
-  "tld-not-cn": createRuleSet("ProxyLite", "ACL4SSR"),
-  
-  // Telegram规则 - 优先使用blackmatrix7源
-  "telegram": createRuleSet("Telegram", "blackmatrix7"),
-  
-  // 中国IP规则
-  "cncidr": createRuleSet("ChinaDomain", "ACL4SSR"),
-  
-  // 局域网IP规则
-  "lancidr": createRuleSet("Lan", "ACL4SSR"),
-  
-  // 应用程序规则
-  "applications": createRuleSet("LocalAreaNetwork", "ACL4SSR"),
-  
-  // 流媒体服务规则 - 优先使用blackmatrix7源
-  "youtube": createRuleSet("YouTube", "blackmatrix7"),
-  "netflix": createRuleSet("Netflix", "blackmatrix7"),
-  "spotify": createRuleSet("Spotify", "blackmatrix7"),
-  
-  // AI服务规则 - 优先使用blackmatrix7源
-  "ai": createRuleSet("OpenAI", "blackmatrix7"),
-  
-  // TikTok规则 - 优先使用blackmatrix7源
-  "tiktok": createRuleSet("TikTok", "blackmatrix7"),
-  
-  // Google规则 - 优先使用blackmatrix7源
-  "google": createRuleSet("Google", "blackmatrix7"),
-  
-  // 其他服务规则 - 优先使用blackmatrix7源
-  "microsoft": createRuleSet("Microsoft", "blackmatrix7"),
-  "meta": createRuleSet("Meta", "blackmatrix7"),
-  "twitter": createRuleSet("Twitter", "blackmatrix7"),
-  "discord": createRuleSet("Discord", "blackmatrix7"),
-  "onedrive": createRuleSet("OneDrive", "blackmatrix7"),
-  "paypal": createRuleSet("PayPal", "blackmatrix7"),
-  "amazon": createRuleSet("Amazon", "blackmatrix7"),
-  "steam": createRuleSet("Steam", "blackmatrix7"),
-  
-  // 游戏下载规则
-  "gamedownload": createRuleSet("GameDownload", "ACL4SSR")
+  // --- Loyalsoldier 核心规则集 ---
+  "reject": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/reject.txt`,
+    "path": `${basePath.loyalsoldier}/reject.yaml`
+  },
+  "proxy": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/proxy.txt`,
+    "path": `${basePath.loyalsoldier}/proxy.yaml`
+  },
+  "direct": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/direct.txt`,
+    "path": `${basePath.loyalsoldier}/direct.yaml`
+  },
+  "private": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/private.txt`,
+    "path": `${basePath.loyalsoldier}/private.yaml`
+  },
+  "gfw": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/gfw.txt`,
+    "path": `${basePath.loyalsoldier}/gfw.yaml`
+  },
+  "tld-not-cn": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/tld-not-cn.txt`,
+    "path": `${basePath.loyalsoldier}/tld-not-cn.yaml`
+  },
+  "cncidr": {
+    ...ruleProviderCommon,
+    "behavior": "ipcidr",
+    "url": `${ruleSources.Loyalsoldier}/cncidr.txt`,
+    "path": `${basePath.loyalsoldier}/cncidr.yaml`
+  },
+  "lancidr": {
+    ...ruleProviderCommon,
+    "behavior": "ipcidr",
+    "url": `${ruleSources.Loyalsoldier}/lancidr.txt`,
+    "path": `${basePath.loyalsoldier}/lancidr.yaml`
+  },
+  "applications": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.Loyalsoldier}/applications.txt`,
+    "path": `${basePath.loyalsoldier}/applications.yaml`
+  },
+
+  // --- Loyalsoldier 特定服务规则集 ---
+  "google": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/google.txt`,
+    "path": `${basePath.loyalsoldier}/google.yaml`
+  },
+  "apple": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/apple.txt`,
+    "path": `${basePath.loyalsoldier}/apple.yaml`
+  },
+  "icloud": {
+    ...ruleProviderCommon,
+    "behavior": "domain",
+    "url": `${ruleSources.Loyalsoldier}/icloud.txt`,
+    "path": `${basePath.loyalsoldier}/icloud.yaml`
+  },
+  "telegramcidr": {
+    ...ruleProviderCommon,
+    "behavior": "ipcidr",
+    "url": `${ruleSources.Loyalsoldier}/telegramcidr.txt`,
+    "path": `${basePath.loyalsoldier}/telegramcidr.yaml`
+  },
+
+  // --- blackmatrix7 特定流媒体规则集 (作为补充) ---
+  "youtube": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/YouTube/YouTube.list`,
+    "path": `${basePath.blackmatrix7}/YouTube.yaml`
+  },
+  "netflix": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Netflix/Netflix.list`,
+    "path": `${basePath.blackmatrix7}/Netflix.yaml`
+  },
+  "spotify": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Spotify/Spotify.list`,
+    "path": `${basePath.blackmatrix7}/Spotify.yaml`
+  },
+  "ai": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/OpenAI/OpenAI.list`,
+    "path": `${basePath.blackmatrix7}/OpenAI.yaml`
+  },
+  "tiktok": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/TikTok/TikTok.list`,
+    "path": `${basePath.blackmatrix7}/TikTok.yaml`
+  },
+  "microsoft": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Microsoft/Microsoft.list`,
+    "path": `${basePath.blackmatrix7}/Microsoft.yaml`
+  },
+  "meta": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Meta/Meta.list`,
+    "path": `${basePath.blackmatrix7}/Meta.yaml`
+  },
+  "twitter": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Twitter/Twitter.list`,
+    "path": `${basePath.blackmatrix7}/Twitter.yaml`
+  },
+  "discord": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Discord/Discord.list`,
+    "path": `${basePath.blackmatrix7}/Discord.yaml`
+  },
+  "onedrive": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/OneDrive/OneDrive.list`,
+    "path": `${basePath.blackmatrix7}/OneDrive.yaml`
+  },
+  "paypal": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/PayPal/PayPal.list`,
+    "path": `${basePath.blackmatrix7}/PayPal.yaml`
+  },
+  "amazon": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Amazon/Amazon.list`,
+    "path": `${basePath.blackmatrix7}/Amazon.yaml`
+  },
+  "steam": {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources.blackmatrix7}/Steam/Steam.list`,
+    "path": `${basePath.blackmatrix7}/Steam.yaml`
+  }
 };
 
 // ==================== 分流规则配置 ====================
 const rules = [
-  // 1. 广告拦截规则 (最高优先级)
+  // 1. 本地网络规则 (最高优先级，无需DNS解析)
+  "RULE-SET,applications,全局直连",
+  "RULE-SET,private,全局直连",
+  "RULE-SET,lancidr,全局直连,no-resolve",
+  
+  // 2. 广告拦截规则 (高优先级)
   "RULE-SET,reject,广告过滤",
   
-  // 2. 基础网络连接规则
-  "RULE-SET,applications,节点选择",
-  "RULE-SET,private,节点选择",
-  
-  // 3. 具体服务规则 (精确匹配优先)
+  // 3. 特定服务规则 (精确匹配)
   "RULE-SET,youtube,YouTube",
   "RULE-SET,netflix,Netflix",
   "RULE-SET,spotify,Spotify",
   "RULE-SET,ai,AI",
   "RULE-SET,tiktok,TikTok",
-  "RULE-SET,telegram,电报消息",
+  "RULE-SET,telegramcidr,电报消息",
   "RULE-SET,meta,Meta",
   "RULE-SET,twitter,Twitter",
   "RULE-SET,discord,Discord",
   "RULE-SET,onedrive,OneDrive",
+  "RULE-SET,icloud,苹果服务",
   "RULE-SET,apple,苹果服务",
-  
-  // 4. 大分类规则 (兜底处理)
   "RULE-SET,microsoft,微软服务",
   "RULE-SET,google,谷歌服务",
   
-  // 5. 其他规则
+  // 4. 代理规则 (中等优先级)
   "RULE-SET,proxy,节点选择",
   "RULE-SET,gfw,节点选择",
   "RULE-SET,tld-not-cn,节点选择",
-  "RULE-SET,direct,节点选择",
-  "RULE-SET,lancidr,节点选择,no-resolve",
-  "RULE-SET,cncidr,节点选择,no-resolve",
-
-  // 6. 手动域名规则 (作为规则集的补充和兜底)
-  // YouTube规则
-  "DOMAIN-SUFFIX,youtube.com,YouTube",
-  "DOMAIN-SUFFIX,youtube-nocookie.com,YouTube",
-  "DOMAIN-SUFFIX,ytimg.com,YouTube",
-  "DOMAIN-SUFFIX,youtu.be,YouTube",
-  "DOMAIN-SUFFIX,youtubeeducation.com,YouTube",
-  "DOMAIN-SUFFIX,youtubegaming.com,YouTube",
-  "DOMAIN-SUFFIX,youtubei.googleapis.com,YouTube",
-  "DOMAIN-SUFFIX,yt3.ggpht.com,YouTube",
-  "DOMAIN-SUFFIX,youtube.googleapis.com,YouTube",
-  "DOMAIN-KEYWORD,youtube,YouTube",
-
-  // TikTok规则
-  "DOMAIN-SUFFIX,tiktok.com,TikTok",
-  "DOMAIN-SUFFIX,tiktokcdn.com,TikTok",
-  "DOMAIN-SUFFIX,tiktokv.com,TikTok",
-  "DOMAIN-SUFFIX,byteoversea.com,TikTok",
-  "DOMAIN-SUFFIX,musical.ly,TikTok",
-  "DOMAIN-SUFFIX,tiktokmusic.com,TikTok",
-  "DOMAIN-SUFFIX,tiktokstatic.com,TikTok",
-  "DOMAIN-SUFFIX,tiktokcdn-us.com,TikTok",
-  "DOMAIN-SUFFIX,tiktok-eu.com,TikTok",
-  "DOMAIN-KEYWORD,tiktok,TikTok",
-  "DOMAIN-KEYWORD,byteoversea,TikTok",
-
-  // Telegram规则
-  "DOMAIN-SUFFIX,telegram.org,电报消息",
-  "DOMAIN-SUFFIX,telegram.me,电报消息",
-  "DOMAIN-SUFFIX,t.me,电报消息",
-  "DOMAIN-SUFFIX,tdesktop.com,电报消息",
-  "DOMAIN-SUFFIX,telegra.ph,电报消息",
-  "DOMAIN-SUFFIX,telegram.dog,电报消息",
-  "DOMAIN-KEYWORD,telegram,电报消息",
-  "DOMAIN-KEYWORD,telegra,电报消息",
-  "IP-CIDR,91.108.0.0/16,电报消息,no-resolve",
-  "IP-CIDR,109.239.140.0/24,电报消息,no-resolve",
-  "IP-CIDR,149.154.160.0/20,电报消息,no-resolve",
-
-  // Google规则
-  "DOMAIN-SUFFIX,google.com,谷歌服务",
-  "DOMAIN-SUFFIX,google.cn,谷歌服务",
-  "DOMAIN-SUFFIX,googleapis.com,谷歌服务",
-  "DOMAIN-SUFFIX,googleapis.cn,谷歌服务",
-  "DOMAIN-SUFFIX,googleusercontent.com,谷歌服务",
-  "DOMAIN-SUFFIX,gstatic.com,谷歌服务",
-  "DOMAIN-SUFFIX,googlevideo.com,谷歌服务",
-  "DOMAIN-SUFFIX,ggpht.com,谷歌服务",
-  "DOMAIN-SUFFIX,gmail.com,谷歌服务",
-  "DOMAIN-SUFFIX,google-analytics.com,谷歌服务",
-  "DOMAIN-SUFFIX,googleadservices.com,谷歌服务",
-  "DOMAIN-SUFFIX,googletraveladservices.com,谷歌服务",
-  "DOMAIN-SUFFIX,googletagmanager.com,谷歌服务",
-  "DOMAIN-SUFFIX,googlesyndication.com,谷歌服务",
-  "DOMAIN-SUFFIX,googleoptimize.com,谷歌服务",
-  "DOMAIN-SUFFIX,googlecommerce.com,谷歌服务",
-  "DOMAIN-SUFFIX,googletagservices.com,谷歌服务",
-  "DOMAIN-SUFFIX,googleapps.com,谷歌服务",
-  "DOMAIN-SUFFIX,google.com.hk,谷歌服务",
-  "DOMAIN-SUFFIX,google.co.jp,谷歌服务",
-  "DOMAIN-SUFFIX,google.co.uk,谷歌服务",
-  "DOMAIN-SUFFIX,google.de,谷歌服务",
-  "DOMAIN-SUFFIX,google.fr,谷歌服务",
-  "DOMAIN-SUFFIX,google.ru,谷歌服务",
-  "DOMAIN-SUFFIX,google.es,谷歌服务",
-  "DOMAIN-SUFFIX,google.ca,谷歌服务",
-  "DOMAIN-SUFFIX,google.com.au,谷歌服务",
-  "DOMAIN-SUFFIX,google.com.tw,谷歌服务",
-  "DOMAIN-SUFFIX,google.com.sg,谷歌服务",
-  "DOMAIN-SUFFIX,google.co.in,谷歌服务",
-  "DOMAIN-KEYWORD,google,谷歌服务",
-  "DOMAIN-KEYWORD,gmail,谷歌服务",
-  "DOMAIN-KEYWORD,googleapis,谷歌服务",
-  "DOMAIN-KEYWORD,googlevideo,谷歌服务",
-
-  // 自定义规则
+  
+  // 5. 直连规则 (较低优先级)
+  "RULE-SET,direct,全局直连",
+  "RULE-SET,cncidr,全局直连,no-resolve",
+  
+  // 6. 地理位置规则 (兜底策略)
+  "GEOSITE,CN,全局直连",
+  "GEOIP,LAN,全局直连,no-resolve",
+  "GEOIP,CN,全局直连,no-resolve",
+  
+  // 7. 手动域名规则 (作为规则集的补充)
+  "DOMAIN-SUFFIX,browserleaks.com,节点选择", // 强制DNS泄露检测网站走代理
   "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // 谷歌瑞典域名
   "DOMAIN-SUFFIX,github.io,节点选择",
   "DOMAIN,v2rayse.com,节点选择",
-
-  // 苹果服务规则
-  "DOMAIN-SUFFIX,apple.com,苹果服务",
-  "DOMAIN-SUFFIX,icloud.com,苹果服务",
-  "DOMAIN-SUFFIX,icloud-content.com,苹果服务",
-  "DOMAIN-SUFFIX,me.com,苹果服务",
-  "DOMAIN-SUFFIX,mzstatic.com,苹果服务",
-  "DOMAIN-SUFFIX,cdn-apple.com,苹果服务",
-  "DOMAIN,captive.apple.com,苹果服务",
-  "DOMAIN-SUFFIX,l.apple.com,苹果服务",
-  "DOMAIN-SUFFIX,push.apple.com,苹果服务",
-
-  // 地理位置规则
-  "GEOSITE,CN,节点选择",
-  "GEOIP,LAN,节点选择,no-resolve",
-  "GEOIP,CN,节点选择,no-resolve",
   
-  // 最终规则
+  // 8. 最终规则
   "MATCH,漏网之鱼"
 ];
 
@@ -299,41 +312,129 @@ const groupBaseOption = {
 const COUNTRIES = [
   { 
     name: "美国", 
-    filter: "(?i)美国|us|US|美利坚|United States", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)美国|us|US|美利坚|United States", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/us.svg" 
   },
   { 
     name: "台湾", 
-    filter: "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/tw.svg" 
   },
   { 
     name: "新加坡", 
-    filter: "(?i)新加坡|sg|SG|狮城|Singapore", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)新加坡|sg|SG|狮城|Singapore", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/sg.svg" 
   },
   { 
     name: "日本", 
-    filter: "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/jp.svg" 
   },
   { 
     name: "香港", 
-    filter: "(?i)香港|hk|HK|Hong Kong|深港|沪港", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)香港|hk|HK|Hong Kong|深港|沪港", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/hk.svg" 
   },
   { 
     name: "韩国", 
-    filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", // 改回最原始的简单过滤规则
-    excludeFilter: "", // 排除混合节点 - 留空供手动配置
+    filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", 
+    excludeFilter: "", 
     icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/kr.svg" 
   }
 ];
+
+// ==================== 服务配置 ====================
+// 集中管理所有需要专用代理组的服务
+const SERVICES = [
+  { name: "AI", icon: "https://s1.chu0.com/src/img/png/d6/d6881ad274bc4d268eff3b2d6042b63c.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:DUDz6rnbf2xtCtmWrFZbLu-bQzQ=" },
+  { name: "TikTok", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png" },
+  { name: "YouTube", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png" },
+  { name: "Netflix", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png" },
+  { name: "电报消息", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png" },
+  { name: "谷歌服务", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png" },
+  { name: "Spotify", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png" },
+  { name: "Meta", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png" },
+  { name: "Twitter", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png" },
+  { name: "Discord", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png" },
+  { name: "PayPal", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png" },
+  { name: "Amazon", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png" },
+  { name: "Steam", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png" },
+  { name: "微软服务", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png" },
+  { name: "苹果服务", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png" },
+  { name: "OneDrive", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png" }
+];
+
+// ==================== 服务特殊策略配置 ====================
+// 集中管理需要特殊处理的服务及其原因
+const serviceSpecialStrategies = {
+  // 微软服务特殊策略原因：
+  // 1. 微软在中国大陆有大量服务器和CDN节点，直连通常速度更快
+  // 2. OneDrive等服务在国内有专门的优化节点，直连可以提供更好的上传/下载速度
+  // 3. 某些微软服务可能会检测代理环境并限制功能
+  "microsoft": {
+    "reason": "微软在中国有大量服务器，直连通常更快",
+    "proxies": [
+      "全局直连",
+      "落地代理",
+      "落地选优",
+      "自动选择",
+      "负载均衡",
+      "故障转移",
+      ...COUNTRIES.slice(0, 4).map(c => `${c.name}节点`)
+    ]
+  },
+  
+  // 苹果服务特殊策略原因：
+  // 1. 苹果在中国有专门的CDN服务器，直连访问速度更快
+  // 2. App Store、iCloud等服务在国内有专门优化，直连可以提供更好的体验
+  // 3. 某些苹果服务（如iMessage）可能会因代理环境而出现问题
+  "apple": {
+    "reason": "苹果在中国有专门的CDN服务器，直连访问更快",
+    "proxies": [
+      "全局直连",
+      "落地代理",
+      "落地选优",
+      "自动选择",
+      "负载均衡",
+      "故障转移",
+      ...COUNTRIES.map(c => `${c.name}节点`)
+    ]
+  }
+};
+
+// ==================== 代理组生成函数 ====================
+/**
+ * 创建服务专用代理组
+ * @param {Object} service - 服务配置对象 { name, icon }
+ * @param {Array} defaultProxies - 默认的代理策略数组
+ * @param {Array} allChainProxyNames - 所有链式代理组名称
+ * @param {Array} allCountryNodeNames - 所有国家节点组名称
+ * @returns {Object} 代理组配置对象
+ */
+function createServiceGroup(service, defaultProxies, allChainProxyNames, allCountryNodeNames) {
+  // 检查是否有特殊策略
+  const specialStrategy = serviceSpecialStrategies[service.name.toLowerCase()];
+  
+  // 如果有特殊策略，使用特殊策略；否则使用默认策略
+  const finalProxies = specialStrategy 
+    ? specialStrategy.proxies 
+    : defaultProxies;
+
+  return {
+    ...groupBaseOption,
+    "name": service.name,
+    "type": "select",
+    "proxies": finalProxies,
+    "icon": service.icon,
+    // 添加注释说明特殊策略原因（如果有）
+    ...(specialStrategy && { "remarks": specialStrategy.reason })
+  };
+}
 
 // ==================== 主函数 ====================
 function main(config) {
@@ -372,7 +473,7 @@ function main(config) {
   // 获取所有链式代理组名称
   const chainProxyNames = ssProxies.map(ssProxy => `落地-${ssProxy}`);
   
-  // 生成国家/地区分组 - 使用改进的过滤规则
+  // 生成国家/地区分组
   const countryGroups = COUNTRIES.map(country => ({
     ...groupBaseOption,
     "name": `${country.name}节点`,
@@ -381,16 +482,29 @@ function main(config) {
     "tolerance": 1,    // 连续失败1次（即30秒）就切换
     "include-all": true,
     "filter": country.filter,
-    "exclude-filter": country.excludeFilter, // 现在为空字符串，可以手动配置
+    "exclude-filter": country.excludeFilter,
     "icon": country.icon
   }));
   
   // 获取国家节点名称
   const countryNodeNames = COUNTRIES.map(country => `${country.name}节点`);
 
-  // 【最终保留所有功能版】配置代理组
+  // 定义默认的服务代理策略
+  const defaultServiceProxies = [
+    "落地代理",
+    "落地选优",
+    ...chainProxyNames,
+    "节点选择", 
+    "自动选择",
+    "负载均衡",
+    "故障转移",
+    ...countryNodeNames,
+    "全局直连"
+  ];
+
+  // 【重构后】配置代理组
   config["proxy-groups"] = [
-    // 1. 核心策略模块 (定义一次，处处复用)
+    // 1. 核心策略模块
     {
       ...groupBaseOption,
       "name": "自动选择",
@@ -421,7 +535,7 @@ function main(config) {
       "icon": "https://s1.aigei.com/src/img/png/31/31b3bb8f04c74735acb7e51da00a23cc.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:ugSCko1X49-ypn8PIUvQCADFJ5w="
     },
 
-    // 2. 保留用户原有的链式代理结构
+    // 2. 链式代理结构
     {
       ...groupBaseOption,
       "name": "前置代理",
@@ -453,7 +567,7 @@ function main(config) {
       "icon": "https://s1.aigei.com/prevfiles/16a8d432d62d410bb7515eaab449adff.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:iAOdmSMF2lupg5mJthM-6oScsPA="
     },
 
-    // 3. 节点选择组 (用于规则兜底和手动选择)
+    // 3. 节点选择组
     {
       ...groupBaseOption,
       "name": "节点选择",
@@ -468,279 +582,10 @@ function main(config) {
       "icon": "https://s1.aigei.com/prevfiles/4869110956c5419db516657a10532f96.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:EyRhAoQyB9U3A6_VGdk8YYTqL0s="
     },
 
-    // 4. 服务专用代理组 (恢复所有原有选项)
-    {
-      ...groupBaseOption,
-      "name": "AI",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://s1.chu0.com/src/img/png/d6/d6881ad274bc4d268eff3b2d6042b63c.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:DUDz6rnbf2xtCtmWrFZbLu-bQzQ="
-    },
-    {
-      ...groupBaseOption,
-      "name": "TikTok",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "YouTube",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Netflix",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "电报消息",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "谷歌服务",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "微软服务",
-      "type": "select",
-      "proxies": [
-        "全局直连",
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames.slice(0, 4)
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "苹果服务",
-      "type": "select",
-      "proxies": [
-        "全局直连",
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Spotify",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Meta",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Twitter",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Discord",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "OneDrive",
-      "type": "select",
-      "proxies": [
-        "全局直连",
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames.slice(0, 4)
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "PayPal",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Amazon",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png"
-    },
-    {
-      ...groupBaseOption,
-      "name": "Steam",
-      "type": "select",
-      "proxies": [
-        "落地代理",
-        "落地选优",
-        ...chainProxyNames,
-        "节点选择", 
-        "自动选择",
-        "负载均衡",
-        "故障转移",
-        ...countryNodeNames,
-        "全局直连"
-      ],
-      "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png"
-    },
+    // 4. 服务专用代理组 (自动生成)
+    ...SERVICES.map(service => 
+      createServiceGroup(service, defaultServiceProxies, chainProxyNames, countryNodeNames)
+    ),
 
     // 5. 国家/地区分组
     ...countryGroups,

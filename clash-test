@@ -1,5 +1,5 @@
 // ==================== 规则源配置 ====================
-// 集中管理规则集源地址
+// 集中管理规则集源地址。
 const ruleSources = {
   "ACL4SSR": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite",
   "blackmatrix7": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"

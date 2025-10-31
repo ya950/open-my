@@ -250,49 +250,59 @@ const ruleProviders = {
 
 // ==================== 分流规则配置 ====================
 const rules = [
-  // 1. 本地网络规则 (最高优先级，无需DNS解析)
-  "RULE-SET,applications,全局直连",
-  "RULE-SET,private,全局直连",
-  "RULE-SET,lancidr,全局直连,no-resolve",
-  
-  // 2. 广告拦截规则 (高优先级)
+  // 1. 广告拦截规则 (最高优先级，第一时间拦截广告和恶意内容)
   "RULE-SET,reject,广告过滤",
   
-  // 3. 特定服务规则 (精确匹配)
-  "RULE-SET,youtube,YouTube",
-  "RULE-SET,netflix,Netflix",
-  "RULE-SET,spotify,Spotify",
-  "RULE-SET,ai,AI",
-  "RULE-SET,tiktok,TikTok",
-  "RULE-SET,telegramcidr,电报消息",
-  "RULE-SET,meta,Meta",
-  "RULE-SET,twitter,Twitter",
-  "RULE-SET,discord,Discord",
-  "RULE-SET,onedrive,OneDrive",
-  "RULE-SET,icloud,苹果服务",
-  "RULE-SET,apple,苹果服务",
-  "RULE-SET,microsoft,微软服务",
-  "RULE-SET,google,谷歌服务",
-  
-  // 4. 代理规则 (中等优先级)
-  "RULE-SET,proxy,节点选择",
-  "RULE-SET,gfw,节点选择",
-  "RULE-SET,tld-not-cn,节点选择",
-  
-  // 5. 直连规则 (较低优先级)
-  "RULE-SET,direct,全局直连",
-  "RULE-SET,cncidr,全局直连,no-resolve",
-  
-  // 6. 地理位置规则 (兜底策略)
-  "GEOSITE,CN,全局直连",
-  "GEOIP,LAN,全局直连,no-resolve",
-  "GEOIP,CN,全局直连,no-resolve",
-  
-  // 7. 手动域名规则 (作为规则集的补充)
+  // 2. 手动域名规则 (用户明确指定的特殊规则，优先级高)
   "DOMAIN-SUFFIX,browserleaks.com,节点选择", // 强制DNS泄露检测网站走代理
   "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // 谷歌瑞典域名
   "DOMAIN-SUFFIX,github.io,节点选择",
   "DOMAIN,v2rayse.com,节点选择",
+  
+  // 3. 代理规则 (需要代理的服务，通常无法直连)
+  "RULE-SET,proxy,节点选择",
+  "RULE-SET,gfw,节点选择",
+  "RULE-SET,tld-not-cn,节点选择",
+  
+  // 4. 特定服务规则 (按服务类型分组)
+  // 4.1 流媒体服务
+  "RULE-SET,youtube,YouTube",
+  "RULE-SET,netflix,Netflix",
+  "RULE-SET,spotify,Spotify",
+  "RULE-SET,tiktok,TikTok",
+  
+  // 4.2 AI服务
+  "RULE-SET,ai,AI",
+  
+  // 4.3 社交通讯
+  "RULE-SET,telegramcidr,电报消息,no-resolve",
+  "RULE-SET,meta,Meta",
+  "RULE-SET,twitter,Twitter",
+  "RULE-SET,discord,Discord",
+  
+  // 4.4 大型科技公司服务
+  "RULE-SET,icloud,苹果服务",
+  "RULE-SET,apple,苹果服务",
+  "RULE-SET,google,谷歌服务",
+  "RULE-SET,microsoft,微软服务",
+  "RULE-SET,onedrive,OneDrive",
+  "RULE-SET,paypal,PayPal",
+  "RULE-SET,amazon,Amazon",
+  "RULE-SET,steam,Steam",
+  
+  // 5. 直连规则 (可以直连的服务)
+  "RULE-SET,direct,全局直连",
+  "RULE-SET,cncidr,全局直连,no-resolve",
+  
+  // 6. 本地网络规则 (确保基础连接正常)
+  "RULE-SET,applications,全局直连",
+  "RULE-SET,private,全局直连",
+  "RULE-SET,lancidr,全局直连,no-resolve",
+  
+  // 7. 地理位置规则 (兜底策略)
+  "GEOSITE,CN,全局直连",
+  "GEOIP,LAN,全局直连,no-resolve",
+  "GEOIP,CN,全局直连,no-resolve",
   
   // 8. 最终规则
   "MATCH,漏网之鱼"

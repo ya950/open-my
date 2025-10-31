@@ -578,7 +578,7 @@ function main(config) {
   const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
   const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
   
-  // 创建链式代理组 - 每个SS节点都创建一个链式代理组
+  // 【修复】创建链式代理组 - 总是创建，但根据条件调整内容
   const chainProxyGroups = [];
   const chainProxyNames = [];
   
@@ -618,12 +618,12 @@ function main(config) {
     });
   }
   
-  // 定义默认的服务代理策略
+  // 定义默认的服务代理策略，将"节点选择"放在第一位
   const defaultServiceProxies = [
+    "节点选择",
     "落地代理",
     "落地选优",
     ...chainProxyNames,
-    "节点选择", 
     "自动选择",
     "负载均衡",
     "故障转移",
@@ -631,7 +631,7 @@ function main(config) {
     "全局直连"
   ];
 
-  // 【重构后】配置代理组
+  // 【修复】配置代理组 - 总是创建基本代理组，避免"未找到"错误
   const proxyGroups = [
     // 1. 核心策略模块
     {
@@ -665,41 +665,47 @@ function main(config) {
     }
   ];
 
-  // 2. 链式代理结构（如果启用）
+  // 【修复】2. 链式代理结构（总是创建，但根据条件调整内容）
+  // 只有启用链式代理且有SS节点时才创建前置代理
   if (featureSwitches.chainProxy && ssProxies.length > 0) {
-    proxyGroups.push(
-      {
-        ...groupBaseOption,
-        "name": "前置代理",
-        "type": "select",
-        "proxies": [
-          ...countryNodeNames,
-          "自动选择",
-          ...otherProxies
-        ],
-        "icon": "https://s1.aigei.com/src/img/png/ef/ef79a8fcd6774993b31a6f8a0c411778.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:8ybyPgSllo5x7ySCXEs3I--GEJ0="
-      },
-      {
-        ...groupBaseOption,
-        "name": "落地代理",
-        "type": "select",
-        "proxies": [
-          "落地选优",
-          ...chainProxyNames
-        ],
-        "icon": "https://s1.chu0.com/src/img/png/68/68f56102bc574fa58d0bfa27e9832ac7.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:A6tEl-e0oPV3yubbcDl_JxI56jM="
-      },
-      {
-        ...groupBaseOption,
-        "name": "落地选优",
-        "type": "fallback",
-        "interval": 300,
-        "tolerance": 50,
-        "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies,
-        "icon": "https://s1.aigei.com/prevfiles/16a8d432d62d410bb7515eaab449adff.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:iAOdmSMF2lupg5mJthM-6oScsPA="
-      }
-    );
+    proxyGroups.push({
+      ...groupBaseOption,
+      "name": "前置代理",
+      "type": "select",
+      "proxies": [
+        ...countryNodeNames,
+        "自动选择",
+        ...otherProxies
+      ],
+      "icon": "https://s1.aigei.com/src/img/png/ef/ef79a8fcd6774993b31a6f8a0c411778.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:8ybyPgSllo5x7ySCXEs3I--GEJ0="
+    });
   }
+
+  // 【修复】落地代理（总是创建）
+  proxyGroups.push({
+    ...groupBaseOption,
+    "name": "落地代理",
+    "type": "select",
+    "proxies": featureSwitches.chainProxy && ssProxies.length > 0 ? [
+      "落地选优",
+      ...chainProxyNames
+    ] : [
+      "自动选择",
+      ...allProxies
+    ],
+    "icon": "https://s1.chu0.com/src/img/png/68/68f56102bc574fa58d0bfa27e9832ac7.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:A6tEl-e0oPV3yubbcDl_JxI56jM="
+  });
+
+  // 【修复】落地选优（总是创建）
+  proxyGroups.push({
+    ...groupBaseOption,
+    "name": "落地选优",
+    "type": "fallback",
+    "interval": 300,
+    "tolerance": 50,
+    "proxies": chainProxyNames.length > 0 ? chainProxyNames : allProxies,
+    "icon": "https://s1.aigei.com/prevfiles/16a8d432d62d410bb7515eaab449adff.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:iAOdmSMF2lupg5mJthM-6oScsPA="
+  });
 
   // 3. 节点选择组
   proxyGroups.push({
@@ -756,7 +762,8 @@ function main(config) {
       "type": "select",
       "proxies": [
         "节点选择", 
-        ...(featureSwitches.chainProxy ? ["落地代理", "落地选优"] : []),
+        "落地代理", 
+        "落地选优", 
         "自动选择",
         "负载均衡",
         "故障转移",

@@ -1,3 +1,16 @@
+// ==================== 规则源配置 ====================
+// 集中管理规则集源地址
+const ruleSources = {
+  "ACL4SSR": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite",
+  "blackmatrix7": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"
+};
+
+// 集中管理规则集基础路径
+const basePath = {
+  "acl4ssr": "./ruleset/acl4ssr",
+  "blackmatrix7": "./ruleset/blackmatrix7"
+};
+
 // ==================== DNS 服务器配置 ====================
 // 国内DNS服务器 (用于解析国内域名，提高访问速度)
 const domesticNameservers = [
@@ -64,314 +77,105 @@ const ruleProviderCommon = {
   "interval": 86400            // 更新间隔：24小时
 };
 
+// ==================== 规则集生成函数 ====================
+// 创建规则集的函数，避免重复代码
+function createRuleSet(service, source, type = "list") {
+  return {
+    ...ruleProviderCommon,
+    "behavior": "classical",
+    "url": `${ruleSources[source]}/${service}/${service}.${type}`,
+    "path": `${basePath[source]}/${service}.yaml`
+  };
+}
+
 // ==================== 规则集配置 ====================
 const ruleProviders = {
   // 广告拦截规则
-  "reject": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Reject.list",
-    "path": "./ruleset/acl4ssr/reject.yaml"
-  },
+  "reject": createRuleSet("Reject", "ACL4SSR"),
   
   // 苹果服务规则
-  "icloud": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Apple.list",
-    "path": "./ruleset/acl4ssr/icloud.yaml"
-  },
-  "icloudExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Apple.list",
-    "path": "./ruleset/acl4ssr/icloudExtra.yaml"
-  },
-  "apple": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Apple.list",
-    "path": "./ruleset/acl4ssr/apple.yaml"
-  },
-  "appleExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Apple.list",
-    "path": "./ruleset/acl4ssr/appleExtra.yaml"
-  },
+  "icloud": createRuleSet("Apple", "ACL4SSR"),
+  "icloudExtra": createRuleSet("Apple", "ACL4SSR"),
+  "apple": createRuleSet("Apple", "ACL4SSR"),
+  "appleExtra": createRuleSet("Apple", "ACL4SSR"),
   
   // 代理规则
-  "proxy": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Proxy.list",
-    "path": "./ruleset/acl4ssr/proxy.yaml"
-  },
+  "proxy": createRuleSet("Proxy", "ACL4SSR"),
   
   // 直连规则
-  "direct": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Direct.list",
-    "path": "./ruleset/acl4ssr/direct.yaml"
-  },
+  "direct": createRuleSet("Direct", "ACL4SSR"),
   
   // 私有网络规则
-  "private": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/UnBan.list",
-    "path": "./ruleset/acl4ssr/private.yaml"
-  },
+  "private": createRuleSet("UnBan", "ACL4SSR"),
   
   // GFW列表规则
-  "gfw": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/ProxyGFWlist.list",
-    "path": "./ruleset/acl4ssr/gfw.yaml"
-  },
+  "gfw": createRuleSet("ProxyGFWlist", "ACL4SSR"),
   
   // 非中国域名规则
-  "tld-not-cn": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/ProxyLite.list",
-    "path": "./ruleset/acl4ssr/tld-not-cn.yaml"
-  },
+  "tld-not-cn": createRuleSet("ProxyLite", "ACL4SSR"),
   
   // Telegram规则 (使用blackmatrix7源)
-  "telegramcidr": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Telegram/Telegram.list",
-    "path": "./ruleset/blackmatrix7/telegramcidr.yaml"
-  },
+  "telegramcidr": createRuleSet("Telegram", "blackmatrix7"),
   // Telegram备用规则
-  "telegramcidrExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Telegram.list",
-    "path": "./ruleset/acl4ssr/telegramcidrExtra.yaml"
-  },
+  "telegramcidrExtra": createRuleSet("Telegram", "ACL4SSR"),
   
   // 中国IP规则
-  "cncidr": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/ChinaDomain.list",
-    "path": "./ruleset/acl4ssr/cncidr.yaml"
-  },
+  "cncidr": createRuleSet("ChinaDomain", "ACL4SSR"),
   
   // 局域网IP规则
-  "lancidr": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Lan.list",
-    "path": "./ruleset/acl4ssr/lancidr.yaml"
-  },
+  "lancidr": createRuleSet("Lan", "ACL4SSR"),
   
   // 应用程序规则
-  "applications": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list",
-    "path": "./ruleset/acl4ssr/applications.yaml"
-  },
+  "applications": createRuleSet("LocalAreaNetwork", "ACL4SSR"),
   
   // 流媒体服务规则
-  "YouTube": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/YouTube/YouTube.list",
-    "path": "./ruleset/blackmatrix7/YouTube.yaml"
-  },
-  "YouTubeExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/YouTube.list",
-    "path": "./ruleset/acl4ssr/YouTubeExtra.yaml"
-  },
+  "YouTube": createRuleSet("YouTube", "blackmatrix7"),
+  "YouTubeExtra": createRuleSet("YouTube", "ACL4SSR"),
   
-  "Netflix": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Netflix/Netflix.list",
-    "path": "./ruleset/blackmatrix7/Netflix.yaml"
-  },
-  "NetflixExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Netflix.list",
-    "path": "./ruleset/acl4ssr/NetflixExtra.yaml"
-  },
+  "Netflix": createRuleSet("Netflix", "blackmatrix7"),
+  "NetflixExtra": createRuleSet("Netflix", "ACL4SSR"),
   
-  "Spotify": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Spotify/Spotify.list",
-    "path": "./ruleset/blackmatrix7/Spotify.yaml"
-  },
-  "SpotifyExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Spotify.list",
-    "path": "./ruleset/acl4ssr/SpotifyExtra.yaml"
-  },
+  "Spotify": createRuleSet("Spotify", "blackmatrix7"),
+  "SpotifyExtra": createRuleSet("Spotify", "ACL4SSR"),
   
   // AI服务规则
-  "AI": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.list",
-    "path": "./ruleset/blackmatrix7/AI.yaml"    
-  },
-  "AIExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/OpenAI.list",
-    "path": "./ruleset/acl4ssr/AIExtra.yaml"    
-  },
+  "AI": createRuleSet("OpenAI", "blackmatrix7"),
+  "AIExtra": createRuleSet("OpenAI", "ACL4SSR"),
   
   // TikTok规则
-  "TikTok": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.list",
-    "path": "./ruleset/blackmatrix7/TikTok.yaml"    
-  },
-  "TikTokExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/TikTok.list",
-    "path": "./ruleset/acl4ssr/TikTokExtra.yaml"    
-  },
+  "TikTok": createRuleSet("TikTok", "blackmatrix7"),
+  "TikTokExtra": createRuleSet("TikTok", "ACL4SSR"),
   
   // Google规则
-  "google": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google.list",
-    "path": "./ruleset/blackmatrix7/google.yaml"
-  },
-  "googleExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Google.list",
-    "path": "./ruleset/acl4ssr/googleExtra.yaml"
-  },
+  "google": createRuleSet("Google", "blackmatrix7"),
+  "googleExtra": createRuleSet("Google", "ACL4SSR"),
   
   // 其他服务规则
-  "Microsoft": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.list",
-    "path": "./ruleset/blackmatrix7/Microsoft.yaml"
-  },
-  "MicrosoftExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Microsoft.list",
-    "path": "./ruleset/acl4ssr/MicrosoftExtra.yaml"
-  },
+  "Microsoft": createRuleSet("Microsoft", "blackmatrix7"),
+  "MicrosoftExtra": createRuleSet("Microsoft", "ACL4SSR"),
   
-  "Meta": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Meta/Meta.list",
-    "path": "./ruleset/blackmatrix7/Meta.yaml"
-  },
-  "MetaExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Meta.list",
-    "path": "./ruleset/acl4ssr/MetaExtra.yaml"
-  },
+  "Meta": createRuleSet("Meta", "blackmatrix7"),
+  "MetaExtra": createRuleSet("Meta", "ACL4SSR"),
   
-  "Twitter": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Twitter/Twitter.list",
-    "path": "./ruleset/blackmatrix7/Twitter.yaml"
-  },
-  "TwitterExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Twitter.list",
-    "path": "./ruleset/acl4ssr/TwitterExtra.yaml"
-  },
+  "Twitter": createRuleSet("Twitter", "blackmatrix7"),
+  "TwitterExtra": createRuleSet("Twitter", "ACL4SSR"),
   
-  "Discord": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Discord/Discord.list",
-    "path": "./ruleset/blackmatrix7/Discord.yaml"
-  },
-  "DiscordExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Discord.list",
-    "path": "./ruleset/acl4ssr/DiscordExtra.yaml"
-  },
+  "Discord": createRuleSet("Discord", "blackmatrix7"),
+  "DiscordExtra": createRuleSet("Discord", "ACL4SSR"),
   
-  "OneDrive": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OneDrive/OneDrive.list",
-    "path": "./ruleset/blackmatrix7/OneDrive.yaml"
-  },
-  "OneDriveExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/OneDrive.list",
-    "path": "./ruleset/acl4ssr/OneDriveExtra.yaml"
-  },
+  "OneDrive": createRuleSet("OneDrive", "blackmatrix7"),
+  "OneDriveExtra": createRuleSet("OneDrive", "ACL4SSR"),
   
-  "PayPal": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/PayPal/PayPal.list",
-    "path": "./ruleset/blackmatrix7/PayPal.yaml"
-  },
-  "PayPalExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/PayPal.list",
-    "path": "./ruleset/acl4ssr/PayPalExtra.yaml"
-  },
+  "PayPal": createRuleSet("PayPal", "blackmatrix7"),
+  "PayPalExtra": createRuleSet("PayPal", "ACL4SSR"),
   
-  "Amazon": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Amazon/Amazon.list",
-    "path": "./ruleset/blackmatrix7/Amazon.yaml"
-  },
-  "AmazonExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Amazon.list",
-    "path": "./ruleset/acl4ssr/AmazonExtra.yaml"
-  },
+  "Amazon": createRuleSet("Amazon", "blackmatrix7"),
+  "AmazonExtra": createRuleSet("Amazon", "ACL4SSR"),
   
-  "Steam": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Steam/Steam.list",
-    "path": "./ruleset/blackmatrix7/Steam.yaml"
-  },
-  "SteamExtra": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/Steam.list",
-    "path": "./ruleset/acl4ssr/SteamExtra.yaml"
-  },
+  "Steam": createRuleSet("Steam", "blackmatrix7"),
+  "SteamExtra": createRuleSet("Steam", "ACL4SSR"),
   
-  "GameDownload": {
-    ...ruleProviderCommon,
-    "behavior": "classical",
-    "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite/GameDownload.list",
-    "path": "./ruleset/acl4ssr/GameDownload.yaml"
-  }
+  "GameDownload": createRuleSet("GameDownload", "ACL4SSR")
 };
 
 // ==================== 分流规则配置 ====================

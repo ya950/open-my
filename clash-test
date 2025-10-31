@@ -1,5 +1,5 @@
 // ==================== 规则源配置 ====================
-// 集中管理规则集源地址。
+// 集中管理规则集源地址
 const ruleSources = {
   "ACL4SSR": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite",
   "blackmatrix7": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"
@@ -377,8 +377,8 @@ function main(config) {
     ...groupBaseOption,
     "name": `${country.name}节点`,
     "type": "fallback", // 故障转移类型
-    "interval": 300,
-    "tolerance": 50,
+    "interval": 30,     // 30秒测一次
+    "tolerance": 1,    // 连续失败1次（即30秒）就切换
     "include-all": true,
     "filter": country.filter,
     "exclude-filter": country.excludeFilter, // 现在为空字符串，可以手动配置

@@ -231,28 +231,37 @@ const ConfigGenerator = {
     const enabledServices = Utils.getEnabledServices();
     const rules = [];
 
-   // 【新增】自定义进程规则 - 优先级最高
-    rules.push(
-      "PROCESS-NAME,com.google.android.gm,谷歌服务" // PROCESS-NAME：这是规则类型，告诉 Clash 去匹配操作系统的进程名
-    );
+    // 根据启用的服务添加自定义进程规则
+    if (enabledServices.includes("谷歌服务")) {
+      rules.push("PROCESS-NAME,com.google.android.gm,谷歌服务");
+    }
 
-    // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
+    // 根据启用的服务添加自定义规则
+    if (enabledServices.includes("TikTok")) {
+      rules.push("DOMAIN-SUFFIX,tiktokv.us,TikTok");
+    }
+    
+    if (enabledServices.includes("谷歌服务")) {
+      // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
+      rules.push(
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gmail.com,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,google.android.gm,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
+        "DOMAIN-SUFFIX,com.google.android.gm,谷歌服务", 
+        "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
+        "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.ad,谷歌服务", 
+        "DOMAIN-KEYWORD,google,谷歌服务" // Google关键词匹配
+      );
+    }
+    
+    // 通用规则 - 不依赖特定服务
     rules.push(
-      "DOMAIN-SUFFIX,tiktokv.us,TikTok", // TikTok
-      "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
-      "DOMAIN-SUFFIX,gmail.com,谷歌服务", // Google服务
-      "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
-      "DOMAIN-SUFFIX,google.android.gm,谷歌服务", // Google服务
-      "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
-      "DOMAIN-SUFFIX,com.google.android.gm,谷歌服务", 
-      "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
-      "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
-      "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
-      "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", 
-      "DOMAIN-SUFFIX,gstatic.com,谷歌服务", 
-      "DOMAIN-SUFFIX,google.com,谷歌服务", 
-      "DOMAIN-SUFFIX,google.ad,谷歌服务", 
-      "DOMAIN-KEYWORD,google,谷歌服务", // Google关键词匹配
       "DOMAIN-SUFFIX,github.io,节点选择", // Github Pages
       "DOMAIN,v2rayse.com,节点选择" // V2rayse节点工具
     );
@@ -262,9 +271,13 @@ const ConfigGenerator = {
       "RULE-SET,applications,全局直连",
       "RULE-SET,private,全局直连",
       "RULE-SET,reject,广告过滤",
-      "RULE-SET,icloud,微软服务",
-      "RULE-SET,apple,苹果服务"
+      "RULE-SET,icloud,微软服务"
     );
+    
+    // 只有当苹果服务启用时才添加apple规则集
+    if (enabledServices.includes("苹果服务")) {
+      rules.push("RULE-SET,apple,苹果服务");
+    }
     
     // 根据启用的服务添加规则
     if (enabledServices.includes("YouTube")) {
@@ -283,15 +296,23 @@ const ConfigGenerator = {
       rules.push("RULE-SET,TikTok,TikTok");
     }
     
-    // 其他规则 - 移除Google规则集，因为我们已经在上面处理了
+    // 其他规则
     rules.push(
       "RULE-SET,proxy,节点选择",
       "RULE-SET,gfw,节点选择",
       "RULE-SET,tld-not-cn,节点选择",
       "RULE-SET,direct,全局直连",
       "RULE-SET,lancidr,全局直连,no-resolve",
-      "RULE-SET,cncidr,全局直连,no-resolve",
-      "RULE-SET,telegramcidr,电报消息,no-resolve",
+      "RULE-SET,cncidr,全局直连,no-resolve"
+    );
+    
+    // 只有当电报消息启用时才添加telegramcidr规则
+    if (enabledServices.includes("电报消息")) {
+      rules.push("RULE-SET,telegramcidr,电报消息,no-resolve");
+    }
+    
+    // 其他规则
+    rules.push(
       // 其他规则
       "GEOSITE,CN,全局直连",
       "GEOIP,LAN,全局直连,no-resolve",

@@ -1,0 +1,711 @@
+// ==================== 配置文件 ====================
+const CONFIG = {
+  // 服务开关 - 按类别分组
+  services: {
+    streaming: { YouTube: true, Netflix: false, Spotify: false, TikTok: true },
+    ai: { AI: true },
+    social: { "电报消息": true, Meta: false, Twitter: false, Discord: false },
+    tech: { "谷歌服务": true, "微软服务": true, "苹果服务": false, OneDrive: true },
+    shopping: { PayPal: false, Amazon: false, Steam: false }
+  },
+  
+  // 功能开关
+  features: { adBlock: true, chainProxy: true, specialStrategy: false, countryGroups: true, loadBalance: true },
+  
+  // DNS配置
+  dns: {
+    domestic: ["https://223.5.5.5/dns-query", "https://doh.pub/dns-query"],
+    foreign: ["https://208.67.222.222/dns-query", "https://77.88.8.8/dns-query", "https://1.1.1.1/dns-query", "https://8.8.4.4/dns-query"],
+    config: {
+      enable: true, listen: "0.0.0.0:1053", ipv6: false, "prefer-h3": false,
+      "respect-rules": true, "use-system-hosts": false, "cache-algorithm": "arc",
+      "enhanced-mode": "fake-ip", "fake-ip-range": "198.18.0.1/16",
+      "fake-ip-filter": [
+        // 本地主机/设备
+        "+.lan", "+.local",
+        // Windows网络出现小地球图标
+        "+.msftconnecttest.com", "+.msftncsi.com",
+        // QQ快速登录检测失败
+        "localhost.ptlogin2.qq.com", "localhost.sec.qq.com",
+        // 追加以下条目
+        "+.in-addr.arpa", "+.ip6.arpa", "time.*.com", "time.*.gov", "pool.ntp.org",
+        // 微信快速登录检测失败
+        "localhost.work.weixin.qq.com"
+      ],
+      "default-nameserver": ["223.5.5.5","1.2.4.8"],
+      "nameserver": [], // 将在初始化时填充
+      "proxy-server-nameserver": [], // 将在初始化时填充
+      "direct-nameserver": [], // 将在初始化时填充
+      "nameserver-policy": {
+        "geosite:private,cn": [] // 将在初始化时填充
+      }
+    }
+  },
+  
+  // 国家配置
+  countries: [
+    { name: "美国", filter: "(?i)美国|us|US|美利坚|United States", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/us.svg" },
+    { name: "台湾", filter: "(?i)台湾|tw|TW|台北|Taipei|台中|Taichung", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/tw.svg" },
+    { name: "新加坡", filter: "(?i)新加坡|sg|SG|狮城|Singapore", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/sg.svg" },
+    { name: "日本", filter: "(?i)日本|jp|JP|东京|大阪|Tokyo|Osaka", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/jp.svg" },
+    { name: "香港", filter: "(?i)香港|hk|HK|Hong Kong|深港|沪港", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/hk.svg" },
+    { name: "韩国", filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/kr.svg" }
+  ],
+  
+  // 规则集通用配置
+  ruleProviderCommon: {
+    "type": "http",
+    "format": "yaml",
+    "interval": 86400
+  },
+  
+  // 规则集配置 - 使用您提供的配置
+  ruleProviders: {
+    "reject": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
+      "path": "./ruleset/loyalsoldier/reject.yaml"
+    },
+    "icloud": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
+      "path": "./ruleset/loyalsoldier/icloud.yaml"
+    },
+    "apple": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
+      "path": "./ruleset/loyalsoldier/apple.yaml"
+    },
+    "google": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
+      "path": "./ruleset/loyalsoldier/google.yaml"
+    },
+    "proxy": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
+      "path": "./ruleset/loyalsoldier/proxy.yaml"
+    },
+    "direct": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
+      "path": "./ruleset/loyalsoldier/direct.yaml"
+    },
+    "private": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
+      "path": "./ruleset/loyalsoldier/private.yaml"
+    },
+    "gfw": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
+      "path": "./ruleset/loyalsoldier/gfw.yaml"
+    },
+    "tld-not-cn": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
+      "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
+    },
+    "telegramcidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
+      "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
+    },
+    "cncidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
+      "path": "./ruleset/loyalsoldier/cncidr.yaml"
+    },
+    "lancidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
+      "path": "./ruleset/loyalsoldier/lancidr.yaml"
+    },
+    "applications": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
+      "path": "./ruleset/loyalsoldier/applications.yaml"
+    },
+    "YouTube": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt",
+      "path": "./ruleset/xiaolin-007/YouTube.yaml"
+    },
+    "Netflix": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt",
+      "path": "./ruleset/xiaolin-007/Netflix.yaml"
+    },
+    "Spotify": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt",
+      "path": "./ruleset/xiaolin-007/Spotify.yaml"
+    },
+    "AI": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt",
+      "path": "./ruleset/xiaolin-007/AI.yaml"    
+    },
+    "TikTok": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt",
+      "path": "./ruleset/xiaolin-007/TikTok.yaml"    
+    }
+  },
+  
+  // 代理组基础配置
+  groupBaseOption: {
+    interval: 300, timeout: 3000, url: "https://www.google.com/generate_204",
+    lazy: true, "max-failed-times": 3, hidden: false
+  }
+};
+
+// ==================== 工具函数 ====================
+const Utils = {
+  // 扁平化服务开关
+  flattenServices() {
+    const result = {};
+    Object.values(CONFIG.services).forEach(category => {
+      Object.assign(result, category);
+    });
+    return result;
+  },
+  
+  // 获取启用的服务
+  getEnabledServices() {
+    const flatServices = this.flattenServices();
+    return Object.keys(flatServices).filter(service => flatServices[service]);
+  },
+  
+  // 获取国家节点名称
+  getCountryNodeNames() {
+    return CONFIG.countries.map(c => `${c.name}节点`);
+  },
+  
+  // 生成唯一的链式代理组名
+  generateUniqueChainName(ssProxy, existingNames) {
+    let baseName = `落地-${ssProxy}`;
+    let uniqueName = baseName;
+    let counter = 1;
+    
+    // 确保名称唯一
+    while (existingNames.includes(uniqueName)) {
+      uniqueName = `${baseName}-${counter}`;
+      counter++;
+    }
+    
+    return uniqueName;
+  }
+};
+
+// ==================== 配置生成器 ====================
+const ConfigGenerator = {
+  // 初始化DNS配置
+  initDnsConfig() {
+    const dnsConfig = { ...CONFIG.dns.config };
+    dnsConfig.nameserver = [...CONFIG.dns.foreign];
+    dnsConfig["proxy-server-nameserver"] = [...CONFIG.dns.domestic];
+    dnsConfig["direct-nameserver"] = [...CONFIG.dns.domestic];
+    dnsConfig["nameserver-policy"]["geosite:private,cn"] = [...CONFIG.dns.domestic];
+    return dnsConfig;
+  },
+  
+  // 生成规则集配置
+  generateRuleProviders() {
+    const providers = {};
+    const common = CONFIG.ruleProviderCommon;
+    
+    // 添加通用配置到所有规则集
+    Object.keys(CONFIG.ruleProviders).forEach(key => {
+      providers[key] = {
+        ...common,
+        ...CONFIG.ruleProviders[key]
+      };
+    });
+    
+    return providers;
+  },
+  
+  // 生成规则 - 根据启用的服务动态生成规则
+  generateRules() {
+    const enabledServices = Utils.getEnabledServices();
+    const rules = [];
+
+    // 根据启用的服务添加自定义进程规则
+    if (enabledServices.includes("谷歌服务")) {
+      rules.push("PROCESS-NAME,com.google.android.gm,谷歌服务");
+    }
+
+    // 根据启用的服务添加自定义规则
+    if (enabledServices.includes("TikTok")) {
+      rules.push("DOMAIN-SUFFIX,tiktokv.us,TikTok");
+    }
+    
+    if (enabledServices.includes("谷歌服务")) {
+      // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
+      rules.push(
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gmail.com,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,google.android.gm,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
+        "DOMAIN-SUFFIX,com.google.android.gm,谷歌服务", 
+        "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
+        "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.ad,谷歌服务", 
+        "DOMAIN-KEYWORD,google,谷歌服务" // Google关键词匹配
+      );
+    }
+    
+    // 通用规则 - 不依赖特定服务
+    rules.push(
+      "DOMAIN-SUFFIX,github.io,节点选择", // Github Pages
+      "DOMAIN,v2rayse.com,节点选择" // V2rayse节点工具
+    );
+    
+    // Loyalsoldier 规则集
+    rules.push(
+      "RULE-SET,applications,全局直连",
+      "RULE-SET,private,全局直连",
+      "RULE-SET,reject,广告过滤",
+      "RULE-SET,icloud,微软服务"
+    );
+    
+    // 只有当苹果服务启用时才添加apple规则集
+    if (enabledServices.includes("苹果服务")) {
+      rules.push("RULE-SET,apple,苹果服务");
+    }
+    
+    // 根据启用的服务添加规则
+    if (enabledServices.includes("YouTube")) {
+      rules.push("RULE-SET,YouTube,YouTube");
+    }
+    if (enabledServices.includes("Netflix")) {
+      rules.push("RULE-SET,Netflix,Netflix");
+    }
+    if (enabledServices.includes("Spotify")) {
+      rules.push("RULE-SET,Spotify,Spotify");
+    }
+    if (enabledServices.includes("AI")) {
+      rules.push("RULE-SET,AI,AI");
+    }
+    if (enabledServices.includes("TikTok")) {
+      rules.push("RULE-SET,TikTok,TikTok");
+    }
+    
+    // 其他规则
+    rules.push(
+      "RULE-SET,proxy,节点选择",
+      "RULE-SET,gfw,节点选择",
+      "RULE-SET,tld-not-cn,节点选择",
+      "RULE-SET,direct,全局直连",
+      "RULE-SET,lancidr,全局直连,no-resolve",
+      "RULE-SET,cncidr,全局直连,no-resolve"
+    );
+    
+    // 只有当电报消息启用时才添加telegramcidr规则
+    if (enabledServices.includes("电报消息")) {
+      rules.push("RULE-SET,telegramcidr,电报消息,no-resolve");
+    }
+    
+    // 其他规则
+    rules.push(
+      // 其他规则
+      "GEOSITE,CN,全局直连",
+      "GEOIP,LAN,全局直连,no-resolve",
+      "GEOIP,CN,全局直连,no-resolve",
+      "MATCH,漏网之鱼"
+    );
+    
+    return rules;
+  },
+  
+  // 生成代理组
+  generateProxyGroups(config) {
+    const groups = [];
+    const enabledServices = Utils.getEnabledServices();
+    const countryNodeNames = Utils.getCountryNodeNames();
+    
+    // 获取所有节点名称
+    const allProxies = config?.proxies?.map(p => p.name) || [];
+    
+    // 分离SS节点和其他节点
+    const ssProxies = config?.proxies?.filter(p => p.type === "ss")?.map(p => p.name) || [];
+    const otherProxies = config?.proxies?.filter(p => p.type !== "ss")?.map(p => p.name) || [];
+    
+    // 获取已存在的代理组名称，避免重复
+    const existingGroupNames = [
+      "前置代理", "落地代理", "落地选优", "节点选择", "延迟选优", "故障转移", "负载均衡",
+      "谷歌服务", "YouTube", "Netflix", "电报消息", "AI", "TikTok", "微软服务", "苹果服务", "Spotify",
+      "广告过滤", "全局直连", "全局拦截", "漏网之鱼", ...countryNodeNames
+    ];
+    
+    // 创建链式代理组
+    const chainProxyNames = [];
+    if (CONFIG.features.chainProxy && ssProxies.length > 0) {
+      ssProxies.forEach(ssProxy => {
+        // 生成唯一的链式代理组名
+        const chainGroupName = Utils.generateUniqueChainName(ssProxy, existingGroupNames.concat(chainProxyNames));
+        groups.push({
+          ...CONFIG.groupBaseOption,
+          name: chainGroupName,
+          type: "relay",
+          proxies: ["前置代理", ssProxy],
+          icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+          hidden: true
+        });
+        chainProxyNames.push(chainGroupName);
+      });
+    }
+    
+    // 核心策略模块
+    groups.push(
+      {
+        ...CONFIG.groupBaseOption,
+        name: "前置代理",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,
+          "延迟选优",
+          ...otherProxies
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F511.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "落地代理",
+        type: "select",
+        proxies: [
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F30D.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "落地选优",
+        type: "fallback",
+        interval: 300,
+        tolerance: 50,
+        proxies: chainProxyNames.length > 0 ? chainProxyNames : allProxies,
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/26A1.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "节点选择",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          ...allProxies
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F3AF.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "延迟选优",
+        type: "url-test",
+        interval: 120,
+        tolerance: 200,
+        "include-all": true,
+        filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F680.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "故障转移",
+        type: "fallback",
+        "include-all": true,
+        filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F504.svg"
+      }
+    );
+    
+    // 添加负载均衡组
+    if (CONFIG.features.loadBalance) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "负载均衡",
+        type: "load-balance",
+        strategy: "consistent-hashing", // 或者 "round-robin"
+        url: "https://www.google.com/generate_204",
+        interval: 300,
+        "include-all": true,
+        filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/2696.svg"
+      });
+    }
+    
+    // 服务专用代理组 - 只添加启用的服务
+    if (enabledServices.includes("谷歌服务")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "谷歌服务",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png"
+      });
+    }
+    
+    if (enabledServices.includes("YouTube")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "YouTube",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
+      });
+    }
+    
+    if (enabledServices.includes("Netflix")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "Netflix",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png"
+      });
+    }
+    
+    if (enabledServices.includes("电报消息")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "电报消息",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png"
+      });
+    }
+    
+    if (enabledServices.includes("AI")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "AI",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F916.svg"
+      });
+    }
+    
+    if (enabledServices.includes("TikTok")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "TikTok",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png"
+      });
+    }
+    
+    if (enabledServices.includes("微软服务")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "微软服务",
+        type: "select",
+        proxies: [
+          "全局直连",
+          ...countryNodeNames.slice(0, 4), // 只选择前4个国家节点
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
+      });
+    }
+    
+    if (enabledServices.includes("苹果服务")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "苹果服务",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
+      });
+    }
+    
+    if (enabledServices.includes("Spotify")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "Spotify",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png"
+      });
+    }
+    
+    // 国家/地区分组（如果启用）
+    if (CONFIG.features.countryGroups) {
+      CONFIG.countries.forEach(country => {
+        groups.push({
+          ...CONFIG.groupBaseOption,
+          name: `${country.name}节点`,
+          type: "fallback",
+          interval: 60,
+          tolerance: 1,
+          "include-all": true,
+          filter: country.filter,
+          icon: country.icon
+        });
+      });
+    }
+    
+    // 特殊功能代理组
+    if (CONFIG.features.adBlock) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "广告过滤",
+        type: "select",
+        proxies: ["REJECT", "DIRECT"],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Advertising.png"
+      });
+    }
+    
+    groups.push(
+      {
+        ...CONFIG.groupBaseOption,
+        name: "全局直连",
+        type: "select",
+        proxies: ["DIRECT", "节点选择", "延迟选优", "故障转移"],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "全局拦截",
+        type: "select",
+        proxies: ["REJECT", "DIRECT"],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Reject.png"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "漏网之鱼",
+        type: "select",
+        proxies: [
+          "节点选择", 
+          "落地代理", 
+          "落地选优", 
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"
+      }
+    );
+    
+    return groups;
+  }
+};
+
+// ==================== 主函数 ====================
+function main(config) {
+  // 检查代理是否存在
+  const proxyCount = config?.proxies?.length ?? 0;
+  const proxyProviderCount = typeof config?.["proxy-providers"] === "object" ? Object.keys(config["proxy-providers"]).length : 0;
+  
+  if (proxyCount === 0 && proxyProviderCount === 0) {
+    throw new Error("配置文件中未找到任何代理");
+  }
+  
+  // 生成配置
+  config["dns"] = ConfigGenerator.initDnsConfig();
+  config["rule-providers"] = ConfigGenerator.generateRuleProviders();
+  config["rules"] = ConfigGenerator.generateRules();
+  config["proxy-groups"] = ConfigGenerator.generateProxyGroups(config);
+  
+  // 为每个节点设置 udp = true
+  if(config["proxies"]) {
+    config["proxies"].forEach(proxy => {
+      proxy.udp = true;
+    });
+  }
+  
+  return config;
+}

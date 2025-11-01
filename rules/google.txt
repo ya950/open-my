@@ -7,15 +7,12 @@
 # DIRECT: 直连
 # Proxy: 走代理 (请确保你的配置文件中有一个名为 "Proxy" 的策略组)
 
-
-# ==================== Google 服务 (已优化) ====================
-# 使用几条核心规则即可覆盖所有 Google 服务，无需逐个国家/地区域名添加
-DOMAIN-SUFFIX,google.com,谷歌服务
-DOMAIN-SUFFIX,google.cn,谷歌服务
-DOMAIN-SUFFIX,googleapis.cn,谷歌服务
-DOMAIN-SUFFIX,gstatic.com,谷歌服务
-DOMAIN-KEYWORD,google,谷歌服务
-
-# ==================== 其他服务 ====================
-DOMAIN-SUFFIX,github.io,节点选择
-DOMAIN,v2rayse.com,节点选择
+#  ==================== Google自定义规则 ====================
+DOMAIN-SUFFIX,googleapis.cn
+DOMAIN-SUFFIX,gstatic.com
+DOMAIN-SUFFIX,xn--ngstr-lra8j.com
+DOMAIN-SUFFIX,google.com
+DOMAIN-SUFFIX,google.ad
+DOMAIN-KEYWORD,google
+DOMAIN-SUFFIX,github.io
+DOMAIN,v2rayse.com

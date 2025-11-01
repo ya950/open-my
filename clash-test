@@ -2,10 +2,10 @@
 const CONFIG = {
   // 服务开关 - 按类别分组
   services: {
-    streaming: { YouTube: true, Netflix: true, Spotify: false, TikTok: true },
+    streaming: { YouTube: true, Netflix: false, Spotify: false, TikTok: true },
     ai: { AI: true },
     social: { "电报消息": true, Meta: false, Twitter: false, Discord: false },
-    tech: { "谷歌服务": true, "微软服务": true, "苹果服务": true, OneDrive: true },
+    tech: { "谷歌服务": true, "微软服务": true, "苹果服务": false, OneDrive: true },
     shopping: { PayPal: false, Amazon: false, Steam: false }
   },
   
@@ -230,7 +230,12 @@ const ConfigGenerator = {
   generateRules() {
     const enabledServices = Utils.getEnabledServices();
     const rules = [];
-    
+
+   // 【新增】自定义进程规则 - 优先级最高
+    rules.push(
+      "PROCESS-NAME,com.google.android.gm,谷歌服务" // PROCESS-NAME：这是规则类型，告诉 Clash 去匹配操作系统的进程名
+    );
+
     // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
     rules.push(
       "DOMAIN-SUFFIX,tiktokv.us,TikTok", // TikTok
@@ -361,7 +366,7 @@ const ConfigGenerator = {
       {
         ...CONFIG.groupBaseOption,
         name: "落地选优",
-        type: "url-test",
+        type: "fallback",
         interval: 300,
         tolerance: 50,
         proxies: chainProxyNames.length > 0 ? chainProxyNames : allProxies,
@@ -601,9 +606,9 @@ const ConfigGenerator = {
         groups.push({
           ...CONFIG.groupBaseOption,
           name: `${country.name}节点`,
-          type: "url-test",
-          interval: 300,
-          tolerance: 50,
+          type: "fallback",
+          interval: 60,
+          tolerance: 1,
           "include-all": true,
           filter: country.filter,
           icon: country.icon

@@ -12,8 +12,11 @@ const CONFIG = {
   // 功能开关
   features: { adBlock: true, chainProxy: true, specialStrategy: false, countryGroups: true },
   
-  // 规则源 - 只保留一个主要规则源
-  ruleSource: "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release",
+  // 规则源 - 恢复两个规则源
+  ruleSources: {
+    Loyalsoldier: "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release",
+    blackmatrix7: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"
+  },
   
   // DNS配置
   dns: {
@@ -41,33 +44,33 @@ const CONFIG = {
     { name: "韩国", filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/kr.svg" }
   ],
   
-  // 服务定义
+  // 服务定义 - 恢复source字段
   serviceDefs: [
     // 流媒体
-    { name: "YouTube", key: "youtube", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png", category: "streaming" },
-    { name: "Netflix", key: "netflix", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png", category: "streaming" },
-    { name: "Spotify", key: "spotify", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png", category: "streaming" },
-    { name: "TikTok", key: "tiktok", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png", category: "streaming" },
+    { name: "YouTube", key: "youtube", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png", category: "streaming", source: "blackmatrix7" },
+    { name: "Netflix", key: "netflix", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png", category: "streaming", source: "blackmatrix7" },
+    { name: "Spotify", key: "spotify", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png", category: "streaming", source: "blackmatrix7" },
+    { name: "TikTok", key: "tiktok", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png", category: "streaming", source: "blackmatrix7" },
     
     // AI
-    { name: "AI", key: "openai", icon: "https://s1.chu0.com/src/img/png/d6/d6881ad274bc4d268eff3b2d6042b63c.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:DUDz6rnbf2xtCtmWrFZbLu-bQzQ=", category: "ai" },
+    { name: "AI", key: "ai", icon: "https://s1.chu0.com/src/img/png/d6/d6881ad274bc4d268eff3b2d6042b63c.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:DUDz6rnbf2xtCtmWrFZbLu-bQzQ=", category: "ai", source: "blackmatrix7" },
     
     // 社交通讯
-    { name: "电报消息", key: "telegramcidr", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png", category: "social", noResolve: true },
-    { name: "Meta", key: "meta", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png", category: "social" },
-    { name: "Twitter", key: "twitter", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png", category: "social" },
-    { name: "Discord", key: "discord", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png", category: "social" },
+    { name: "电报消息", key: "telegramcidr", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png", category: "social", source: "Loyalsoldier", noResolve: true },
+    { name: "Meta", key: "meta", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png", category: "social", source: "blackmatrix7" },
+    { name: "Twitter", key: "twitter", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png", category: "social", source: "blackmatrix7" },
+    { name: "Discord", key: "discord", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png", category: "social", source: "blackmatrix7" },
     
     // 科技公司
-    { name: "谷歌服务", key: "google", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png", category: "tech" },
-    { name: "微软服务", key: "microsoft", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png", category: "tech" },
-    { name: "苹果服务", key: "apple", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png", category: "tech" },
-    { name: "OneDrive", key: "onedrive", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png", category: "tech" },
+    { name: "谷歌服务", key: "google", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png", category: "tech", source: "Loyalsoldier" },
+    { name: "微软服务", key: "microsoft", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png", category: "tech", source: "blackmatrix7" },
+    { name: "苹果服务", key: "apple", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png", category: "tech", source: "Loyalsoldier" },
+    { name: "OneDrive", key: "onedrive", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png", category: "tech", source: "blackmatrix7" },
     
     // 购物
-    { name: "PayPal", key: "paypal", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png", category: "shopping" },
-    { name: "Amazon", key: "amazon", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png", category: "shopping" },
-    { name: "Steam", key: "steam", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png", category: "shopping" }
+    { name: "PayPal", key: "paypal", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png", category: "shopping", source: "blackmatrix7" },
+    { name: "Amazon", key: "amazon", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png", category: "shopping", source: "blackmatrix7" },
+    { name: "Steam", key: "steam", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png", category: "shopping", source: "blackmatrix7" }
   ],
   
   // 代理组基础配置
@@ -94,15 +97,20 @@ const Utils = {
     return CONFIG.serviceDefs.filter(service => flatServices[service.name]);
   },
   
-  // 生成规则URL
+  // 生成规则URL - 恢复双源支持
   generateRuleUrl(service) {
-    // 所有规则都使用同一个源
-    return `${CONFIG.ruleSource}/${service.key}.txt`;
+    const source = CONFIG.ruleSources[service.source];
+    if (service.source === "Loyalsoldier") {
+      return `${source}/${service.key}.txt`;
+    } else {
+      return `${source}/${service.name}/${service.name}.list`;
+    }
   },
   
-  // 生成规则路径
+  // 生成规则路径 - 恢复双源支持
   generateRulePath(service) {
-    return `./ruleset/${service.key}.yaml`;
+    const basePath = service.source === "Loyalsoldier" ? "./ruleset/loyalsoldier" : "./ruleset/blackmatrix7";
+    return `${basePath}/${service.key}.yaml`;
   },
   
   // 获取国家节点名称
@@ -141,7 +149,7 @@ const ConfigGenerator = {
     };
   },
   
-  // 生成规则集配置
+  // 生成规则集配置 - 恢复双源支持
   generateRuleProviders() {
     const providers = {};
     const common = { type: "http", format: "text", interval: 86400 };
@@ -152,8 +160,8 @@ const ConfigGenerator = {
       providers[rule] = {
         ...common,
         behavior: rule === "cncidr" || rule === "lancidr" ? "ipcidr" : "domain",
-        url: `${CONFIG.ruleSource}/${rule}.txt`,
-        path: `./ruleset/${rule}.yaml`
+        url: `${CONFIG.ruleSources.Loyalsoldier}/${rule}.txt`,
+        path: `./ruleset/loyalsoldier/${rule}.yaml`
       };
     });
     
@@ -161,8 +169,8 @@ const ConfigGenerator = {
     Utils.getEnabledServices().forEach(service => {
       providers[service.key] = {
         ...common,
-        behavior: service.key === "telegramcidr" ? "ipcidr" : 
-                 (service.key === "google" || service.key === "apple") ? "domain" : "classical",
+        behavior: service.source === "Loyalsoldier" && (service.key === "telegramcidr" || service.key === "google" || service.key === "apple") ? 
+                 (service.key === "telegramcidr" ? "ipcidr" : "domain") : "classical",
         url: Utils.generateRuleUrl(service),
         path: Utils.generateRulePath(service)
       };

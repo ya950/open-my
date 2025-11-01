@@ -1,1 +1,21 @@
+# ==================== 个人自定义规则 ====================
+# 规则说明:
+# DOMAIN-SUFFIX: 域名后缀匹配（匹配所有以 .google.com 这个字符串结尾的域名如：www.google.com、maps.google.com、drive.google.com、news.google.com 等等，不能匹配：google.com）
+# DOMAIN-KEYWORD: 域名关键字匹配（DOMAIN-KEYWORD,google 的意思是：只要域名中包含 google 这个关键字，就匹配成功）
+# GEOIP: IP地理位置匹配
+# REJECT: 拦绝请求 (广告屏蔽)
+# DIRECT: 直连
+# Proxy: 走代理 (请确保你的配置文件中有一个名为 "Proxy" 的策略组)
 
+
+# ==================== Google 服务 (已优化) ====================
+# 使用几条核心规则即可覆盖所有 Google 服务，无需逐个国家/地区域名添加
+DOMAIN-SUFFIX,google.com,谷歌服务
+DOMAIN-SUFFIX,google.cn,谷歌服务
+DOMAIN-SUFFIX,googleapis.cn,谷歌服务
+DOMAIN-SUFFIX,gstatic.com,谷歌服务
+DOMAIN-KEYWORD,google,谷歌服务
+
+# ==================== 其他服务 ====================
+DOMAIN-SUFFIX,github.io,节点选择
+DOMAIN,v2rayse.com,节点选择

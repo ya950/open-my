@@ -10,13 +10,7 @@ const CONFIG = {
   },
   
   // 功能开关
-  features: { adBlock: true, chainProxy: true, specialStrategy: false, countryGroups: true },
-  
-  // 规则源 - 恢复两个规则源
-  ruleSources: {
-    Loyalsoldier: "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release",
-    blackmatrix7: "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash"
-  },
+  features: { adBlock: true, chainProxy: true, specialStrategy: false, countryGroups: true, loadBalance: true },
   
   // DNS配置
   dns: {
@@ -26,11 +20,25 @@ const CONFIG = {
       enable: true, listen: "0.0.0.0:1053", ipv6: false, "prefer-h3": false,
       "respect-rules": true, "use-system-hosts": false, "cache-algorithm": "arc",
       "enhanced-mode": "fake-ip", "fake-ip-range": "198.18.0.1/16",
-      "fake-ip-filter": ["+.lan", "+.local", "+.msftconnecttest.com", "+.msftncsi.com",
-                         "localhost.ptlogin2.qq.com", "localhost.sec.qq.com",
-                         "+.in-addr.arpa", "+.ip6.arpa", "time.*.com", "time.*.gov",
-                         "pool.ntp.org", "localhost.work.weixin.qq.com"],
-      "default-nameserver": ["223.5.5.5", "1.2.4.8"]
+      "fake-ip-filter": [
+        // 本地主机/设备
+        "+.lan", "+.local",
+        // Windows网络出现小地球图标
+        "+.msftconnecttest.com", "+.msftncsi.com",
+        // QQ快速登录检测失败
+        "localhost.ptlogin2.qq.com", "localhost.sec.qq.com",
+        // 追加以下条目
+        "+.in-addr.arpa", "+.ip6.arpa", "time.*.com", "time.*.gov", "pool.ntp.org",
+        // 微信快速登录检测失败
+        "localhost.work.weixin.qq.com"
+      ],
+      "default-nameserver": ["223.5.5.5","1.2.4.8"],
+      "nameserver": [], // 将在初始化时填充
+      "proxy-server-nameserver": [], // 将在初始化时填充
+      "direct-nameserver": [], // 将在初始化时填充
+      "nameserver-policy": {
+        "geosite:private,cn": [] // 将在初始化时填充
+      }
     }
   },
   
@@ -44,34 +52,106 @@ const CONFIG = {
     { name: "韩国", filter: "(?i)韩国|kr|KR|首尔|Seoul|Korea", icon: "https://raw.githubusercontent.com/lipis/flag-icons/main/flags/4x3/kr.svg" }
   ],
   
-  // 服务定义 - 恢复source字段
-  serviceDefs: [
-    // 流媒体
-    { name: "YouTube", key: "youtube", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png", category: "streaming", source: "blackmatrix7" },
-    { name: "Netflix", key: "netflix", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png", category: "streaming", source: "blackmatrix7" },
-    { name: "Spotify", key: "spotify", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png", category: "streaming", source: "blackmatrix7" },
-    { name: "TikTok", key: "tiktok", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png", category: "streaming", source: "blackmatrix7" },
-    
-    // AI
-    { name: "AI", key: "ai", icon: "https://s1.chu0.com/src/img/png/d6/d6881ad274bc4d268eff3b2d6042b63c.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:DUDz6rnbf2xtCtmWrFZbLu-bQzQ=", category: "ai", source: "blackmatrix7" },
-    
-    // 社交通讯
-    { name: "电报消息", key: "telegramcidr", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png", category: "social", source: "Loyalsoldier", noResolve: true },
-    { name: "Meta", key: "meta", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png", category: "social", source: "blackmatrix7" },
-    { name: "Twitter", key: "twitter", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png", category: "social", source: "blackmatrix7" },
-    { name: "Discord", key: "discord", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png", category: "social", source: "blackmatrix7" },
-    
-    // 科技公司
-    { name: "谷歌服务", key: "google", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png", category: "tech", source: "Loyalsoldier" },
-    { name: "微软服务", key: "microsoft", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png", category: "tech", source: "blackmatrix7" },
-    { name: "苹果服务", key: "apple", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png", category: "tech", source: "Loyalsoldier" },
-    { name: "OneDrive", key: "onedrive", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png", category: "tech", source: "blackmatrix7" },
-    
-    // 购物
-    { name: "PayPal", key: "paypal", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/PayPal.png", category: "shopping", source: "blackmatrix7" },
-    { name: "Amazon", key: "amazon", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Amazon.png", category: "shopping", source: "blackmatrix7" },
-    { name: "Steam", key: "steam", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png", category: "shopping", source: "blackmatrix7" }
-  ],
+  // 规则集通用配置
+  ruleProviderCommon: {
+    "type": "http",
+    "format": "yaml",
+    "interval": 86400
+  },
+  
+  // 规则集配置 - 使用您提供的配置
+  ruleProviders: {
+    "reject": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
+      "path": "./ruleset/loyalsoldier/reject.yaml"
+    },
+    "icloud": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
+      "path": "./ruleset/loyalsoldier/icloud.yaml"
+    },
+    "apple": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
+      "path": "./ruleset/loyalsoldier/apple.yaml"
+    },
+    "google": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
+      "path": "./ruleset/loyalsoldier/google.yaml"
+    },
+    "proxy": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
+      "path": "./ruleset/loyalsoldier/proxy.yaml"
+    },
+    "direct": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
+      "path": "./ruleset/loyalsoldier/direct.yaml"
+    },
+    "private": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
+      "path": "./ruleset/loyalsoldier/private.yaml"
+    },
+    "gfw": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
+      "path": "./ruleset/loyalsoldier/gfw.yaml"
+    },
+    "tld-not-cn": {
+      "behavior": "domain",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
+      "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
+    },
+    "telegramcidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
+      "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
+    },
+    "cncidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
+      "path": "./ruleset/loyalsoldier/cncidr.yaml"
+    },
+    "lancidr": {
+      "behavior": "ipcidr",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
+      "path": "./ruleset/loyalsoldier/lancidr.yaml"
+    },
+    "applications": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
+      "path": "./ruleset/loyalsoldier/applications.yaml"
+    },
+    "YouTube": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt",
+      "path": "./ruleset/xiaolin-007/YouTube.yaml"
+    },
+    "Netflix": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt",
+      "path": "./ruleset/xiaolin-007/Netflix.yaml"
+    },
+    "Spotify": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt",
+      "path": "./ruleset/xiaolin-007/Spotify.yaml"
+    },
+    "AI": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt",
+      "path": "./ruleset/xiaolin-007/AI.yaml"    
+    },
+    "TikTok": {
+      "behavior": "classical",
+      "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt",
+      "path": "./ruleset/xiaolin-007/TikTok.yaml"    
+    }
+  },
   
   // 代理组基础配置
   groupBaseOption: {
@@ -94,23 +174,7 @@ const Utils = {
   // 获取启用的服务
   getEnabledServices() {
     const flatServices = this.flattenServices();
-    return CONFIG.serviceDefs.filter(service => flatServices[service.name]);
-  },
-  
-  // 生成规则URL - 恢复双源支持
-  generateRuleUrl(service) {
-    const source = CONFIG.ruleSources[service.source];
-    if (service.source === "Loyalsoldier") {
-      return `${source}/${service.key}.txt`;
-    } else {
-      return `${source}/${service.name}/${service.name}.list`;
-    }
-  },
-  
-  // 生成规则路径 - 恢复双源支持
-  generateRulePath(service) {
-    const basePath = service.source === "Loyalsoldier" ? "./ruleset/loyalsoldier" : "./ruleset/blackmatrix7";
-    return `${basePath}/${service.key}.yaml`;
+    return Object.keys(flatServices).filter(service => flatServices[service]);
   },
   
   // 获取国家节点名称
@@ -136,88 +200,288 @@ const Utils = {
 
 // ==================== 配置生成器 ====================
 const ConfigGenerator = {
-  // 生成DNS配置
-  generateDnsConfig() {
-    return {
-      ...CONFIG.dns.config,
-      nameserver: CONFIG.dns.foreign,
-      "proxy-server-nameserver": CONFIG.dns.domestic,
-      "direct-nameserver": CONFIG.dns.domestic,
-      "nameserver-policy": {
-        "geosite:private,cn": CONFIG.dns.domestic
-      }
-    };
+  // 初始化DNS配置
+  initDnsConfig() {
+    const dnsConfig = { ...CONFIG.dns.config };
+    dnsConfig.nameserver = [...CONFIG.dns.foreign];
+    dnsConfig["proxy-server-nameserver"] = [...CONFIG.dns.domestic];
+    dnsConfig["direct-nameserver"] = [...CONFIG.dns.domestic];
+    dnsConfig["nameserver-policy"]["geosite:private,cn"] = [...CONFIG.dns.domestic];
+    return dnsConfig;
   },
   
-  // 生成规则集配置 - 恢复双源支持
+  // 生成规则集配置
   generateRuleProviders() {
     const providers = {};
-    const common = { type: "http", format: "text", interval: 86400 };
+    const common = CONFIG.ruleProviderCommon;
     
-    // 基础规则集
-    const baseRules = ["reject", "proxy", "direct", "private", "gfw", "tld-not-cn", "cncidr", "lancidr", "applications", "icloud"];
-    baseRules.forEach(rule => {
-      providers[rule] = {
+    // 添加通用配置到所有规则集
+    Object.keys(CONFIG.ruleProviders).forEach(key => {
+      providers[key] = {
         ...common,
-        behavior: rule === "cncidr" || rule === "lancidr" ? "ipcidr" : "domain",
-        url: `${CONFIG.ruleSources.Loyalsoldier}/${rule}.txt`,
-        path: `./ruleset/loyalsoldier/${rule}.yaml`
-      };
-    });
-    
-    // 服务规则集
-    Utils.getEnabledServices().forEach(service => {
-      providers[service.key] = {
-        ...common,
-        behavior: service.source === "Loyalsoldier" && (service.key === "telegramcidr" || service.key === "google" || service.key === "apple") ? 
-                 (service.key === "telegramcidr" ? "ipcidr" : "domain") : "classical",
-        url: Utils.generateRuleUrl(service),
-        path: Utils.generateRulePath(service)
+        ...CONFIG.ruleProviders[key]
       };
     });
     
     return providers;
   },
   
-  // 生成规则
+  // 生成规则 - 根据启用的服务动态生成规则
   generateRules() {
-    const rules = [];
     const enabledServices = Utils.getEnabledServices();
+    const rules = [];
     
-    // 广告拦截规则
-    if (CONFIG.features.adBlock) {
-      rules.push("RULE-SET,reject,广告过滤");
-    }
-    
-    // 手动域名规则
+    // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
     rules.push(
-      "DOMAIN-SUFFIX,browserleaks.com,节点选择",
-      "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务",
-      "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务",
-      "DOMAIN-SUFFIX,github.io,节点选择",
-      "DOMAIN,v2rayse.com,节点选择"
+      "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
+      "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
+      "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
+      "DOMAIN-SUFFIX,google.com,谷歌服务", // Google主域名
+      "DOMAIN-SUFFIX,google.ad,谷歌服务", // Google广告
+      "DOMAIN-SUFFIX,google.ae,谷歌服务", // Google阿联酋
+      "DOMAIN-SUFFIX,google.af,谷歌服务", // Google阿富汗
+      "DOMAIN-SUFFIX,google.ag,谷歌服务", // Google安提瓜和巴布达
+      "DOMAIN-SUFFIX,google.ai,谷歌服务", // Google安圭拉
+      "DOMAIN-SUFFIX,google.al,谷歌服务", // Google阿尔巴尼亚
+      "DOMAIN-SUFFIX,google.am,谷歌服务", // Google亚美尼亚
+      "DOMAIN-SUFFIX,google.as,谷歌服务", // Google美属萨摩亚
+      "DOMAIN-SUFFIX,google.at,谷歌服务", // Google奥地利
+      "DOMAIN-SUFFIX,google.az,谷歌服务", // Google阿塞拜疆
+      "DOMAIN-SUFFIX,google.ba,谷歌服务", // Google波黑
+      "DOMAIN-SUFFIX,google.be,谷歌服务", // Google比利时
+      "DOMAIN-SUFFIX,google.bf,谷歌服务", // Google布基纳法索
+      "DOMAIN-SUFFIX,google.bg,谷歌服务", // Google保加利亚
+      "DOMAIN-SUFFIX,google.bi,谷歌服务", // Google布隆迪
+      "DOMAIN-SUFFIX,google.bj,谷歌服务", // Google贝宁
+      "DOMAIN-SUFFIX,google.bs,谷歌服务", // Google巴哈马
+      "DOMAIN-SUFFIX,google.bt,谷歌服务", // Google不丹
+      "DOMAIN-SUFFIX,google.by,谷歌服务", // Google白俄罗斯
+      "DOMAIN-SUFFIX,google.ca,谷歌服务", // Google加拿大
+      "DOMAIN-SUFFIX,google.cat,谷歌服务", // Google加泰罗尼亚
+      "DOMAIN-SUFFIX,google.cc,谷歌服务", // Google科科斯群岛
+      "DOMAIN-SUFFIX,google.cd,谷歌服务", // Google刚果民主共和国
+      "DOMAIN-SUFFIX,google.cf,谷歌服务", // Google中非共和国
+      "DOMAIN-SUFFIX,google.cg,谷歌服务", // Google刚果共和国
+      "DOMAIN-SUFFIX,google.ch,谷歌服务", // Google瑞士
+      "DOMAIN-SUFFIX,google.ci,谷歌服务", // Google科特迪瓦
+      "DOMAIN-SUFFIX,google.cl,谷歌服务", // Google智利
+      "DOMAIN-SUFFIX,google.cm,谷歌服务", // Google喀麦隆
+      "DOMAIN-SUFFIX,google.cn,谷歌服务", // Google中国
+      "DOMAIN-SUFFIX,google.co.ao,谷歌服务", // Google安哥拉
+      "DOMAIN-SUFFIX,google.co.bw,谷歌服务", // Google博茨瓦纳
+      "DOMAIN-SUFFIX,google.co.ck,谷歌服务", // Google库克群岛
+      "DOMAIN-SUFFIX,google.co.cr,谷歌服务", // Google哥斯达黎加
+      "DOMAIN-SUFFIX,google.co.id,谷歌服务", // Google印度尼西亚
+      "DOMAIN-SUFFIX,google.co.il,谷歌服务", // Google以色列
+      "DOMAIN-SUFFIX,google.co.in,谷歌服务", // Google印度
+      "DOMAIN-SUFFIX,google.co.jp,谷歌服务", // Google日本
+      "DOMAIN-SUFFIX,google.co.ke,谷歌服务", // Google肯尼亚
+      "DOMAIN-SUFFIX,google.co.kr,谷歌服务", // Google韩国
+      "DOMAIN-SUFFIX,google.co.ls,谷歌服务", // Google莱索托
+      "DOMAIN-SUFFIX,google.co.ma,谷歌服务", // Google摩洛哥
+      "DOMAIN-SUFFIX,google.co.mz,谷歌服务", // Google莫桑比克
+      "DOMAIN-SUFFIX,google.co.nz,谷歌服务", // Google新西兰
+      "DOMAIN-SUFFIX,google.co.th,谷歌服务", // Google泰国
+      "DOMAIN-SUFFIX,google.co.tz,谷歌服务", // Google坦桑尼亚
+      "DOMAIN-SUFFIX,google.co.ug,谷歌服务", // Google乌干达
+      "DOMAIN-SUFFIX,google.co.uk,谷歌服务", // Google英国
+      "DOMAIN-SUFFIX,google.co.uz,谷歌服务", // Google乌兹别克斯坦
+      "DOMAIN-SUFFIX,google.co.ve,谷歌服务", // Google委内瑞拉
+      "DOMAIN-SUFFIX,google.co.vi,谷歌服务", // Google美属维尔京群岛
+      "DOMAIN-SUFFIX,google.co.za,谷歌服务", // Google南非
+      "DOMAIN-SUFFIX,google.co.zm,谷歌服务", // Google赞比亚
+      "DOMAIN-SUFFIX,google.co.zw,谷歌服务", // Google津巴布韦
+      "DOMAIN-SUFFIX,google.com.af,谷歌服务", // Google阿富汗
+      "DOMAIN-SUFFIX,google.com.ag,谷歌服务", // Google安提瓜和巴布达
+      "DOMAIN-SUFFIX,google.com.ai,谷歌服务", // Google安圭拉
+      "DOMAIN-SUFFIX,google.com.ar,谷歌服务", // Google阿根廷
+      "DOMAIN-SUFFIX,google.com.au,谷歌服务", // Google澳大利亚
+      "DOMAIN-SUFFIX,google.com.bd,谷歌服务", // Google孟加拉国
+      "DOMAIN-SUFFIX,google.com.bh,谷歌服务", // Google巴林
+      "DOMAIN-SUFFIX,google.com.bn,谷歌服务", // Google文莱
+      "DOMAIN-SUFFIX,google.com.bo,谷歌服务", // Google玻利维亚
+      "DOMAIN-SUFFIX,google.com.br,谷歌服务", // Google巴西
+      "DOMAIN-SUFFIX,google.com.bz,谷歌服务", // Google伯利兹
+      "DOMAIN-SUFFIX,google.com.co,谷歌服务", // Google哥伦比亚
+      "DOMAIN-SUFFIX,google.com.cu,谷歌服务", // Google古巴
+      "DOMAIN-SUFFIX,google.com.cy,谷歌服务", // Google塞浦路斯
+      "DOMAIN-SUFFIX,google.com.do,谷歌服务", // Google多米尼加共和国
+      "DOMAIN-SUFFIX,google.com.ec,谷歌服务", // Google厄瓜多尔
+      "DOMAIN-SUFFIX,google.com.eg,谷歌服务", // Google埃及
+      "DOMAIN-SUFFIX,google.com.et,谷歌服务", // Google埃塞俄比亚
+      "DOMAIN-SUFFIX,google.com.fj,谷歌服务", // Google斐济
+      "DOMAIN-SUFFIX,google.com.gh,谷歌服务", // Google加纳
+      "DOMAIN-SUFFIX,google.com.gi,谷歌服务", // Google直布罗陀
+      "DOMAIN-SUFFIX,google.com.gt,谷歌服务", // Google危地马拉
+      "DOMAIN-SUFFIX,google.com.hk,谷歌服务", // Google香港
+      "DOMAIN-SUFFIX,google.com.jm,谷歌服务", // Google牙买加
+      "DOMAIN-SUFFIX,google.com.kh,谷歌服务", // Google柬埔寨
+      "DOMAIN-SUFFIX,google.com.kw,谷歌服务", // Google科威特
+      "DOMAIN-SUFFIX,google.com.lb,谷歌服务", // Google黎巴嫩
+      "DOMAIN-SUFFIX,google.com.ly,谷歌服务", // Google利比亚
+      "DOMAIN-SUFFIX,google.com.mm,谷歌服务", // Google缅甸
+      "DOMAIN-SUFFIX,google.com.mt,谷歌服务", // Google马耳他
+      "DOMAIN-SUFFIX,google.com.mx,谷歌服务", // Google墨西哥
+      "DOMAIN-SUFFIX,google.com.my,谷歌服务", // Google马来西亚
+      "DOMAIN-SUFFIX,google.com.na,谷歌服务", // Google纳米比亚
+      "DOMAIN-SUFFIX,google.com.ng,谷歌服务", // Google尼日利亚
+      "DOMAIN-SUFFIX,google.com.ni,谷歌服务", // Google尼加拉瓜
+      "DOMAIN-SUFFIX,google.com.np,谷歌服务", // Google尼泊尔
+      "DOMAIN-SUFFIX,google.com.om,谷歌服务", // Google阿曼
+      "DOMAIN-SUFFIX,google.com.pa,谷歌服务", // Google巴拿马
+      "DOMAIN-SUFFIX,google.com.pe,谷歌服务", // Google秘鲁
+      "DOMAIN-SUFFIX,google.com.ph,谷歌服务", // Google菲律宾
+      "DOMAIN-SUFFIX,google.com.pk,谷歌服务", // Google巴基斯坦
+      "DOMAIN-SUFFIX,google.com.pr,谷歌服务", // Google波多黎各
+      "DOMAIN-SUFFIX,google.com.py,谷歌服务", // Google巴拉圭
+      "DOMAIN-SUFFIX,google.com.qa,谷歌服务", // Google卡塔尔
+      "DOMAIN-SUFFIX,google.com.sa,谷歌服务", // Google沙特阿拉伯
+      "DOMAIN-SUFFIX,google.com.sb,谷歌服务", // Google所罗门群岛
+      "DOMAIN-SUFFIX,google.com.sg,谷歌服务", // Google新加坡
+      "DOMAIN-SUFFIX,google.com.sl,谷歌服务", // Google塞拉利昂
+      "DOMAIN-SUFFIX,google.com.sv,谷歌服务", // Google萨尔瓦多
+      "DOMAIN-SUFFIX,google.com.tj,谷歌服务", // Google塔吉克斯坦
+      "DOMAIN-SUFFIX,google.com.tr,谷歌服务", // Google土耳其
+      "DOMAIN-SUFFIX,google.com.tw,谷歌服务", // Google台湾
+      "DOMAIN-SUFFIX,google.com.ua,谷歌服务", // Google乌克兰
+      "DOMAIN-SUFFIX,google.com.uy,谷歌服务", // Google乌拉圭
+      "DOMAIN-SUFFIX,google.com.vc,谷歌服务", // Google圣文森特和格林纳丁斯
+      "DOMAIN-SUFFIX,google.com.vn,谷歌服务", // Google越南
+      "DOMAIN-SUFFIX,google.cv,谷歌服务", // Google佛得角
+      "DOMAIN-SUFFIX,google.cz,谷歌服务", // Google捷克
+      "DOMAIN-SUFFIX,google.de,谷歌服务", // Google德国
+      "DOMAIN-SUFFIX,google.dj,谷歌服务", // Google吉布提
+      "DOMAIN-SUFFIX,google.dk,谷歌服务", // Google丹麦
+      "DOMAIN-SUFFIX,google.dm,谷歌服务", // Google多米尼克
+      "DOMAIN-SUFFIX,google.dz,谷歌服务", // Google阿尔及利亚
+      "DOMAIN-SUFFIX,google.ee,谷歌服务", // Google爱沙尼亚
+      "DOMAIN-SUFFIX,google.es,谷歌服务", // Google西班牙
+      "DOMAIN-SUFFIX,google.fi,谷歌服务", // Google芬兰
+      "DOMAIN-SUFFIX,google.fm,谷歌服务", // Google密克罗尼西亚
+      "DOMAIN-SUFFIX,google.fr,谷歌服务", // Google法国
+      "DOMAIN-SUFFIX,google.ga,谷歌服务", // Google加蓬
+      "DOMAIN-SUFFIX,google.ge,谷歌服务", // Google格鲁吉亚
+      "DOMAIN-SUFFIX,google.gg,谷歌服务", // Google根西岛
+      "DOMAIN-SUFFIX,google.gl,谷歌服务", // Google格陵兰
+      "DOMAIN-SUFFIX,google.gm,谷歌服务", // Google冈比亚
+      "DOMAIN-SUFFIX,google.gp,谷歌服务", // Google瓜德罗普
+      "DOMAIN-SUFFIX,google.gr,谷歌服务", // Google希腊
+      "DOMAIN-SUFFIX,google.gy,谷歌服务", // Google圭亚那
+      "DOMAIN-SUFFIX,google.hn,谷歌服务", // Google洪都拉斯
+      "DOMAIN-SUFFIX,google.hr,谷歌服务", // Google克罗地亚
+      "DOMAIN-SUFFIX,google.ht,谷歌服务", // Google海地
+      "DOMAIN-SUFFIX,google.hu,谷歌服务", // Google匈牙利
+      "DOMAIN-SUFFIX,google.ie,谷歌服务", // Google爱尔兰
+      "DOMAIN-SUFFIX,google.im,谷歌服务", // Google马恩岛
+      "DOMAIN-SUFFIX,google.in,谷歌服务", // Google印度
+      "DOMAIN-SUFFIX,google.info,谷歌服务", // Google信息
+      "DOMAIN-SUFFIX,google.io,谷歌服务", // Google.io
+      "DOMAIN-SUFFIX,google.is,谷歌服务", // Google冰岛
+      "DOMAIN-SUFFIX,google.it,谷歌服务", // Google意大利
+      "DOMAIN-SUFFIX,google.je,谷歌服务", // Google泽西岛
+      "DOMAIN-SUFFIX,google.jo,谷歌服务", // Google约旦
+      "DOMAIN-SUFFIX,google.kg,谷歌服务", // Google吉尔吉斯斯坦
+      "DOMAIN-SUFFIX,google.ki,谷歌服务", // Google基里巴斯
+      "DOMAIN-SUFFIX,google.kz,谷歌服务", // Google哈萨克斯坦
+      "DOMAIN-SUFFIX,google.la,谷歌服务", // Google老挝
+      "DOMAIN-SUFFIX,google.li,谷歌服务", // Google列支敦士登
+      "DOMAIN-SUFFIX,google.lk,谷歌服务", // Google斯里兰卡
+      "DOMAIN-SUFFIX,google.lt,谷歌服务", // Google立陶宛
+      "DOMAIN-SUFFIX,google.lu,谷歌服务", // Google卢森堡
+      "DOMAIN-SUFFIX,google.lv,谷歌服务", // Google拉脱维亚
+      "DOMAIN-SUFFIX,google.md,谷歌服务", // Google摩尔多瓦
+      "DOMAIN-SUFFIX,google.me,谷歌服务", // Google黑山
+      "DOMAIN-SUFFIX,google.mg,谷歌服务", // Google马达加斯加
+      "DOMAIN-SUFFIX,google.mk,谷歌服务", // Google北马其顿
+      "DOMAIN-SUFFIX,google.ml,谷歌服务", // Google马里
+      "DOMAIN-SUFFIX,google.mn,谷歌服务", // Google蒙古
+      "DOMAIN-SUFFIX,google.ms,谷歌服务", // Google蒙特塞拉特
+      "DOMAIN-SUFFIX,google.mu,谷歌服务", // Google毛里求斯
+      "DOMAIN-SUFFIX,google.mv,谷歌服务", // Google马尔代夫
+      "DOMAIN-SUFFIX,google.mw,谷歌服务", // Google马拉维
+      "DOMAIN-SUFFIX,google.mx,谷歌服务", // Google墨西哥
+      "DOMAIN-SUFFIX,google.ne,谷歌服务", // Google尼日尔
+      "DOMAIN-SUFFIX,google.nl,谷歌服务", // Google荷兰
+      "DOMAIN-SUFFIX,google.no,谷歌服务", // Google挪威
+      "DOMAIN-SUFFIX,google.nr,谷歌服务", // Google瑙鲁
+      "DOMAIN-SUFFIX,google.nu,谷歌服务", // Google纽埃
+      "DOMAIN-SUFFIX,google.org,谷歌服务", // Google组织
+      "DOMAIN-SUFFIX,google.pa,谷歌服务", // Google巴拿马
+      "DOMAIN-SUFFIX,google.pe,谷歌服务", // Google秘鲁
+      "DOMAIN-SUFFIX,google.ph,谷歌服务", // Google菲律宾
+      "DOMAIN-SUFFIX,google.pk,谷歌服务", // Google巴基斯坦
+      "DOMAIN-SUFFIX,google.pl,谷歌服务", // Google波兰
+      "DOMAIN-SUFFIX,google.pn,谷歌服务", // Google皮特凯恩群岛
+      "DOMAIN-SUFFIX,google.ps,谷歌服务", // Google巴勒斯坦
+      "DOMAIN-SUFFIX,google.pt,谷歌服务", // Google葡萄牙
+      "DOMAIN-SUFFIX,google.ro,谷歌服务", // Google罗马尼亚
+      "DOMAIN-SUFFIX,google.rs,谷歌服务", // Google塞尔维亚
+      "DOMAIN-SUFFIX,google.ru,谷歌服务", // Google俄罗斯
+      "DOMAIN-SUFFIX,google.rw,谷歌服务", // Google卢旺达
+      "DOMAIN-SUFFIX,google.sc,谷歌服务", // Google塞舌尔
+      "DOMAIN-SUFFIX,google.se,谷歌服务", // Google瑞典
+      "DOMAIN-SUFFIX,google.sh,谷歌服务", // Google圣赫勒拿
+      "DOMAIN-SUFFIX,google.si,谷歌服务", // Google斯洛文尼亚
+      "DOMAIN-SUFFIX,google.sk,谷歌服务", // Google斯洛伐克
+      "DOMAIN-SUFFIX,google.sm,谷歌服务", // Google圣马力诺
+      "DOMAIN-SUFFIX,google.sn,谷歌服务", // Google塞内加尔
+      "DOMAIN-SUFFIX,google.so,谷歌服务", // Google索马里
+      "DOMAIN-SUFFIX,google.sr,谷歌服务", // Google苏里南
+      "DOMAIN-SUFFIX,google.st,谷歌服务", // Google圣多美和普林西比
+      "DOMAIN-SUFFIX,google.td,谷歌服务", // Google乍得
+      "DOMAIN-SUFFIX,google.tg,谷歌服务", // Google多哥
+      "DOMAIN-SUFFIX,google.tk,谷歌服务", // Google托克劳
+      "DOMAIN-SUFFIX,google.tl,谷歌服务", // Google东帝汶
+      "DOMAIN-SUFFIX,google.tm,谷歌服务", // Google土库曼斯坦
+      "DOMAIN-SUFFIX,google.tn,谷歌服务", // Google突尼斯
+      "DOMAIN-SUFFIX,google.to,谷歌服务", // Google汤加
+      "DOMAIN-SUFFIX,google.tt,谷歌服务", // Google特立尼达和多巴哥
+      "DOMAIN-SUFFIX,google.us,谷歌服务", // Google美国
+      "DOMAIN-SUFFIX,google.uz,谷歌服务", // Google乌兹别克斯坦
+      "DOMAIN-SUFFIX,google.vg,谷歌服务", // Google英属维尔京群岛
+      "DOMAIN-SUFFIX,google.vu,谷歌服务", // Google瓦努阿图
+      "DOMAIN-SUFFIX,google.ws,谷歌服务", // Google萨摩亚
+      "DOMAIN-KEYWORD,google,谷歌服务", // Google关键词匹配
+      "DOMAIN-SUFFIX,github.io,节点选择", // Github Pages
+      "DOMAIN,v2rayse.com,节点选择" // V2rayse节点工具
     );
     
-    // 代理规则
+    // Loyalsoldier 规则集
+    rules.push(
+      "RULE-SET,applications,全局直连",
+      "RULE-SET,private,全局直连",
+      "RULE-SET,reject,广告过滤",
+      "RULE-SET,icloud,微软服务",
+      "RULE-SET,apple,苹果服务"
+    );
+    
+    // 根据启用的服务添加规则
+    if (enabledServices.includes("YouTube")) {
+      rules.push("RULE-SET,YouTube,YouTube");
+    }
+    if (enabledServices.includes("Netflix")) {
+      rules.push("RULE-SET,Netflix,Netflix");
+    }
+    if (enabledServices.includes("Spotify")) {
+      rules.push("RULE-SET,Spotify,Spotify");
+    }
+    if (enabledServices.includes("AI")) {
+      rules.push("RULE-SET,AI,AI");
+    }
+    if (enabledServices.includes("TikTok")) {
+      rules.push("RULE-SET,TikTok,TikTok");
+    }
+    
+    // 其他规则 - 移除Google规则集，因为我们已经在上面处理了
     rules.push(
       "RULE-SET,proxy,节点选择",
       "RULE-SET,gfw,节点选择",
-      "RULE-SET,tld-not-cn,节点选择"
-    );
-    
-    // 服务规则
-    enabledServices.forEach(service => {
-      const rule = `RULE-SET,${service.key},${service.name}`;
-      rules.push(service.noResolve ? `${rule},no-resolve` : rule);
-    });
-    
-    // 直连规则
-    rules.push(
+      "RULE-SET,tld-not-cn,节点选择",
       "RULE-SET,direct,全局直连",
-      "RULE-SET,cncidr,全局直连,no-resolve",
-      "RULE-SET,applications,全局直连",
-      "RULE-SET,private,全局直连",
       "RULE-SET,lancidr,全局直连,no-resolve",
+      "RULE-SET,cncidr,全局直连,no-resolve",
+      "RULE-SET,telegramcidr,电报消息,no-resolve",
+      // 其他规则
       "GEOSITE,CN,全局直连",
       "GEOIP,LAN,全局直连,no-resolve",
       "GEOIP,CN,全局直连,no-resolve",
@@ -242,9 +506,9 @@ const ConfigGenerator = {
     
     // 获取已存在的代理组名称，避免重复
     const existingGroupNames = [
-      "自动选择", "负载均衡", "故障转移", "前置代理", 
-      "落地代理", "落地选优", "节点选择", "全局直连", "漏网之鱼",
-      "广告过滤", ...countryNodeNames, ...enabledServices.map(s => s.name)
+      "前置代理", "落地代理", "落地选优", "节点选择", "延迟选优", "故障转移", "负载均衡",
+      "谷歌服务", "YouTube", "Netflix", "电报消息", "AI", "TikTok", "微软服务", "苹果服务", "Spotify",
+      "广告过滤", "全局直连", "全局拦截", "漏网之鱼", ...countryNodeNames
     ];
     
     // 创建链式代理组
@@ -269,92 +533,261 @@ const ConfigGenerator = {
     groups.push(
       {
         ...CONFIG.groupBaseOption,
-        name: "自动选择",
-        type: "url-test",
-        interval: 300,
-        tolerance: 50,
-        "include-all": true,
-        filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-        icon: "https://s1.aigei.com/src/img/png/98/98e64229aedc48a0950f360f832f3269.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:x39SiWt0W0r_OCaVGN8l9j0kaJs="
+        name: "前置代理",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,
+          "延迟选优",
+          ...otherProxies
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F511.svg"
       },
       {
         ...CONFIG.groupBaseOption,
-        name: "负载均衡",
-        type: "load-balance",
-        strategy: "consistent-hashing",
+        name: "落地代理",
+        type: "select",
+        proxies: [
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F30D.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "落地选优",
+        type: "url-test",
         interval: 300,
+        tolerance: 50,
+        proxies: chainProxyNames.length > 0 ? chainProxyNames : allProxies,
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/26A1.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "节点选择",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          ...allProxies
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F3AF.svg"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "延迟选优",
+        type: "url-test",
+        interval: 120,
+        tolerance: 200,
         "include-all": true,
         filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-        icon: "https://s1.aigei.com/src/img/png/dc/dc05262cfe7440088d3a3f5323d8079a.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:t9h-TXk8gOSDGvuaN036WE0PbPw="
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F680.svg"
       },
       {
         ...CONFIG.groupBaseOption,
         name: "故障转移",
         type: "fallback",
-        interval: 300,
         "include-all": true,
         filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
-        icon: "https://s1.aigei.com/src/img/png/31/31b3bb8f04c74735acb7e51da00a23cc.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:ugSCko1X49-ypn8PIUvQCADFJ5w="
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F504.svg"
       }
     );
     
-    // 链式代理结构
-    if (CONFIG.features.chainProxy && ssProxies.length > 0) {
+    // 添加负载均衡组
+    if (CONFIG.features.loadBalance) {
       groups.push({
         ...CONFIG.groupBaseOption,
-        name: "前置代理",
-        type: "select",
-        proxies: [...countryNodeNames, "自动选择", ...otherProxies],
-        icon: "https://s1.aigei.com/src/img/png/ef/ef79a8fcd6774993b31a6f8a0c411778.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:8ybyPgSllo5x7ySCXEs3I--GEJ0="
+        name: "负载均衡",
+        type: "load-balance",
+        strategy: "consistent-hashing", // 或者 "round-robin"
+        url: "https://www.google.com/generate_204",
+        interval: 300,
+        "include-all": true,
+        filter: "^(?!.*(官网|套餐|流量|异常|剩余)).*$",
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/2696.svg"
       });
     }
     
-    // 落地代理
-    groups.push({
-      ...CONFIG.groupBaseOption,
-      name: "落地代理",
-      type: "select",
-      proxies: CONFIG.features.chainProxy && ssProxies.length > 0 ? 
-               ["落地选优", ...chainProxyNames] : 
-               ["自动选择", ...allProxies],
-      icon: "https://s1.chu0.com/src/img/png/68/68f56102bc574fa58d0bfa27e9832ac7.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=1srnZGLKZ0Aqlz6dk7yF4SkiYf4eP-YrEOdM1sob:A6tEl-e0oPV3yubbcDl_JxI56jM="
-    });
-    
-    // 落地选优
-    groups.push({
-      ...CONFIG.groupBaseOption,
-      name: "落地选优",
-      type: "fallback",
-      interval: 300,
-      tolerance: 50,
-      proxies: chainProxyNames.length > 0 ? chainProxyNames : allProxies,
-      icon: "https://s1.aigei.com/prevfiles/16a8d432d62d410bb7515eaab449adff.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:iAOdmSMF2lupg5mJthM-6oScsPA="
-    });
-    
-    // 节点选择组
-    groups.push({
-      ...CONFIG.groupBaseOption,
-      name: "节点选择",
-      type: "select",
-      proxies: ["自动选择", "负载均衡", "故障转移", ...countryNodeNames, ...allProxies],
-      icon: "https://s1.aigei.com/prevfiles/4869110956c5419db516657a10532f96.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:EyRhAoQyB9U3A6_VGdk8YYTqL0s="
-    });
-    
-    // 服务专用代理组
-    const defaultServiceProxies = [
-      "节点选择", "落地代理", "落地选优", ...chainProxyNames,
-      "自动选择", "负载均衡", "故障转移", ...countryNodeNames, "全局直连"
-    ];
-    
-    enabledServices.forEach(service => {
+    // 服务专用代理组 - 只添加启用的服务
+    if (enabledServices.includes("谷歌服务")) {
       groups.push({
         ...CONFIG.groupBaseOption,
-        name: service.name,
+        name: "谷歌服务",
         type: "select",
-        proxies: defaultServiceProxies,
-        icon: service.icon
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google.png"
       });
-    });
+    }
+    
+    if (enabledServices.includes("YouTube")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "YouTube",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
+      });
+    }
+    
+    if (enabledServices.includes("Netflix")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "Netflix",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png"
+      });
+    }
+    
+    if (enabledServices.includes("电报消息")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "电报消息",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png"
+      });
+    }
+    
+    if (enabledServices.includes("AI")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "AI",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F916.svg"
+      });
+    }
+    
+    if (enabledServices.includes("TikTok")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "TikTok",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png"
+      });
+    }
+    
+    if (enabledServices.includes("微软服务")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "微软服务",
+        type: "select",
+        proxies: [
+          "全局直连",
+          ...countryNodeNames.slice(0, 4), // 只选择前4个国家节点
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
+      });
+    }
+    
+    if (enabledServices.includes("苹果服务")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "苹果服务",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
+      });
+    }
+    
+    if (enabledServices.includes("Spotify")) {
+      groups.push({
+        ...CONFIG.groupBaseOption,
+        name: "Spotify",
+        type: "select",
+        proxies: [
+          ...countryNodeNames,  // 将国家节点放在最前面
+          "节点选择",
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "落地代理",  // 落地代理放在后面
+          "落地选优",
+          ...chainProxyNames,
+          "全局直连"
+        ],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png"
+      });
+    }
     
     // 国家/地区分组（如果启用）
     if (CONFIG.features.countryGroups) {
@@ -362,9 +795,9 @@ const ConfigGenerator = {
         groups.push({
           ...CONFIG.groupBaseOption,
           name: `${country.name}节点`,
-          type: "fallback",
-          interval: 30,
-          tolerance: 1,
+          type: "url-test",
+          interval: 300,
+          tolerance: 50,
           "include-all": true,
           filter: country.filter,
           icon: country.icon
@@ -388,14 +821,29 @@ const ConfigGenerator = {
         ...CONFIG.groupBaseOption,
         name: "全局直连",
         type: "select",
-        proxies: ["DIRECT"],
+        proxies: ["DIRECT", "节点选择", "延迟选优", "故障转移"],
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png"
+      },
+      {
+        ...CONFIG.groupBaseOption,
+        name: "全局拦截",
+        type: "select",
+        proxies: ["REJECT", "DIRECT"],
+        icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Reject.png"
       },
       {
         ...CONFIG.groupBaseOption,
         name: "漏网之鱼",
         type: "select",
-        proxies: ["节点选择", "落地代理", "落地选优", "自动选择", "负载均衡", "故障转移", "全局直连"],
+        proxies: [
+          "节点选择", 
+          "落地代理", 
+          "落地选优", 
+          "延迟选优",
+          "故障转移",
+          "负载均衡",  // 添加负载均衡选项
+          "全局直连"
+        ],
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"
       }
     );
@@ -415,7 +863,7 @@ function main(config) {
   }
   
   // 生成配置
-  config["dns"] = ConfigGenerator.generateDnsConfig();
+  config["dns"] = ConfigGenerator.initDnsConfig();
   config["rule-providers"] = ConfigGenerator.generateRuleProviders();
   config["rules"] = ConfigGenerator.generateRules();
   config["proxy-groups"] = ConfigGenerator.generateProxyGroups(config);

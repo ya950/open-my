@@ -241,38 +241,14 @@ const ConfigGenerator = {
       rules.push("DOMAIN-SUFFIX,tiktokv.us,TikTok");
     }
     
-    if (enabledServices.includes("谷歌服务")) {
-      // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
-      rules.push(
-        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
-        "DOMAIN-SUFFIX,gmail.com,谷歌服务", // Google服务
-        "DOMAIN-SUFFIX,google.android.gm,谷歌服务", // Google服务
-        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
-        "DOMAIN-SUFFIX,com.google.android.gm,谷歌服务", 
-        "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
-        "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
-        "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
-        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", 
-        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", 
-        "DOMAIN-SUFFIX,google.com,谷歌服务", 
-        "DOMAIN-SUFFIX,google.ad,谷歌服务", 
-        "DOMAIN-KEYWORD,google,谷歌服务" // Google关键词匹配
-      );
-    }
-    
+
     // 通用规则 - 不依赖特定服务
     rules.push(
       "DOMAIN-SUFFIX,github.io,节点选择", // Github Pages
       "DOMAIN,v2rayse.com,节点选择" // V2rayse节点工具
     );
     
-    // Loyalsoldier 规则集
-    rules.push(
-      "RULE-SET,applications,全局直连",
-      "RULE-SET,private,全局直连",
-      "RULE-SET,reject,广告过滤",
-      "RULE-SET,icloud,微软服务"
-    );
+
     
     // 只有当苹果服务启用时才添加apple规则集
     if (enabledServices.includes("苹果服务")) {
@@ -295,7 +271,35 @@ const ConfigGenerator = {
     if (enabledServices.includes("TikTok")) {
       rules.push("RULE-SET,TikTok,TikTok");
     }
+
+    if (enabledServices.includes("谷歌服务")) {
+      // 自定义规则 - 添加更多Google相关规则确保覆盖所有Google域名
+      rules.push(
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gmail.com,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,google.android.gm,谷歌服务", // Google服务
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
+        "DOMAIN-SUFFIX,com.google.android.gm,谷歌服务", 
+        "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
+        "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
+        "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", 
+        "DOMAIN-SUFFIX,gstatic.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.com,谷歌服务", 
+        "DOMAIN-SUFFIX,google.ad,谷歌服务", 
+        "DOMAIN-KEYWORD,google,谷歌服务" // Google关键词匹配
+      );
+    }
     
+
+    // Loyalsoldier 规则集
+    rules.push(
+      "RULE-SET,applications,全局直连",
+      "RULE-SET,private,全局直连",
+      "RULE-SET,reject,广告过滤",
+      "RULE-SET,icloud,微软服务"
+    );
+
     // 其他规则
     rules.push(
       "RULE-SET,proxy,节点选择",

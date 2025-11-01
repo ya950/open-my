@@ -70,6 +70,24 @@ const CONFIG = {
     { name: "Steam", key: "steam", icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png", category: "shopping" }
   ],
   
+  // 谷歌商店相关域名 - 确保这些域名走代理
+  googlePlayDomains: [
+    "DOMAIN-SUFFIX,google.com",
+    "DOMAIN-SUFFIX,googleusercontent.com",
+    "DOMAIN-SUFFIX,googleapis.com",
+    "DOMAIN-SUFFIX,gstatic.com",
+    "DOMAIN-SUFFIX,google-analytics.com",
+    "DOMAIN-SUFFIX,googleadservices.com",
+    "DOMAIN-SUFFIX,googlecommerce.com",
+    "DOMAIN-SUFFIX,ggpht.com",
+    "DOMAIN-SUFFIX,play.google.com",
+    "DOMAIN,android.clients.google.com",
+    "DOMAIN,android.googleapis.com",
+    "DOMAIN,android.packages.google.com",
+    "DOMAIN,dl.google.com",
+    "DOMAIN,dl-ssl.google.com"
+  ],
+  
   // 代理组基础配置
   groupBaseOption: {
     interval: 300, timeout: 3000, url: "https://www.google.com/generate_204",
@@ -136,7 +154,9 @@ const ConfigGenerator = {
       "proxy-server-nameserver": CONFIG.dns.domestic,
       "direct-nameserver": CONFIG.dns.domestic,
       "nameserver-policy": {
-        "geosite:private,cn": CONFIG.dns.domestic
+        "geosite:private,cn": CONFIG.dns.domestic,
+        // 确保谷歌相关域名使用国外DNS
+        "geosite:google": CONFIG.dns.foreign
       }
     };
   },
@@ -180,6 +200,11 @@ const ConfigGenerator = {
     if (CONFIG.features.adBlock) {
       rules.push("RULE-SET,reject,广告过滤");
     }
+    
+    // 谷歌商店相关域名规则 - 确保这些域名走谷歌服务代理组
+    CONFIG.googlePlayDomains.forEach(domain => {
+      rules.push(`${domain},谷歌服务`);
+    });
     
     // 手动域名规则
     rules.push(

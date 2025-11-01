@@ -88,6 +88,29 @@ const CONFIG = {
     "DOMAIN,dl-ssl.google.com"
   ],
   
+  // 需要直连的谷歌服务（排除这些，其他都走代理）
+  googleDirectDomains: [
+    "DOMAIN-SUFFIX,maps.google.com",
+    "DOMAIN-SUFFIX,google.cn",
+    "DOMAIN-SUFFIX,g.cn",
+    "DOMAIN-SUFFIX,google.com.hk",
+    "DOMAIN-SUFFIX,google.com.tw",
+    "DOMAIN-SUFFIX,google.com.sg",
+    "DOMAIN-SUFFIX,google.co.jp",
+    "DOMAIN-SUFFIX,google.kr",
+    "DOMAIN-SUFFIX,google.co.in",
+    "DOMAIN-SUFFIX,google.co.uk",
+    "DOMAIN-SUFFIX,google.de",
+    "DOMAIN-SUFFIX,google.fr",
+    "DOMAIN-SUFFIX,google.es",
+    "DOMAIN-SUFFIX,google.it",
+    "DOMAIN-SUFFIX,google.ru",
+    "DOMAIN-SUFFIX,google.com.br",
+    "DOMAIN-SUFFIX,google.com.mx",
+    "DOMAIN-SUFFIX,google.com.au",
+    "DOMAIN-SUFFIX,google.ca"
+  ],
+  
   // 代理组基础配置
   groupBaseOption: {
     interval: 300, timeout: 3000, url: "https://www.google.com/generate_204",
@@ -156,7 +179,15 @@ const ConfigGenerator = {
       "nameserver-policy": {
         "geosite:private,cn": CONFIG.dns.domestic,
         // 确保谷歌相关域名使用国外DNS
-        "geosite:google": CONFIG.dns.foreign
+        "geosite:google": CONFIG.dns.foreign,
+        // 中国大陆的谷歌域名使用国内DNS
+        "DOMAIN-SUFFIX,google.cn": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,g.cn": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,google.com.hk": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,google.com.tw": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,google.com.sg": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,google.co.jp": CONFIG.dns.domestic,
+        "DOMAIN-SUFFIX,google.kr": CONFIG.dns.domestic
       }
     };
   },
@@ -204,6 +235,11 @@ const ConfigGenerator = {
     // 谷歌商店相关域名规则 - 确保这些域名走谷歌服务代理组
     CONFIG.googlePlayDomains.forEach(domain => {
       rules.push(`${domain},谷歌服务`);
+    });
+    
+    // 需要直连的谷歌服务规则
+    CONFIG.googleDirectDomains.forEach(domain => {
+      rules.push(`${domain},全局直连`);
     });
     
     // 手动域名规则

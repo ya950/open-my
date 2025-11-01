@@ -235,8 +235,8 @@ const ConfigGenerator = {
     rules.push(
       "DOMAIN-SUFFIX,googleapis.cn,谷歌服务", // Google服务
       "DOMAIN-SUFFIX,gstatic.com,谷歌服务", // Google静态资源
-      "DOMAIN-SUFFIX,https://mobile-webview.gmail.com,谷歌服务", 
-      "services.googleapis.cn,谷歌服务", // Google静态资源
+      "DOMAIN-SUFFIX,mobile-webview.gmail.com,谷歌服务", 
+      "DOMAIN-SUFFIX,services.googleapis.cn,谷歌服务", 
       "DOMAIN-SUFFIX,xn--ngstr-lra8j.com,谷歌服务", // Google Play下载服务
       "DOMAIN-SUFFIX,google.com,谷歌服务", // Google主域名
       "DOMAIN-SUFFIX,google.ad,谷歌服务", // Google广告

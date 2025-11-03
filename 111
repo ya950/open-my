@@ -1,0 +1,342 @@
+/*
+ * 功能：从多个订阅链接获取节点信息，解析并去重（仅按IP），然后上传到GitHub。
+ * 新增：提供Web界面，可手动更新，并管理订阅链接（从KV读写）。
+ * 作者：AI Assistant
+ * 版本：v4.0 (带配置管理版)
+ */
+
+// --- 核心逻辑：监听定时任务和HTTP请求 ---
+addEventListener('scheduled', event => {
+  event.waitUntil(handleSchedule(event.scheduledTime));
+});
+
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request));
+});
+
+/**
+ * HTTP请求路由器
+ */
+async function handleRequest(request) {
+  const url = new URL(request.url);
+
+  if (request.method === 'GET' && url.pathname === '/') {
+    return new Response(getHtmlPage(), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  // --- 需要密码验证的API ---
+  if (request.method === 'POST') {
+    const formData = await request.formData();
+    const password = formData.get('password');
+
+    if (password !== ADMIN_PASSWORD) {
+      return new Response(JSON.stringify({ success: false, message: '密码错误！' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 密码正确，路由到具体处理函数
+    if (url.pathname === '/update') {
+      return await handleManualUpdate();
+    }
+    if (url.pathname === '/get-urls') {
+      return await handleGetUrls();
+    }
+    if (url.pathname === '/set-urls') {
+      const newUrls = formData.get('urls');
+      return await handleSetUrls(newUrls);
+    }
+  }
+
+  return new Response('Not Found', { status: 404 });
+}
+
+/**
+ * 处理手动更新请求
+ */
+async function handleManualUpdate() {
+  try {
+    const result = await performUpdate();
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error("Manual update failed:", error);
+    return new Response(JSON.stringify({ success: false, message: `更新失败: ${error.message}` }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+/**
+ * 从KV获取订阅链接
+ */
+async function handleGetUrls() {
+  try {
+    const urls = await CONFIG_KV.get('subscription_urls');
+    return new Response(JSON.stringify({ success: true, urls: urls || '' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, message: `获取链接失败: ${error.message}` }), {
+      status: 500,
+    });
+  }
+}
+
+/**
+ * 向KV写入订阅链接
+ */
+async function handleSetUrls(newUrls) {
+  try {
+    await CONFIG_KV.put('subscription_urls', newUrls);
+    return new Response(JSON.stringify({ success: true, message: '订阅链接已成功保存！' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, message: `保存链接失败: ${error.message}` }), {
+      status: 500,
+    });
+  }
+}
+
+/**
+ * 定时任务处理函数
+ */
+async function handleSchedule(scheduledTime) {
+  console.log(`Scheduled trigger at: ${new Date(scheduledTime).toISOString()}`);
+  await performUpdate();
+}
+
+/**
+ * 核心更新逻辑（从KV读取链接）
+ */
+async function performUpdate() {
+  console.log("Starting update process...");
+  
+  // 从KV读取订阅链接
+  const subscriptionUrlsString = await CONFIG_KV.get('subscription_urls');
+  if (!subscriptionUrlsString) {
+    const message = "Error: No subscription URLs found in KV. Please set them via the web interface.";
+    console.error(message);
+    return { success: false, message };
+  }
+  const subscriptionUrls = subscriptionUrlsString.trim().split('\n');
+
+  const uniqueNodes = {};
+  for (const url of subscriptionUrls) {
+    if (!url) continue;
+    console.log(`Processing URL: ${url.substring(0, 50)}...`);
+    try {
+      const subResponse = await fetch(url);
+      if (!subResponse.ok) {
+        console.warn(`Failed to fetch from ${url}: ${subResponse.status} ${subResponse.statusText}`);
+        continue;
+      }
+      const base64Content = await subResponse.text();
+      const decodedContent = atob(base64Content);
+      const nodeLines = decodedContent.trim().split('\n');
+
+      for (const line of nodeLines) {
+        const node = parseNode(line);
+        if (node && !uniqueNodes[node.ip]) {
+          uniqueNodes[node.ip] = `${node.ip}:${node.port}#${node.remark}`;
+        }
+      }
+    } catch (error) {
+      console.error(`An error occurred while processing URL ${url}:`, error);
+    }
+  }
+
+  if (Object.keys(uniqueNodes).length === 0) {
+    const message = "No valid nodes found from any URL to update.";
+    console.log(message);
+    return { success: false, message };
+  }
+
+  const finalContent = Object.values(uniqueNodes).sort().join('\n');
+  console.log(`Total unique nodes extracted (by IP): ${Object.keys(uniqueNodes).length}`);
+
+  try {
+    await updateGithubFile(finalContent);
+    console.log("Successfully updated GitHub file.");
+    return { success: true, message: `更新成功！共找到 ${Object.keys(uniqueNodes).length} 个独立IP。`, count: Object.keys(uniqueNodes).length };
+  } catch (error) {
+    console.error("GitHub update failed:", error);
+    return { success: false, message: `GitHub更新失败: ${error.message}` };
+  }
+}
+
+// --- 以下是辅助函数，与之前版本相同 ---
+
+function parseNode(line) { /* ... 函数内容不变 ... */ }
+async function updateGithubFile(content) { /* ... 函数内容不变 ... */ }
+
+// --- Web界面HTML (重大更新) ---
+function getHtmlPage() {
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节点列表管理器</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 2rem 0; }
+        .container { background: white; padding: 2rem 3rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 90%; max-width: 600px; }
+        h1 { color: #4a4a4a; margin-bottom: 1.5rem; text-align: center; }
+        .tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 2rem; }
+        .tab { padding: 1rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; color: #666; }
+        .tab.active { color: #007bff; border-bottom-color: #007bff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input[type="password"], textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: monospace; }
+        textarea { min-height: 200px; resize: vertical; }
+        button { width: 100%; padding: 0.75rem; border: none; border-radius: 4px; background-color: #007bff; color: white; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; margin-bottom: 0.5rem; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        #status { margin-top: 1.5rem; font-size: 0.9rem; text-align: center; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>节点列表管理器</h1>
+        <div class="tabs">
+            <div class="tab active" data-tab="update">更新节点</div>
+            <div class="tab" data-tab="config">管理链接</div>
+        </div>
+
+        <!-- 更新节点标签页 -->
+        <div id="update" class="tab-content active">
+            <form id="updateForm">
+                <input type="password" id="updatePassword" name="password" placeholder="请输入管理员密码" required>
+                <button type="submit" id="updateBtn">立即更新节点列表</button>
+            </form>
+            <div id="updateStatus"></div>
+        </div>
+
+        <!-- 管理链接标签页 -->
+        <div id="config" class="tab-content">
+            <form id="configForm">
+                <input type="password" id="configPassword" name="password" placeholder="请输入管理员密码" required>
+                <button type="button" id="loadUrlsBtn">加载现有链接</button>
+                <textarea id="urlsTextarea" name="urls" placeholder="在此粘贴你的订阅链接，每行一个。点击“加载现有链接”可从服务器读取。"></textarea>
+                <button type="submit" id="saveUrlsBtn">保存链接到服务器</button>
+            </form>
+            <div id="configStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // 标签页切换逻辑
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // --- 更新节点逻辑 ---
+        const updateForm = document.getElementById('updateForm');
+        const updateBtn = document.getElementById('updateBtn');
+        const updateStatus = document.getElementById('updateStatus');
+
+        updateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!await checkPassword('updatePassword', updateStatus)) return;
+            
+            setButtonState(updateBtn, true, '正在更新...');
+            try {
+                const response = await fetch('/update', { method: 'POST', body: new FormData(updateForm) });
+                const result = await response.json();
+                showStatus(updateStatus, result.message, result.success);
+            } catch (error) {
+                showStatus(updateStatus, '请求失败，请检查网络。', false);
+            } finally {
+                setButtonState(updateBtn, false, '立即更新节点列表');
+            }
+        });
+
+        // --- 管理链接逻辑 ---
+        const configForm = document.getElementById('configForm');
+        const loadUrlsBtn = document.getElementById('loadUrlsBtn');
+        const saveUrlsBtn = document.getElementById('saveUrlsBtn');
+        const urlsTextarea = document.getElementById('urlsTextarea');
+        const configStatus = document.getElementById('configStatus');
+
+        loadUrlsBtn.addEventListener('click', async () => {
+            if (!await checkPassword('configPassword', configStatus)) return;
+            
+            setButtonState(loadUrlsBtn, true, '正在加载...');
+            try {
+                const formData = new FormData();
+                formData.append('password', document.getElementById('configPassword').value);
+                const response = await fetch('/get-urls', { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) {
+                    urlsTextarea.value = result.urls;
+                    showStatus(configStatus, '链接已加载。', true);
+                } else {
+                    showStatus(configStatus, result.message, false);
+                }
+            } catch (error) {
+                showStatus(configStatus, '加载失败，请检查网络。', false);
+            } finally {
+                setButtonState(loadUrlsBtn, false, '加载现有链接');
+            }
+        });
+
+        configForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!await checkPassword('configPassword', configStatus)) return;
+
+            setButtonState(saveUrlsBtn, true, '正在保存...');
+            try {
+                const response = await fetch('/set-urls', { method: 'POST', body: new FormData(configForm) });
+                const result = await response.json();
+                showStatus(configStatus, result.message, result.success);
+            } catch (error) {
+                showStatus(configStatus, '保存失败，请检查网络。', false);
+            } finally {
+                setButtonState(saveUrlsBtn, false, '保存链接到服务器');
+            }
+        });
+
+        // --- 通用辅助函数 ---
+        async function checkPassword(inputId, statusDiv) {
+            const password = document.getElementById(inputId).value;
+            if (!password) {
+                showStatus(statusDiv, '请先输入密码！', false);
+                return false;
+            }
+            return true;
+        }
+
+        function showStatus(div, message, isSuccess) {
+            div.textContent = message;
+            div.className = isSuccess ? 'success' : 'error';
+        }
+
+        function setButtonState(button, isDisabled, text) {
+            button.disabled = isDisabled;
+            button.textContent = text;
+        }
+    </script>
+</body>
+</html>`;
+}

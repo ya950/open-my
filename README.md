@@ -1,5 +1,6 @@
 ---
 规则集:https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google.yaml
+配置文件:https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/config/
 ⚡ Clash 代理组逻辑说明
 
 Clash 支持三种常用代理组类型：Fallback、URL-Test 和 Load-Balance。下面是三种代理组的逻辑流程和健康检查策略。

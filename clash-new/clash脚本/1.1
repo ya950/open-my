@@ -165,6 +165,9 @@ const ConfigGenerator = {
     
     if (enabledServices.includes("电报消息")) rules.push("RULE-SET,telegramcidr,电报消息,no-resolve");
     
+    // 👇👇👇 【新增的代码】：强制 STUN 流量走代理，防止 WebRTC 泄漏 👇👇👇
+    rules.push("DOMAIN-KEYWORD,stun,节点选择");
+    
     rules.push("GEOSITE,CN,全局直连", "GEOIP,LAN,全局直连,no-resolve", "GEOIP,CN,全局直连,no-resolve", "MATCH,漏网之鱼");
     
     return rules;

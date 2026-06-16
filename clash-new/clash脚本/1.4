@@ -12,9 +12,15 @@ const CONFIG = {
   // 功能开关
   features: { 
     adBlock: true, 
+    
+    // 【链式代理开关】：true 开启，false 关闭。
+    // 作用：让落地节点套一层前置节点防封。如果不需要防封、或者使用 proxy-providers 订阅模式，请改为 false。
+    // 改为 false 后：脚本不会生成“自动前置”和“前置选择”组，配置更清爽，彻底杜绝死循环套娃断网。
     chainProxy: true, 
-    // 【修改点】新增：需要套用前置代理的协议列表
+    
+    // 需要套用前置代理的协议列表（仅当 chainProxy 为 true 时生效）
     chainProxyTypes: ["ss", "ssr", "http"], 
+    
     specialStrategy: false, 
     countryGroups: true, 
     loadBalance: true 
@@ -66,7 +72,6 @@ const CONFIG = {
     "icloud": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt", "path": "./ruleset/loyalsoldier/icloud.yaml" },
     "apple": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt", "path": "./ruleset/loyalsoldier/apple.yaml" },
     "google": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt", "path": "./ruleset/loyalsoldier/google.yaml" },
-    // 【新增】微软规则集
     "microsoft": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/microsoft.txt", "path": "./ruleset/loyalsoldier/microsoft.yaml" },
     "proxy": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt", "path": "./ruleset/loyalsoldier/proxy.yaml" },
     "direct": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt", "path": "./ruleset/loyalsoldier/direct.yaml" },
@@ -164,7 +169,6 @@ const ConfigGenerator = {
     if (enabledServices.includes("AI")) rules.push("RULE-SET,AI,AI");
     if (enabledServices.includes("TikTok")) rules.push("RULE-SET,TikTok,TikTok");
     if (enabledServices.includes("谷歌服务")) rules.push("RULE-SET,google,谷歌服务");
-    // 【新增】微软分流规则
     if (enabledServices.includes("微软服务")) rules.push("RULE-SET,microsoft,微软服务");
     
     rules.push(
@@ -189,15 +193,22 @@ const ConfigGenerator = {
     const validProxies = config?.proxies?.filter(p => !Utils.isPanelInfo(p.name)).map(p => p.name) || [];
     const transitProxies = Utils.getTransitProxies(config);
 
-    const mainSelectProxies = ["前置选择", "自动选择", "故障转移"];
+    // 核心判断：只有用户开启 chainProxy 且筛选出了可用的前置节点，才激活链式代理相关组
+    const isChainProxyActive = CONFIG.features.chainProxy && transitProxies.length > 0;
+
+    const mainSelectProxies = [];
+    if (isChainProxyActive) {
+      mainSelectProxies.push("前置选择");
+    }
+    mainSelectProxies.push("自动选择", "故障转移");
     if (CONFIG.features.loadBalance) mainSelectProxies.push("负载均衡");
 
     const finalProxies = ["节点选择", "自动选择", "故障转移"];
     if (CONFIG.features.loadBalance) finalProxies.push("负载均衡");
     finalProxies.push("全局直连");
 
-    // 1. 核心前置自动测速池
-    if (transitProxies.length > 0) {
+    // 1 & 2. 只有在激活链式代理时，才生成前置组，防止死循环
+    if (isChainProxyActive) {
       groups.push({
         ...CONFIG.groupBaseOption,
         name: "自动前置",
@@ -209,7 +220,6 @@ const ConfigGenerator = {
         icon: "https://s1.aigei.com/src/img/png/0d/0d449214de1742cd9683d395bb4ad511.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:zIpxbGdu32VTmGpH4niIECEabyU="
       });
 
-      // 2. 手动干预开关
       groups.push({
         ...CONFIG.groupBaseOption,
         name: "前置选择",
@@ -226,7 +236,7 @@ const ConfigGenerator = {
         name: "节点选择",
         type: "select",
         proxies: [
-          ...mainSelectProxies.filter(p => transitProxies.length > 0 || p !== "前置选择"), // 无前置时隐藏前置选项
+          ...mainSelectProxies, // 根据上面判断，自动决定是否包含前置选择
           ...countryNodeNames,
           ...validProxies
         ],
@@ -312,7 +322,6 @@ const ConfigGenerator = {
       });
     }
     
-    // 【修改点】统一微软服务的代理列表构成，保留直连优先选项
     if (enabledServices.includes("微软服务")) {
       groups.push({
         ...CONFIG.groupBaseOption, name: "微软服务", type: "select",
@@ -374,7 +383,6 @@ function main(config) {
   
   config["dns"] = ConfigGenerator.initDnsConfig();
   
-  // 【修改点】字段名称兼容性优化
   config["sniffer"] = {
     enable: true,
     "force-dns-mapping": true,
@@ -384,25 +392,31 @@ function main(config) {
       TLS: { ports: [443, 8443] },
       QUIC: { ports: [443, 8443] }
     },
-    "skip-domains": ["+.push.apple.com", "Mijia Cloud"]
+    "skip-domains": ["+.push.apple.com", "Mijia Cloud"] // 修复新版 Mihomo 字段名警告
   };
   
   config["rule-providers"] = ConfigGenerator.generateRuleProviders();
   config["rules"] = ConfigGenerator.generateRules();
   config["proxy-groups"] = ConfigGenerator.generateProxyGroups(config);
   
+  // 动态注入 dialer-proxy
   if(config["proxies"]) {
+    // 获取前置节点列表，用于判断是否真的能激活链式代理
+    const transitProxies = Utils.getTransitProxies(config);
+    const isChainProxyActive = CONFIG.features.chainProxy && transitProxies.length > 0;
+
     config["proxies"].forEach(proxy => {
       proxy.udp = true;
-      // 【修改点】使用可配置的协议列表进行链式代理判定
-      if (CONFIG.features.chainProxy && CONFIG.features.chainProxyTypes.includes(proxy.type)) {
-        if (proxyCount > 0) {
-          proxy["dialer-proxy"] = "前置选择"; 
-        } else {
-          console.log("警告: 当前仅使用 proxy-providers，链式代理(dialer-proxy)无法自动注入，前置代理功能可能失效。");
-        }
+      // 只有当前置组真正存在时，才注入 dialer-proxy，防止生成了指向不存在组的死链
+      if (isChainProxyActive && CONFIG.features.chainProxyTypes.includes(proxy.type)) {
+        proxy["dialer-proxy"] = "前置选择"; 
       }
     });
+    
+    // 如果用户开启了 chainProxy 但节点全是不支持前置的协议，给出友好提示
+    if (CONFIG.features.chainProxy && !isChainProxyActive) {
+      console.log("提示: 开启了 chainProxy，但当前订阅没有可用的前置节点(或全是落地协议)，已自动降级为普通模式。");
+    }
   }
   
   return config;

@@ -10,21 +10,7 @@ const CONFIG = {
   },
   
   // 功能开关
-  features: { 
-    adBlock: true, 
-    
-    // 【链式代理开关】：true 开启，false 关闭。
-    // 作用：让落地节点套一层前置节点防封。如果不需要防封、或者使用 proxy-providers 订阅模式，请改为 false。
-    // 改为 false 后：脚本不会生成“自动前置”和“前置选择”组，配置更清爽，彻底杜绝死循环套娃断网。
-    chainProxy: true, 
-    
-    // 需要套用前置代理的协议列表（仅当 chainProxy 为 true 时生效）
-    chainProxyTypes: ["ss", "ssr", "http", "socks5", "socks"], 
-    
-    specialStrategy: false, 
-    countryGroups: true, 
-    loadBalance: true 
-  },
+  features: { adBlock: true, chainProxy: true, specialStrategy: false, countryGroups: true, loadBalance: true },
   
   // DNS配置
   dns: {
@@ -68,25 +54,26 @@ const CONFIG = {
   
   // 规则集配置
   ruleProviders: {
-    "reject": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt", "path": "./ruleset/loyalsoldier/reject.yaml" },
-    "icloud": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt", "path": "./ruleset/loyalsoldier/icloud.yaml" },
-    "apple": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt", "path": "./ruleset/loyalsoldier/apple.yaml" },
-    "google": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt", "path": "./ruleset/loyalsoldier/google.yaml" },
-    "microsoft": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/microsoft.txt", "path": "./ruleset/loyalsoldier/microsoft.yaml" },
-    "proxy": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt", "path": "./ruleset/loyalsoldier/proxy.yaml" },
-    "direct": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt", "path": "./ruleset/loyalsoldier/direct.yaml" },
-    "private": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt", "path": "./ruleset/loyalsoldier/private.yaml" },
-    "gfw": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt", "path": "./ruleset/loyalsoldier/gfw.yaml" },
-    "tld-not-cn": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt", "path": "./ruleset/loyalsoldier/tld-not-cn.yaml" },
-    "telegramcidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt", "path": "./ruleset/loyalsoldier/telegramcidr.yaml" },
-    "cncidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt", "path": "./ruleset/loyalsoldier/cncidr.yaml" },
-    "lancidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt", "path": "./ruleset/loyalsoldier/lancidr.yaml" },
-    "applications": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt", "path": "./ruleset/loyalsoldier/applications.yaml" },
-    "YouTube": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt", "path": "./ruleset/xiaolin-007/YouTube.yaml" },
-    "Netflix": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt", "path": "./ruleset/xiaolin-007/Netflix.yaml" },
-    "Spotify": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt", "path": "./ruleset/xiaolin-007/Spotify.yaml" },
-    "AI": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt", "path": "./ruleset/xiaolin-007/AI.yaml" },
-    "TikTok": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt", "path": "./ruleset/xiaolin-007/TikTok.yaml" }
+    "reject": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.yaml", "path": "./ruleset/loyalsoldier/reject.yaml" },
+    "icloud": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.yaml", "path": "./ruleset/loyalsoldier/icloud.yaml" },
+    "apple": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.yaml", "path": "./ruleset/loyalsoldier/apple.yaml" },
+    "google": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.yaml", "path": "./ruleset/loyalsoldier/google.yaml" },
+    "proxy": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.yaml", "path": "./ruleset/loyalsoldier/proxy.yaml" },
+    "direct": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.yaml", "path": "./ruleset/loyalsoldier/direct.yaml" },
+    "private": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.yaml", "path": "./ruleset/loyalsoldier/private.yaml" },
+    "gfw": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.yaml", "path": "./ruleset/loyalsoldier/gfw.yaml" },
+    "tld-not-cn": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.yaml", "path": "./ruleset/loyalsoldier/tld-not-cn.yaml" },
+    "telegram": { "behavior": "domain", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegram.yaml", "path": "./ruleset/loyalsoldier/telegram.yaml" },
+    "telegramcidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.yaml", "path": "./ruleset/loyalsoldier/telegramcidr.yaml" },
+    "cncidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.yaml", "path": "./ruleset/loyalsoldier/cncidr.yaml" },
+    "lancidr": { "behavior": "ipcidr", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.yaml", "path": "./ruleset/loyalsoldier/lancidr.yaml" },
+    "applications": { "behavior": "classical", "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.yaml", "path": "./ruleset/loyalsoldier/applications.yaml" },
+    // xiaolin-007 仓库如果只有 txt，显式指定 format 为 text 防止按 yaml 解析报错
+    "YouTube": { "behavior": "classical", "format": "text", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/YouTube.txt", "path": "./ruleset/xiaolin-007/YouTube.yaml" },
+    "Netflix": { "behavior": "classical", "format": "text", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Netflix.txt", "path": "./ruleset/xiaolin-007/Netflix.yaml" },
+    "Spotify": { "behavior": "classical", "format": "text", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/Spotify.txt", "path": "./ruleset/xiaolin-007/Spotify.yaml" },
+    "AI": { "behavior": "classical", "format": "text", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/AI.txt", "path": "./ruleset/xiaolin-007/AI.yaml" },
+    "TikTok": { "behavior": "classical", "format": "text", "url": "https://fastly.jsdelivr.net/gh/xiaolin-007/clash@main/rule/TikTok.txt", "path": "./ruleset/xiaolin-007/TikTok.yaml" }
   },
   
   // 代理组基础配置
@@ -141,8 +128,6 @@ const ConfigGenerator = {
       "geosite:private": [...CONFIG.dns.domestic],
       "geosite:cn": [...CONFIG.dns.domestic]
     };
-    // 增加 IPv6 拒绝策略
-    dnsConfig.ipv6 = false; 
     return dnsConfig;
   },
   
@@ -159,9 +144,22 @@ const ConfigGenerator = {
     const enabledServices = Utils.getEnabledServices();
     const rules = [];
 
+    // 1. 本地进程直连放最前
+    rules.push("RULE-SET,applications,全局直连");
+    
+    // 2. 广告拦截
+    if (CONFIG.features.adBlock) {
+      rules.push("RULE-SET,reject,广告过滤");
+    }
+    
+    // 3. 隐私网络直连
+    rules.push("RULE-SET,private,全局直连");
+    
+    // 4. 强制代理的特殊规则
     rules.push("DOMAIN-KEYWORD,stun,节点选择");
     rules.push("DOMAIN-SUFFIX,github.io,节点选择", "DOMAIN,v2rayse.com,节点选择");
     
+    // 5. 自定义服务分流
     if (enabledServices.includes("苹果服务")) {
       rules.push("RULE-SET,icloud,苹果服务", "RULE-SET,apple,苹果服务");
     }
@@ -171,16 +169,18 @@ const ConfigGenerator = {
     if (enabledServices.includes("AI")) rules.push("RULE-SET,AI,AI");
     if (enabledServices.includes("TikTok")) rules.push("RULE-SET,TikTok,TikTok");
     if (enabledServices.includes("谷歌服务")) rules.push("RULE-SET,google,谷歌服务");
-    if (enabledServices.includes("微软服务")) rules.push("RULE-SET,microsoft,微软服务");
     
+    if (enabledServices.includes("电报消息")) {
+      rules.push("RULE-SET,telegram,电报消息");
+      rules.push("RULE-SET,telegramcidr,电报消息,no-resolve");
+    }
+    
+    // 6. 兜底代理和直连规则
     rules.push(
-      "RULE-SET,applications,全局直连", "RULE-SET,private,全局直连", "RULE-SET,reject,广告过滤",
       "RULE-SET,proxy,节点选择", "RULE-SET,gfw,节点选择",
       "RULE-SET,tld-not-cn,节点选择", "RULE-SET,direct,全局直连",
       "RULE-SET,lancidr,全局直连,no-resolve", "RULE-SET,cncidr,全局直连,no-resolve"
     );
-    
-    if (enabledServices.includes("电报消息")) rules.push("RULE-SET,telegramcidr,电报消息,no-resolve");
     
     rules.push("GEOSITE,CN,全局直连", "GEOIP,LAN,全局直连,no-resolve", "GEOIP,CN,全局直连,no-resolve", "MATCH,漏网之鱼");
     
@@ -195,41 +195,33 @@ const ConfigGenerator = {
     const validProxies = config?.proxies?.filter(p => !Utils.isPanelInfo(p.name)).map(p => p.name) || [];
     const transitProxies = Utils.getTransitProxies(config);
 
-    // 核心判断：只有用户开启 chainProxy 且筛选出了可用的前置节点，才激活链式代理相关组
-    const isChainProxyActive = CONFIG.features.chainProxy && transitProxies.length > 0;
-
-    const mainSelectProxies = [];
-    if (isChainProxyActive) {
-      mainSelectProxies.push("前置选择");
-    }
-    mainSelectProxies.push("自动选择", "故障转移");
+    const mainSelectProxies = ["前置选择", "自动选择", "故障转移"];
     if (CONFIG.features.loadBalance) mainSelectProxies.push("负载均衡");
 
     const finalProxies = ["节点选择", "自动选择", "故障转移"];
     if (CONFIG.features.loadBalance) finalProxies.push("负载均衡");
     finalProxies.push("全局直连");
 
-    // 1 & 2. 只有在激活链式代理时，才生成前置组，防止死循环
-    if (isChainProxyActive) {
-      groups.push({
-        ...CONFIG.groupBaseOption,
-        name: "自动前置",
-        type: "url-test",
-        interval: 1800,          
-        tolerance: 100,          
-        concurrent: 10,          
-        proxies: transitProxies,
-        icon: "https://s1.aigei.com/src/img/png/0d/0d449214de1742cd9683d395bb4ad511.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:zIpxbGdu32VTmGpH4niIECEabyU="
-      });
+    // 1. 核心前置自动测速池
+    groups.push({
+      ...CONFIG.groupBaseOption,
+      name: "自动前置",
+      type: "url-test",
+      interval: 1800,          // 30分钟测一次
+      tolerance: 100,          // 容忍度 100ms
+      concurrent: 10,          // 限制并发，防风控
+      proxies: transitProxies,
+      icon: "https://s1.aigei.com/src/img/png/0d/0d449214de1742cd9683d395bb4ad511.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:zIpxbGdu32VTmGpH4niIECEabyU="
+    });
 
-      groups.push({
-        ...CONFIG.groupBaseOption,
-        name: "前置选择",
-        type: "select",
-        proxies: ["自动前置", ...transitProxies], 
-        icon: "https://s1.aigei.com/src/img/png/3c/3cbcaca74c794196bf00c869ef4e2d22.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:-E3SNHDhMjamw6gmQgs8VgQYZro="
-      });
-    }
+    // 2. 手动干预开关
+    groups.push({
+      ...CONFIG.groupBaseOption,
+      name: "前置选择",
+      type: "select",
+      proxies: ["自动前置", ...transitProxies], 
+      icon: "https://s1.aigei.com/src/img/png/3c/3cbcaca74c794196bf00c869ef4e2d22.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:-E3SNHDhMjamw6gmQgs8VgQYZro="
+    });
     
     // 3. 主干策略组
     groups.push(
@@ -238,7 +230,7 @@ const ConfigGenerator = {
         name: "节点选择",
         type: "select",
         proxies: [
-          ...mainSelectProxies, // 根据上面判断，自动决定是否包含前置选择
+          ...mainSelectProxies,
           ...countryNodeNames,
           ...validProxies
         ],
@@ -248,9 +240,9 @@ const ConfigGenerator = {
         ...CONFIG.groupBaseOption,
         name: "自动选择",
         type: "url-test",
-        interval: 1800,          
-        tolerance: 150,          
-        concurrent: 10,          
+        interval: 1800,          // 30分钟测一次
+        tolerance: 150,          // 容忍度 150ms，防抖动
+        concurrent: 10,          // 限制并发，防风控
         "include-all": true,
         filter: "^(?!.*(官网|套餐|流量|异常|剩余|过期|到期)).*$",
         icon: "https://s1.aigei.com/src/img/png/a2/a2e527a6fd1b4097bc411733376d0211.png?e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:sGnAv-THoU8jJTxdPWeKCiBYD-s="
@@ -272,8 +264,8 @@ const ConfigGenerator = {
         type: "load-balance",
         strategy: "consistent-hashing", 
         url: "http://www.gstatic.com/generate_204",
-        interval: 1800,          
-        concurrent: 10,          
+        interval: 1800,          // 30分钟测一次
+        concurrent: 10,          // 限制并发
         "include-all": true,
         filter: "^(?!.*(官网|套餐|流量|异常|剩余|过期|到期)).*$",
         icon: "https://s1.aigei.com/src/img/png/68/68955db4c93a4044918ddc49d266b746.png?imageMogr2/auto-orient/thumbnail/!282x282r/gravity/Center/crop/282x282/quality/85/%7CimageView2/2/w/282&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:hPZCahPG3Yud0Fcse5U1OzxwmfE="
@@ -327,7 +319,7 @@ const ConfigGenerator = {
     if (enabledServices.includes("微软服务")) {
       groups.push({
         ...CONFIG.groupBaseOption, name: "微软服务", type: "select",
-        proxies: ["全局直连", ...getCleanServiceProxies().filter(p => p !== "全局直连")],
+        proxies: ["全局直连", ...countryNodeNames.slice(0, 4), "节点选择", "自动选择", "故障转移"],
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
       });
     }
@@ -338,8 +330,8 @@ const ConfigGenerator = {
           ...CONFIG.groupBaseOption,
           name: `${country.name}节点`,
           type: "fallback",
-          interval: 1800,          
-          tolerance: 0,
+          interval: 1800,          // 30分钟测一次
+          // 移除 fallback 不支持的 tolerance 参数
           "include-all": true,
           filter: country.filter,
           icon: country.icon
@@ -394,31 +386,25 @@ function main(config) {
       TLS: { ports: [443, 8443] },
       QUIC: { ports: [443, 8443] }
     },
-    "skip-domains": ["+.push.apple.com", "Mijia Cloud"] // 修复新版 Mihomo 字段名警告
+    "skip-domain": ["+.push.apple.com", "Mijia Cloud"]
   };
   
   config["rule-providers"] = ConfigGenerator.generateRuleProviders();
   config["rules"] = ConfigGenerator.generateRules();
   config["proxy-groups"] = ConfigGenerator.generateProxyGroups(config);
   
-  // 动态注入 dialer-proxy
   if(config["proxies"]) {
-    // 获取前置节点列表，用于判断是否真的能激活链式代理
     const transitProxies = Utils.getTransitProxies(config);
-    const isChainProxyActive = CONFIG.features.chainProxy && transitProxies.length > 0;
-
+    // 判断是否存在可作为前置的节点（且不能全部节点都是前置节点，否则会死循环）
+    const hasValidTransit = transitProxies.length > 0 && transitProxies.length < config["proxies"].filter(p => !Utils.isPanelInfo(p.name)).length;
+    
     config["proxies"].forEach(proxy => {
       proxy.udp = true;
-      // 只有当前置组真正存在时，才注入 dialer-proxy，防止生成了指向不存在组的死链
-      if (isChainProxyActive && CONFIG.features.chainProxyTypes.includes(proxy.type)) {
+      // 仅有可用的非SS节点作为前置时，才为 SS 节点启用链式代理
+      if (CONFIG.features.chainProxy && proxy.type === "ss" && hasValidTransit) {
         proxy["dialer-proxy"] = "前置选择"; 
       }
     });
-    
-    // 如果用户开启了 chainProxy 但节点全是不支持前置的协议，给出友好提示
-    if (CONFIG.features.chainProxy && !isChainProxyActive) {
-      console.log("提示: 开启了 chainProxy，但当前订阅没有可用的前置节点(或全是落地协议)，已自动降级为普通模式。");
-    }
   }
   
   return config;

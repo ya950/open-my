@@ -141,6 +141,8 @@ const ConfigGenerator = {
       "geosite:private": [...CONFIG.dns.domestic],
       "geosite:cn": [...CONFIG.dns.domestic]
     };
+    // 增加 IPv6 拒绝策略
+    dnsConfig.ipv6 = false; 
     return dnsConfig;
   },
   

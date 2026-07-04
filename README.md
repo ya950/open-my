@@ -4,6 +4,8 @@
 
 配置文件:https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/config/
 
+配置文件:https://github.com/qichiyuhub/rule
+
 
 ⚡ Clash 代理组逻辑说明
 

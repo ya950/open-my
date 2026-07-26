@@ -14,7 +14,7 @@ function main(config) {
     "store-selected": true,
     "store-fake-ip": true
   };
-
+ 
   // ==================== 2. 嗅探配置 ====================
   config["sniffer"] = {
     "enable": true,
@@ -28,7 +28,7 @@ function main(config) {
       "+.push.apple.com"
     ]
   };
-
+ 
   // ==================== 3. 入站 ====================
   config["tun"] = {
     "enable": true,
@@ -38,7 +38,7 @@ function main(config) {
     "auto-redirect": false,
     "auto-detect-interface": false
   };
-
+ 
   // ==================== 4. DNS模块 ====================
   config["dns"] = {
     "enable": true,
@@ -67,7 +67,7 @@ function main(config) {
       "rule-set:fakeipfilter_domain"
     ]
   };
-
+ 
   // ==================== 5. 机场订阅与节点 ====================
   config["proxy-providers"] = {
     "Airport1": {
@@ -77,23 +77,24 @@ function main(config) {
       "health-check": {
         "enable": true,
         "url": "https://www.gstatic.com/generate_204",
-        "interval": 300
+        "interval": 600,
+        "lazy": true
       },
       "proxy": "直连"
     }
   };
-
+ 
   if (!config["proxies"]) config["proxies"] = [];
   config["proxies"].push({ "name": "直连", "type": "direct" });
-
+ 
   // ==================== 6. 出站策略 ====================
   config["proxy-groups"] = [
     // 自动测速选择组（置顶方便选择）
-    { "name": "♻️ 自动选择", "type": "url-test", "include-all": true, "tolerance": 20, "interval": 300, "filter": "^((?!(直连)).)*$" },
-    
+    { "name": "♻️ 自动选择", "type": "url-test", "include-all": true, "tolerance": 20, "interval": 600, "lazy": true, "filter": "^((?!(直连)).)*$" },
+ 
     // 主节点选择组
     { "name": "⚡ 节点选择", "type": "select", "include-all": true, "proxies": ["♻️ 自动选择", "直连"] },
-    
+ 
     // 其他功能分组
     { "name": "📲 Telegram", "type": "select", "include-all": true, "proxies": ["⚡ 节点选择", "♻️ 自动选择", "直连"] },
     { "name": "📹 YouTube", "type": "select", "include-all": true, "proxies": ["⚡ 节点选择", "♻️ 自动选择", "直连"] },
@@ -107,12 +108,11 @@ function main(config) {
     { "name": "💶 PayPal", "type": "select", "include-all": true, "proxies": ["⚡ 节点选择", "♻️ 自动选择", "直连"] },
     { "name": "🐟 漏网之鱼", "type": "select", "include-all": true, "proxies": ["⚡ 节点选择", "♻️ 自动选择", "直连"] }
   ];
-
+ 
   // ==================== 7. 规则匹配 ====================
   config["rules"] = [
     "RULE-SET,private_ip,直连,no-resolve",
     "RULE-SET,private_domain,直连",
-    "DOMAIN-SUFFIX,qichiyu.com,⚡ 节点选择",
     "RULE-SET,proxylite,⚡ 节点选择",
     "RULE-SET,ai,🤖 ChatGPT",
     "RULE-SET,github_domain,👨🏿‍💻 GitHub",
@@ -134,13 +134,13 @@ function main(config) {
     "RULE-SET,cn_ip,直连",
     "MATCH,🐟 漏网之鱼"
   ];
-
+ 
   // ==================== 8. 规则集 ====================
   // 定义锚点对应的基础模板
   const ip = { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs" };
   const domain = { type: "http", interval: 86400, behavior: "domain", format: "mrs" };
   const classical = { type: "http", interval: 86400, behavior: "classical", format: "text" };
-
+ 
   config["rule-providers"] = {
     "fakeipfilter_domain": { ...domain, url: "https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs" },
     "private_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs" },
@@ -155,11 +155,10 @@ function main(config) {
     "onedrive_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs" },
     "microsoft_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs" },
     "apple_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs" },
-    "speedtest_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs" },
     "tiktok_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs" },
     "geolocation-!cn": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs" },
     "cn_domain": { ...domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs" },
-
+ 
     "private_ip": { ...ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs" },
     "cn_ip": { ...ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs" },
     "google_ip": { ...ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs" },
@@ -167,6 +166,6 @@ function main(config) {
     "netflix_ip": { ...ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs" },
     "apple_ip": { ...ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geoip/apple.mrs" }
   };
-
+ 
   return config;
 }
